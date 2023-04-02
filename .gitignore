@@ -11,6 +11,9 @@ coverage
 # Benchmarking
 benchmarks/graphs
 
+# typescript
+dist
+
 # .env
 .env
 
