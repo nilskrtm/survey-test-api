@@ -34,6 +34,8 @@ class JwtMiddleware {
       req.body = {
         userId: user._id,
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         permissionLevel: user.permissionLevel,
       };
 
