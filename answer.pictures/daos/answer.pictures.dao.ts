@@ -1,11 +1,11 @@
 import debug from 'debug';
-import {v4 as uuid} from 'uuid';
-import {Model, Schema} from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {DAO} from '../../common/classes/dao.class';
-import {CreateAnswerPictureDTO} from '../dto/create.answer.picture.dto';
-import {PatchAnswerPictureDTO} from '../dto/patch.answer.picture.dto';
-import {PutAnswerPictureDTO} from '../dto/put.answer.picture.dto';
+import { DAO } from '../../common/classes/dao.class';
+import { CreateAnswerPictureDTO } from '../dto/create.answer.picture.dto';
+import { PatchAnswerPictureDTO } from '../dto/patch.answer.picture.dto';
+import { PutAnswerPictureDTO } from '../dto/put.answer.picture.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 
 const log: debug.IDebugger = debug('app:answer-pictures-dao');
@@ -32,11 +32,11 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
       _id: String,
       name: String,
       fileName: String,
-      owner: {type: String, ref: 'User'},
+      owner: { type: String, ref: 'User' },
       created: Date,
       edited: Date,
     },
-    {id: false, collection: 'answer_pictures', versionKey: false},
+    { id: false, collection: 'answer_pictures', versionKey: false },
   );
 
   AnswerPictureModel = mongooseService
@@ -67,7 +67,9 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
   }
 
   async getAnswerPictureById(answerPictureId: string) {
-    return await this.AnswerPictureModel.findOne({_id: answerPictureId}).exec();
+    return await this.AnswerPictureModel.findOne({
+      _id: answerPictureId,
+    }).exec();
   }
 
   async getAnswerPictures(paging: RequestPagingParams) {
@@ -91,14 +93,14 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
   }
 
   async getAnswerPicturesOfUser(paging: RequestPagingParams, userId: string) {
-    const count = (await this.AnswerPictureModel.find({owner: userId}).exec())
+    const count = (await this.AnswerPictureModel.find({ owner: userId }).exec())
       .length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
       paging,
       count,
     );
 
-    const answerPictures = await this.AnswerPictureModel.find({owner: userId})
+    const answerPictures = await this.AnswerPictureModel.find({ owner: userId })
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .exec();
@@ -116,9 +118,9 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     answerPictureFields: PatchAnswerPictureDTO | PutAnswerPictureDTO,
   ) {
     return await this.AnswerPictureModel.findOneAndUpdate(
-      {_id: answerPictureId},
-      {$set: answerPictureFields},
-      {new: true},
+      { _id: answerPictureId },
+      { $set: answerPictureFields },
+      { new: true },
     ).exec();
   }
 

@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction} from 'express';
-import {PermissionLevel} from '../enums/common.permissionlevel.enum';
+import { Request, Response, NextFunction } from 'express';
+import { PermissionLevel } from '../enums/common.permissionlevel.enum';
 import debug from 'debug';
-import {AnswerPicture} from '../../answer.pictures/daos/answer.pictures.dao';
+import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 
 const log: debug.IDebugger = debug('app:common-permission-middleware');
 

@@ -1,6 +1,6 @@
-import {Request, Response, NextFunction} from 'express';
-import {Survey} from '../../surveys/daos/surveys.dao';
-import {Question} from '../daos/questions.dao';
+import { Request, Response, NextFunction } from 'express';
+import { Survey } from '../../surveys/daos/surveys.dao';
+import { Question } from '../daos/questions.dao';
 
 //const log: debug.IDebugger = debug('app:questions-controllers');
 
@@ -21,7 +21,7 @@ class QuestionsMiddleware {
             typeof newSorting[questionId] === 'number',
         )
       ) {
-        const toFill: {[order: number]: null | string} = {};
+        const toFill: { [order: number]: null | string } = {};
 
         for (let order = 1; order <= survey.questions.length; order++) {
           toFill[order] = null;

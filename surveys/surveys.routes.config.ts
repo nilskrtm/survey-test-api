@@ -1,9 +1,9 @@
-import {Application} from 'express';
-import {CommonRoutesConfig} from '../common/common.routes.config';
+import { Application } from 'express';
+import { CommonRoutesConfig } from '../common/common.routes.config';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import SurveysMiddleware from '../surveys/middleware/surveys.middleware';
 import SurveysController from './controllers/surveys.controller';
-import {body, oneOf} from 'express-validator';
+import { body, oneOf } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import PagingMiddleware from '../common/middleware/paging.middleware';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
@@ -26,19 +26,19 @@ export class SurveysRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('name')
           .isString()
-          .isLength({min: 1, max: 50})
+          .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
           .optional(),
         body('description')
           .isString()
-          .isLength({min: 1, max: 150})
+          .isLength({ min: 1, max: 150 })
           .withMessage(
             'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
           )
           .optional(),
         body('greeting')
           .isString()
-          .isLength({min: 1, max: 300})
+          .isLength({ min: 1, max: 300 })
           .withMessage(
             'Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.',
           )
@@ -89,7 +89,7 @@ export class SurveysRoutes extends CommonRoutesConfig {
           body('created').not().exists(),
           body('edited').not().exists(),
           body('draft')
-            .isBoolean({strict: true})
+            .isBoolean({ strict: true })
             .custom(value => value === false)
             .exists(),
           body('archived').not().exists(),
@@ -99,19 +99,19 @@ export class SurveysRoutes extends CommonRoutesConfig {
           body('_id').not().exists(),
           body('name')
             .isString()
-            .isLength({min: 1, max: 50})
+            .isLength({ min: 1, max: 50 })
             .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
             .optional(),
           body('description')
             .isString()
-            .isLength({min: 1, max: 150})
+            .isLength({ min: 1, max: 150 })
             .withMessage(
               'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
             )
             .optional(),
           body('greeting')
             .isString()
-            .isLength({min: 1, max: 300})
+            .isLength({ min: 1, max: 300 })
             .withMessage(
               'Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.',
             )
@@ -147,7 +147,7 @@ export class SurveysRoutes extends CommonRoutesConfig {
           body('created').not().exists(),
           body('edited').not().exists(),
           body('draft')
-            .isBoolean({strict: true})
+            .isBoolean({ strict: true })
             .custom(value => value === false)
             .exists(),
           body('archived').not().exists(),
@@ -157,19 +157,19 @@ export class SurveysRoutes extends CommonRoutesConfig {
           body('_id').not().exists(),
           body('name')
             .isString()
-            .isLength({min: 1, max: 50})
+            .isLength({ min: 1, max: 50 })
             .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
             .optional(),
           body('description')
             .isString()
-            .isLength({min: 1, max: 150})
+            .isLength({ min: 1, max: 150 })
             .withMessage(
               'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
             )
             .optional(),
           body('greeting')
             .isString()
-            .isLength({min: 1, max: 300})
+            .isLength({ min: 1, max: 300 })
             .withMessage(
               'Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.',
             )

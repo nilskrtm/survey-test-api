@@ -1,30 +1,59 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import debug from 'debug';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
+import { Jwt } from '../../common/types/jwt.type';
 
 const log: debug.IDebugger = debug('app:auth-controller');
 
-const jwtSecret: string = process.env.JWT_SECRET || 'random';
-const tokenExpirationInSeconds = 36000;
+const accessTokenSecret: string =
+  process.env.ACCESS_TOKEN_SECRET || 'accessToken';
+const accessTokenExpirationInSeconds = parseInt(
+  process.env.ACCESS_TOKEN_EXPIRATION || '3600',
+);
+const refreshTokenSecret: string =
+  process.env.REFRESH_TOKEN_SECRET || 'refreshToken';
+const refreshTokenExpirationInSeconds = parseInt(
+  process.env.REFRESH_TOKEN_EXPIRATION || '86400',
+);
 
 class AuthController {
   createJWT(req: Request, res: Response) {
+    const payload = req.body as Jwt;
+
     try {
-      const refreshId = req.body.userId + jwtSecret;
-      const salt = crypto.createSecretKey(crypto.randomBytes(16));
-      const hash = crypto
-        .createHmac('sha512', salt)
-        .update(refreshId)
-        .digest('base64');
-
-      req.body.refreshKey = salt.export();
-
-      const token = jwt.sign(req.body, jwtSecret, {
-        expiresIn: tokenExpirationInSeconds,
+      const accessToken = jwt.sign(payload, accessTokenSecret, {
+        expiresIn: accessTokenExpirationInSeconds,
+      });
+      const refreshToken = jwt.sign(payload, refreshTokenSecret, {
+        expiresIn: refreshTokenExpirationInSeconds,
       });
 
-      return res.status(201).send({accessToken: token, refreshToken: hash});
+      return res
+        .status(201)
+        .send({ accessToken: accessToken, refreshToken: refreshToken });
+    } catch (err) {
+      log('createJWT error: %O', err);
+
+      return res.status(500).send();
+    }
+  }
+
+  refreshJWT(req: Request, res: Response) {
+    const payload: Jwt = {
+      userId: req.body.userId,
+      username: req.body.username,
+      email: req.body.email,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      permissionLevel: req.body.permissionLevel,
+    };
+
+    try {
+      const accessToken = jwt.sign(payload, accessTokenSecret, {
+        expiresIn: accessTokenExpirationInSeconds,
+      });
+
+      return res.status(201).send({ accessToken: accessToken });
     } catch (err) {
       log('createJWT error: %O', err);
 

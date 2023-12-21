@@ -1,11 +1,11 @@
 import debug from 'debug';
-import {v4 as uuid} from 'uuid';
-import {Schema} from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import { Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {CreateQuestionDTO} from '../dto/create.question.dto';
-import {PatchQuestionDTO} from '../dto/patch.question.dto';
-import {PutQuestionDTO} from '../dto/put.question.dto';
-import {DAO} from '../../common/classes/dao.class';
+import { CreateQuestionDTO } from '../dto/create.question.dto';
+import { PatchQuestionDTO } from '../dto/patch.question.dto';
+import { PutQuestionDTO } from '../dto/put.question.dto';
+import { DAO } from '../../common/classes/dao.class';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
 import AnswerOptionsDAO from '../../answer.options/daos/answer.options.dao';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
@@ -33,9 +33,9 @@ class QuestionsDAO extends DAO<Question> {
       question: String,
       timeout: Number,
       order: Number,
-      answerOptions: [{type: String, ref: 'AnswerOption'}],
+      answerOptions: [{ type: String, ref: 'AnswerOption' }],
     },
-    {id: false, collection: 'questions', versionKey: false},
+    { id: false, collection: 'questions', versionKey: false },
   ).pre('findOneAndRemove', async function (this, next) {
     // cascade-handler
     if (!DAO.isCascadeRemoval(this)) {
@@ -79,7 +79,7 @@ class QuestionsDAO extends DAO<Question> {
   }
 
   async getQuestionById(questionId: string) {
-    return await this.QuestionModel.findOne({_id: questionId})
+    return await this.QuestionModel.findOne({ _id: questionId })
       .populate({
         path: 'answerOptions',
         populate: {
@@ -134,14 +134,14 @@ class QuestionsDAO extends DAO<Question> {
     questionFields: PatchQuestionDTO | PutQuestionDTO,
   ) {
     return await this.QuestionModel.findOneAndUpdate(
-      {_id: questionId},
-      {$set: questionFields},
-      {new: true},
+      { _id: questionId },
+      { $set: questionFields },
+      { new: true },
     ).exec();
   }
 
   async removeQuestionById(questionId: string, cascade?: boolean) {
-    return await this.QuestionModel.findOneAndRemove({_id: questionId})
+    return await this.QuestionModel.findOneAndRemove({ _id: questionId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

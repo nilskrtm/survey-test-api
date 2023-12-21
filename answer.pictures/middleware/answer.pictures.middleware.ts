@@ -1,5 +1,5 @@
-import {Request, Response, NextFunction} from 'express';
-import {AnswerPicture} from '../daos/answer.pictures.dao';
+import { Request, Response, NextFunction } from 'express';
+import { AnswerPicture } from '../daos/answer.pictures.dao';
 import AnswerPicturesService from '../../answer.pictures/services/answer.pictures.service';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
 

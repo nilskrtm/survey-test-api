@@ -1,8 +1,8 @@
 import AnswerOptionsDAO from '../daos/answer.options.dao';
-import {CRUD} from '../../common/interfaces/crud.interface';
-import {CreateAnswerOptionDTO} from '../dto/create.answer.option.dto';
-import {PatchAnswerOptionDTO} from '../dto/patch.answer.option.dto';
-import {PutAnswerOptionDTO} from '../dto/put.answer.option.dto';
+import { CRUD } from '../../common/interfaces/crud.interface';
+import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
+import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
+import { PutAnswerOptionDTO } from '../dto/put.answer.option.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 
 class AnswerOptionsService implements CRUD {

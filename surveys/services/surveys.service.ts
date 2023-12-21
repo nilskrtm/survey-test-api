@@ -1,8 +1,8 @@
 import SurveysDAO from '../daos/surveys.dao';
-import {CRUD} from '../../common/interfaces/crud.interface';
-import {CreateSurveyDTO} from '../dto/create.survey.dto';
-import {PatchSurveyDTO} from '../dto/patch.survey.dto';
-import {PutSurveyDTO} from '../dto/put.survey.dto';
+import { CRUD } from '../../common/interfaces/crud.interface';
+import { CreateSurveyDTO } from '../dto/create.survey.dto';
+import { PatchSurveyDTO } from '../dto/patch.survey.dto';
+import { PutSurveyDTO } from '../dto/put.survey.dto';
 
 class SurveysService implements CRUD {
   async create(resource: CreateSurveyDTO) {

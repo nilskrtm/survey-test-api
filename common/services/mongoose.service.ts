@@ -1,4 +1,4 @@
-import mongoose, {ConnectOptions} from 'mongoose';
+import mongoose, { ConnectOptions } from 'mongoose';
 import debug from 'debug';
 
 const log: debug.IDebugger = debug('app:mongoose-service');

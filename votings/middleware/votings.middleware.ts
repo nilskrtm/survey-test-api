@@ -1,7 +1,7 @@
-import {NextFunction, Request, Response} from 'express';
-import {Survey} from '../../surveys/daos/surveys.dao';
-import {Question} from '../../questions/daos/questions.dao';
-import {AnswerOption} from '../../answer.options/daos/answer.options.dao';
+import { NextFunction, Request, Response } from 'express';
+import { Survey } from '../../surveys/daos/surveys.dao';
+import { Question } from '../../questions/daos/questions.dao';
+import { AnswerOption } from '../../answer.options/daos/answer.options.dao';
 
 //const log: debug.IDebugger = debug('app:votings-controllers');
 
@@ -11,7 +11,7 @@ class VotingsMiddleware {
     const votes = req.body.votes;
 
     if (Array.isArray(votes) && survey.questions.length === votes.length) {
-      const questionsWithAnswerOptions: {[questionId: string]: string[]} = {};
+      const questionsWithAnswerOptions: { [questionId: string]: string[] } = {};
 
       for (let i = 0; i < survey.questions.length; i++) {
         const questionObject: Question = survey.questions[i];

@@ -1,5 +1,5 @@
-import {Request, Response, NextFunction} from 'express';
-import {validationResult} from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
 
 class BodyValidationMiddleware {
   verifyBodyFieldsErrors(req: Request, res: Response, next: NextFunction) {
@@ -7,7 +7,8 @@ class BodyValidationMiddleware {
 
     if (!errors.isEmpty()) {
       console.log(errors.mapped());
-      return res.status(400).send({errors: errors.mapped()});
+
+      return res.status(400).send({ errors: errors.mapped() });
     }
 
     next();

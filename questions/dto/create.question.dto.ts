@@ -1,4 +1,4 @@
-import {Survey} from '../../surveys/daos/surveys.dao';
+import { Survey } from '../../surveys/daos/surveys.dao';
 
 export interface CreateQuestionDTO {
   _id?: string;

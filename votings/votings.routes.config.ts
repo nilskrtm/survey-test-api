@@ -1,7 +1,7 @@
-import {CommonRoutesConfig} from '../common/common.routes.config';
-import {Application} from 'express';
+import { CommonRoutesConfig } from '../common/common.routes.config';
+import { Application } from 'express';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
-import {body} from 'express-validator';
+import { body } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import VotingsMiddleware from './middleware/votings.middleware';
 import VotingsController from './controllers/votings.controller';

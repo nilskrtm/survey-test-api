@@ -1,5 +1,5 @@
 import debug from 'debug';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import SurveysService from '../../surveys/services/surveys.service';
 
 const log: debug.IDebugger = debug('app:surveys-controller');
@@ -17,7 +17,7 @@ class SurveysController {
   async getSurveyById(req: Request, res: Response) {
     const survey = await SurveysService.getById(req.body.locals.surveyId);
 
-    res.status(200).send({survey: survey});
+    res.status(200).send({ survey: survey });
   }
 
   async createSurvey(req: Request, res: Response) {
@@ -28,7 +28,7 @@ class SurveysController {
 
     log(`created new survey ${surveyId}`);
 
-    res.status(201).send({id: surveyId});
+    res.status(201).send({ id: surveyId });
   }
 
   async patch(req: Request, res: Response) {

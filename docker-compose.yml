@@ -14,4 +14,4 @@ services:
     image: rest-api
     restart: always
     ports:
-      - "8000:3000"
+      - "8000:5000"

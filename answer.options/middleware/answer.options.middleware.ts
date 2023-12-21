@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction} from 'express';
-import {Question} from '../../questions/daos/questions.dao';
-import {AnswerOption} from '../daos/answer.options.dao';
-import {AnswerPicture} from '../../answer.pictures/daos/answer.pictures.dao';
+import { Request, Response, NextFunction } from 'express';
+import { Question } from '../../questions/daos/questions.dao';
+import { AnswerOption } from '../daos/answer.options.dao';
+import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 import AnswerPicturesService from '../../answer.pictures/services/answer.pictures.service';
 
 //const log: debug.IDebugger = debug('app:answer-options-controllers');
@@ -23,7 +23,7 @@ class AnswerOptionsMiddleware {
             typeof newSorting[answerOptionsId] === 'number',
         )
       ) {
-        const toFill: {[order: number]: null | string} = {};
+        const toFill: { [order: number]: null | string } = {};
 
         for (let order = 1; order <= question.answerOptions.length; order++) {
           toFill[order] = null;

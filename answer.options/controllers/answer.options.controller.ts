@@ -1,8 +1,8 @@
 import debug from 'debug';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import QuestionsService from '../../questions/services/questions.service';
 import SurveysService from '../../surveys/services/surveys.service';
-import {Question} from '../../questions/daos/questions.dao';
+import { Question } from '../../questions/daos/questions.dao';
 import AnswerOptionsService from '../services/answer.options.service';
 
 const log: debug.IDebugger = debug('app:answer-options-controller');
@@ -22,7 +22,7 @@ class AnswerOptionsController {
       req.body.locals.answerOptionId,
     );
 
-    res.status(200).send({answerOption: answerOption});
+    res.status(200).send({ answerOption: answerOption });
   }
 
   async createAnswerOption(req: Request, res: Response) {
@@ -52,7 +52,7 @@ class AnswerOptionsController {
       `created new answer-option ${answerOptionId} for question ${req.body.locals.questionId} of survey ${req.body.locals.surveyId}`,
     );
 
-    res.status(201).send({id: answerOptionId});
+    res.status(201).send({ id: answerOptionId });
   }
 
   async patch(req: Request, res: Response) {
@@ -100,7 +100,7 @@ class AnswerOptionsController {
         }
       })
       .filter(answerOptionId => answerOptionId);
-    const newSorting: {[index: string]: number} = {};
+    const newSorting: { [index: string]: number } = {};
 
     answerOptionIds.map((answerOptionId, index) => {
       newSorting[answerOptionId] = index + 1;

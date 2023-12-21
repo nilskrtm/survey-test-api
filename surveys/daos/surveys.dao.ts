@@ -1,12 +1,12 @@
 import debug from 'debug';
-import {v4 as uuid} from 'uuid';
-import {Schema, Model} from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import { Schema, Model } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {CreateSurveyDTO} from '../dto/create.survey.dto';
-import {PatchSurveyDTO} from '../dto/patch.survey.dto';
-import {PutSurveyDTO} from '../dto/put.survey.dto';
+import { CreateSurveyDTO } from '../dto/create.survey.dto';
+import { PatchSurveyDTO } from '../dto/patch.survey.dto';
+import { PutSurveyDTO } from '../dto/put.survey.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
-import {DAO} from '../../common/classes/dao.class';
+import { DAO } from '../../common/classes/dao.class';
 import QuestionsDAO from '../../questions/daos/questions.dao';
 import VotingsDAO from '../../votings/daos/votings.dao';
 
@@ -49,14 +49,14 @@ class SurveysDAO extends DAO<Survey> {
       greeting: String,
       startDate: Date,
       endDate: Date,
-      owner: {type: String, ref: 'User'},
+      owner: { type: String, ref: 'User' },
       created: Date,
       edited: Date,
       draft: Boolean,
       archived: Boolean,
-      questions: [{type: String, ref: 'Question'}],
+      questions: [{ type: String, ref: 'Question' }],
     },
-    {id: false, collection: 'surveys', versionKey: false},
+    { id: false, collection: 'surveys', versionKey: false },
   ).pre('findOneAndRemove', async function (this, next) {
     // cascade-handler
     if (!DAO.isCascadeRemoval(this)) {
@@ -103,7 +103,7 @@ class SurveysDAO extends DAO<Survey> {
   }
 
   async getSurveyById(surveyId: string) {
-    return await this.SurveyModel.findOne({_id: surveyId})
+    return await this.SurveyModel.findOne({ _id: surveyId })
       .populate({
         path: 'questions',
         populate: {
@@ -146,13 +146,13 @@ class SurveysDAO extends DAO<Survey> {
   }
 
   async getSurveysOfOwner(paging: RequestPagingParams, owner: string) {
-    const count = (await this.SurveyModel.find({owner: owner}).exec()).length;
+    const count = (await this.SurveyModel.find({ owner: owner }).exec()).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
       paging,
       count,
     );
 
-    const surveys = await this.SurveyModel.find({owner: owner})
+    const surveys = await this.SurveyModel.find({ owner: owner })
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .populate({
@@ -179,14 +179,14 @@ class SurveysDAO extends DAO<Survey> {
     surveyFields: PatchSurveyDTO | PutSurveyDTO,
   ) {
     return await this.SurveyModel.findOneAndUpdate(
-      {_id: surveyId},
-      {$set: surveyFields},
-      {new: true},
+      { _id: surveyId },
+      { $set: surveyFields },
+      { new: true },
     ).exec();
   }
 
   async removeSurveyById(surveyId: string, cascade?: boolean) {
-    return await this.SurveyModel.findOneAndRemove({_id: surveyId})
+    return await this.SurveyModel.findOneAndRemove({ _id: surveyId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

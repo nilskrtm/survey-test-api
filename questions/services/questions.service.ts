@@ -1,8 +1,8 @@
 import QuestionsDAO from '../daos/questions.dao';
-import {CRUD} from '../../common/interfaces/crud.interface';
-import {CreateQuestionDTO} from '../dto/create.question.dto';
-import {PatchQuestionDTO} from '../dto/patch.question.dto';
-import {PutQuestionDTO} from '../dto/put.question.dto';
+import { CRUD } from '../../common/interfaces/crud.interface';
+import { CreateQuestionDTO } from '../dto/create.question.dto';
+import { PatchQuestionDTO } from '../dto/patch.question.dto';
+import { PutQuestionDTO } from '../dto/put.question.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 
 class QuestionsService implements CRUD {

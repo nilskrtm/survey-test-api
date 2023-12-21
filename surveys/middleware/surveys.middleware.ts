@@ -1,9 +1,9 @@
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import SurveyService from '../services/surveys.service';
-import {Survey} from '../daos/surveys.dao';
-import {Question} from '../../questions/daos/questions.dao';
-import {AnswerOption} from '../../answer.options/daos/answer.options.dao';
-import {AnswerPicture} from '../../answer.pictures/daos/answer.pictures.dao';
+import { Survey } from '../daos/surveys.dao';
+import { Question } from '../../questions/daos/questions.dao';
+import { AnswerOption } from '../../answer.options/daos/answer.options.dao';
+import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 
 //const log: debug.IDebugger = debug('app:surveys-controllers');
 

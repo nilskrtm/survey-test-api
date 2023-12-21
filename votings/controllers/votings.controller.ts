@@ -1,6 +1,6 @@
 import debug from 'debug';
-import {Request, Response} from 'express';
-import {Survey} from '../../surveys/daos/surveys.dao';
+import { Request, Response } from 'express';
+import { Survey } from '../../surveys/daos/surveys.dao';
 import VotingsService from '../services/votings.service';
 
 const log: debug.IDebugger = debug('app:votings-controller');
@@ -17,7 +17,7 @@ class VotingsController {
       `created new voting ${votingId} for survey ${req.body.locals.surveyId}`,
     );
 
-    res.status(201).send({id: votingId});
+    res.status(201).send({ id: votingId });
   }
 }
 

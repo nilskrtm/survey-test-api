@@ -1,8 +1,8 @@
 import debug from 'debug';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import QuestionsService from '../../questions/services/questions.service';
 import SurveysService from '../../surveys/services/surveys.service';
-import {Survey} from '../../surveys/daos/surveys.dao';
+import { Survey } from '../../surveys/daos/surveys.dao';
 
 const log: debug.IDebugger = debug('app:questions-controller');
 
@@ -19,7 +19,7 @@ class QuestionsController {
   async getQuestionById(req: Request, res: Response) {
     const question = await QuestionsService.getById(req.body.locals.questionId);
 
-    res.status(200).send({question: question});
+    res.status(200).send({ question: question });
   }
 
   async createQuestion(req: Request, res: Response) {
@@ -45,7 +45,7 @@ class QuestionsController {
       `created new question ${questionId} for survey ${req.body.locals.surveyId}`,
     );
 
-    res.status(201).send({id: questionId});
+    res.status(201).send({ id: questionId });
   }
 
   async patch(req: Request, res: Response) {
@@ -93,7 +93,7 @@ class QuestionsController {
         }
       })
       .filter(questionId => questionId);
-    const newSorting: {[index: string]: number} = {};
+    const newSorting: { [index: string]: number } = {};
 
     questionIds.map((questionId, index) => {
       newSorting[questionId] = index + 1;
@@ -110,7 +110,9 @@ class QuestionsController {
 
     Object.keys(newSorting).forEach(questionId => {
       patchQuestions.push(
-        QuestionsService.patchById(questionId, {order: newSorting[questionId]}),
+        QuestionsService.patchById(questionId, {
+          order: newSorting[questionId],
+        }),
       );
     });
 
@@ -135,7 +137,9 @@ class QuestionsController {
     Object.keys(newSorting).forEach(questionId => {
       questionIds[newSorting[questionId] - 1] = questionId;
       patchQuestions.push(
-        QuestionsService.patchById(questionId, {order: newSorting[questionId]}),
+        QuestionsService.patchById(questionId, {
+          order: newSorting[questionId],
+        }),
       );
     });
 

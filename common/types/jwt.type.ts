@@ -1,5 +1,8 @@
 export type Jwt = {
-  refreshKey: string;
   userId: string;
-  permissionLevel: string;
+  username: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  permissionLevel: number;
 };

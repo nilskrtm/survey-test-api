@@ -1,8 +1,8 @@
 import AnswerPicturesDAO from '../daos/answer.pictures.dao';
-import {CRUD} from '../../common/interfaces/crud.interface';
-import {CreateAnswerPictureDTO} from '../dto/create.answer.picture.dto';
-import {PatchAnswerPictureDTO} from '../dto/patch.answer.picture.dto';
-import {PutAnswerPictureDTO} from '../dto/put.answer.picture.dto';
+import { CRUD } from '../../common/interfaces/crud.interface';
+import { CreateAnswerPictureDTO } from '../dto/create.answer.picture.dto';
+import { PatchAnswerPictureDTO } from '../dto/patch.answer.picture.dto';
+import { PutAnswerPictureDTO } from '../dto/put.answer.picture.dto';
 
 class AnswerPicturesService implements CRUD {
   async create(resource: CreateAnswerPictureDTO) {

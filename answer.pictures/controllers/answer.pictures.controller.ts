@@ -1,9 +1,9 @@
 import debug from 'debug';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import AnswerPicturesService from '../services/answer.pictures.service';
 import S3Service from '../../common/services/s3.service';
 import * as mime from 'mime-types';
-import {AnswerPicture} from '../daos/answer.pictures.dao';
+import { AnswerPicture } from '../daos/answer.pictures.dao';
 
 const log: debug.IDebugger = debug('app:answer-pictures-controller');
 
@@ -25,7 +25,7 @@ class AnswerPicturesController {
       url: S3Service.getPictureURL(answerPicture.fileName),
     });
 
-    res.status(200).send({answerPicture: answerPictureWithUrl});
+    res.status(200).send({ answerPicture: answerPictureWithUrl });
   }
 
   async createAnswerPicture(req: Request, res: Response) {
@@ -55,7 +55,7 @@ class AnswerPicturesController {
 
     log(`created new answer-picture ${answerPictureId}`);
 
-    res.status(201).send({id: answerPictureId});
+    res.status(201).send({ id: answerPictureId });
   }
 
   async patch(req: Request, res: Response) {

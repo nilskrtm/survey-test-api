@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 // @ts-ignore
 const maxPerPage: number = Number(process.env.MAX_PER_PAGE) || 50;
@@ -35,7 +35,7 @@ class PagingMiddleware {
 
       req.body.paging = paging;
     } catch (err) {
-      return res.status(400).send({errors: ['Invalid paging info']});
+      return res.status(400).send({ errors: ['Invalid paging info'] });
     }
 
     next();
@@ -50,7 +50,7 @@ class PagingMiddleware {
     } catch (err) {
       return res
         .status(400)
-        .send({errors: ['Error setting dummy paging info']});
+        .send({ errors: ['Error setting dummy paging info'] });
     }
 
     next();

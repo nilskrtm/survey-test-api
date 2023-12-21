@@ -1,22 +1,23 @@
 import debug from 'debug';
-import {v4 as uuid} from 'uuid';
-import {Model, Schema} from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {CreateUserDTO} from '../dto/create.user.dto';
-import {PatchUserDTO} from '../dto/patch.user.dto';
-import {PutUserDTO} from '../dto/put.user.dto';
+import { CreateUserDTO } from '../dto/create.user.dto';
+import { PatchUserDTO } from '../dto/patch.user.dto';
+import { PutUserDTO } from '../dto/put.user.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
-import {DAO} from '../../common/classes/dao.class';
-import {PermissionLevel} from '../../common/enums/common.permissionlevel.enum';
-import SurveysDAO, {Survey} from '../../surveys/daos/surveys.dao';
+import { DAO } from '../../common/classes/dao.class';
+import { PermissionLevel } from '../../common/enums/common.permissionlevel.enum';
+import SurveysDAO, { Survey } from '../../surveys/daos/surveys.dao';
 
 const log: debug.IDebugger = debug('app:users-dao');
 
 export type User = {
   _id: string;
   username: string;
-  firstName: string;
-  lastName: string;
+  email: string;
+  firstname: string;
+  lastname: string;
   password: string | {};
   accessKey: string | {};
   permissionLevel: number;
@@ -28,8 +29,8 @@ const defaultUserValues: Partial<User> = {
 };
 
 class UsersDAO extends DAO<User> {
-  UserSchema: Schema;
-  UserModel: any;
+  UserSchema: Schema<User>;
+  UserModel: Model<User>;
 
   constructor() {
     super();
@@ -38,13 +39,14 @@ class UsersDAO extends DAO<User> {
       {
         _id: String,
         username: String,
-        firstName: String,
-        lastName: String,
-        password: {type: String, select: false},
-        accessKey: {type: String, select: false},
+        email: String,
+        firstname: String,
+        lastname: String,
+        password: { type: String, select: false },
+        accessKey: { type: String, select: false },
         permissionLevel: Number,
       },
-      {id: false, collection: 'users', versionKey: false},
+      { id: false, collection: 'users', versionKey: false },
     ).pre('findOneAndRemove', async function (this, next) {
       // cascade-handler
       if (!DAO.isCascadeRemoval(this)) {
@@ -53,7 +55,7 @@ class UsersDAO extends DAO<User> {
 
       const user: User = await this.model.findOne(this.getQuery()).exec();
       const surveys: Survey[] = await SurveysDAO.getModel()
-        .find({owner: user._id})
+        .find({ owner: user._id })
         .exec();
       const promises: Promise<any>[] = surveys.map(survey =>
         SurveysDAO.removeSurveyById(survey._id, true),
@@ -66,7 +68,7 @@ class UsersDAO extends DAO<User> {
 
     this.UserModel = mongooseService
       .getMongoose()
-      .model('user', this.UserSchema);
+      .model<User>('user', this.UserSchema);
 
     log('Created new instance of UsersDao');
   }
@@ -89,23 +91,29 @@ class UsersDAO extends DAO<User> {
   }
 
   async getUserByUsername(username: string) {
-    return await this.UserModel.findOne({username: username}).exec();
+    return await this.UserModel.findOne({ username: username }).exec();
+  }
+
+  async getUserByEmail(email: string) {
+    return await this.UserModel.findOne({ email: email }).exec();
   }
 
   async getUserByUsernameWithAccessKey(username: string) {
-    return await this.UserModel.findOne({username: username})
-      .select('_id username firstName lastName permissionLevel +accessKey')
+    return await this.UserModel.findOne({ username: username })
+      .select(
+        '_id username email firstname lastname permissionLevel +accessKey',
+      )
       .exec();
   }
 
   async getUserByUsernameWithPassword(username: string) {
-    return await this.UserModel.findOne({username: username})
-      .select('_id username firstName lastName permissionLevel +password')
+    return await this.UserModel.findOne({ username: username })
+      .select('_id username email firstname lastname permissionLevel +password')
       .exec();
   }
 
   async getUserById(userId: string) {
-    return await this.UserModel.findOne({_id: userId}).exec();
+    return await this.UserModel.findOne({ _id: userId }).exec();
   }
 
   async getUsers(paging: RequestPagingParams) {
@@ -130,14 +138,14 @@ class UsersDAO extends DAO<User> {
 
   async updateUserById(userId: string, userFields: PatchUserDTO | PutUserDTO) {
     return await this.UserModel.findOneAndUpdate(
-      {_id: userId},
-      {$set: userFields},
-      {new: true},
+      { _id: userId },
+      { $set: userFields },
+      { new: true },
     ).exec();
   }
 
   async removeUserById(userId: string, cascade?: boolean) {
-    return await this.UserModel.findOneAndRemove({_id: userId})
+    return await this.UserModel.findOneAndRemove({ _id: userId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

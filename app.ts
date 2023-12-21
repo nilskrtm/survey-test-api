@@ -13,19 +13,19 @@ import * as expressWinston from 'express-winston';
 import debug from 'debug';
 import helmet from 'helmet';
 import cors from 'cors';
-import {CommonRoutesConfig} from './common/common.routes.config';
-import {UsersRoutes} from './users/users.routes.config';
-import {AuthRoutes} from './auth/auth.routes.config';
-import {SurveysRoutes} from './surveys/surveys.routes.config';
-import {QuestionsRoutes} from './questions/questions.routes.config';
-import {AnswerOptionsRoutes} from './answer.options/answer.options.routes.config';
-import {AnswerPicturesRoutes} from './answer.pictures/answer.pictures.routes.config';
-import {VotingsRoutes} from './votings/votings.routes.config';
+import { CommonRoutesConfig } from './common/common.routes.config';
+import { UsersRoutes } from './users/users.routes.config';
+import { AuthRoutes } from './auth/auth.routes.config';
+import { SurveysRoutes } from './surveys/surveys.routes.config';
+import { QuestionsRoutes } from './questions/questions.routes.config';
+import { AnswerOptionsRoutes } from './answer.options/answer.options.routes.config';
+import { AnswerPicturesRoutes } from './answer.pictures/answer.pictures.routes.config';
+import { VotingsRoutes } from './votings/votings.routes.config';
 import BodyValidationMiddleware from './common/middleware/body.validation.middleware';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || '5000') || 5000;
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 const loggerOptions: expressWinston.LoggerOptions = {
@@ -33,13 +33,13 @@ const loggerOptions: expressWinston.LoggerOptions = {
   format: winston.format.combine(
     winston.format.json(),
     winston.format.prettyPrint(),
-    winston.format.colorize({all: true}),
+    winston.format.colorize({ all: true }),
   ),
   meta: !!process.env.DEBUG,
 };
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(expressWinston.logger(loggerOptions));

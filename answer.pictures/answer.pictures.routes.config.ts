@@ -1,10 +1,10 @@
-import {Application} from 'express';
-import {CommonRoutesConfig} from '../common/common.routes.config';
+import { Application } from 'express';
+import { CommonRoutesConfig } from '../common/common.routes.config';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
 import PagingMiddleware from '../common/middleware/paging.middleware';
 import AnswerPicturesController from './controllers/answer.pictures.controller';
 import AnswerPicturesMiddleware from './middleware/answer.pictures.middleware';
-import {body} from 'express-validator';
+import { body } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import multer from 'multer';
@@ -28,7 +28,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('name')
           .isString()
-          .isLength({min: 1, max: 50})
+          .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
           .optional(),
         body('fileName').not().exists(),
@@ -75,7 +75,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       body('_id').not().exists(),
       body('name')
         .isString()
-        .isLength({min: 1, max: 50})
+        .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
         .optional(),
       body('fileName').not().exists(),
@@ -98,7 +98,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       body('_id').not().exists(),
       body('name')
         .isString()
-        .isLength({min: 1, max: 50})
+        .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
         .optional(),
       body('fileName').not().exists(),

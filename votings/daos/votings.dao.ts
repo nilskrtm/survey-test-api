@@ -1,9 +1,9 @@
 import debug from 'debug';
-import {DAO} from '../../common/classes/dao.class';
-import {Model, Schema} from 'mongoose';
+import { DAO } from '../../common/classes/dao.class';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {v4 as uuid} from 'uuid';
-import {CreateVotingDTO} from '../dto/create.voting.dto';
+import { v4 as uuid } from 'uuid';
+import { CreateVotingDTO } from '../dto/create.voting.dto';
 
 const log: debug.IDebugger = debug('app:votings-dao');
 
@@ -24,20 +24,20 @@ const defaultVotingValues: Partial<Voting> = {};
 class VotingsDAO extends DAO<Voting> {
   voteSchema = new Schema<Vote>(
     {
-      question: {type: String, ref: 'Question'},
-      answerOption: {type: String, ref: 'AnswerOption'},
+      question: { type: String, ref: 'Question' },
+      answerOption: { type: String, ref: 'AnswerOption' },
     },
-    {_id: false},
+    { _id: false },
   );
 
   votingSchema = new Schema<Voting>(
     {
       _id: String,
-      survey: {type: String, ref: 'Survey'},
+      survey: { type: String, ref: 'Survey' },
       date: Date,
       votes: [this.voteSchema],
     },
-    {id: false, collection: 'votings', versionKey: false},
+    { id: false, collection: 'votings', versionKey: false },
   );
 
   VotingModel = mongooseService

@@ -40,6 +40,7 @@ module.exports = {
         'no-undef': 'off',
         'func-call-spacing': 'off',
         '@typescript-eslint/func-call-spacing': 1,
+        'object-curly-spacing': ['error', 'always'],
       },
     },
   ],

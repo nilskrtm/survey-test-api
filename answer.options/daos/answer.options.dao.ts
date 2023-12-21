@@ -1,11 +1,11 @@
 import debug from 'debug';
-import {v4 as uuid} from 'uuid';
-import {Model, Schema} from 'mongoose';
+import { v4 as uuid } from 'uuid';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
-import {DAO} from '../../common/classes/dao.class';
-import {CreateAnswerOptionDTO} from '../dto/create.answer.option.dto';
-import {PatchAnswerOptionDTO} from '../dto/patch.answer.option.dto';
-import {PutAnswerOptionDTO} from '../dto/put.answer.option.dto';
+import { DAO } from '../../common/classes/dao.class';
+import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
+import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
+import { PutAnswerOptionDTO } from '../dto/put.answer.option.dto';
 import QuestionsDAO from '../../questions/daos/questions.dao';
 
 const log: debug.IDebugger = debug('app:answer-options-dao');
@@ -28,9 +28,9 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
       _id: String,
       order: Number,
       color: String,
-      picture: {type: String, ref: 'AnswerPicture'},
+      picture: { type: String, ref: 'AnswerPicture' },
     },
-    {id: false, collection: 'answer_options', versionKey: false},
+    { id: false, collection: 'answer_options', versionKey: false },
   );
 
   AnswerOptionModel = mongooseService
@@ -61,7 +61,7 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
   }
 
   async getAnswerOptionById(answerOptionId: string) {
-    return await this.AnswerOptionModel.findOne({_id: answerOptionId})
+    return await this.AnswerOptionModel.findOne({ _id: answerOptionId })
       .populate({
         path: 'picture',
       })
@@ -112,9 +112,9 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
     answerOptionFields: PatchAnswerOptionDTO | PutAnswerOptionDTO,
   ) {
     return await this.AnswerOptionModel.findOneAndUpdate(
-      {_id: answerOptionId},
-      {$set: answerOptionFields},
-      {new: true},
+      { _id: answerOptionId },
+      { $set: answerOptionFields },
+      { new: true },
     ).exec();
   }
 

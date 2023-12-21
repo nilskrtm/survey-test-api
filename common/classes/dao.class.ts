@@ -1,4 +1,4 @@
-import {Model, Query} from 'mongoose';
+import { Model, Query } from 'mongoose';
 
 export abstract class DAO<T> {
   abstract getModel(): Model<T>;

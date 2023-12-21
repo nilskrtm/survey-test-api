@@ -1,10 +1,10 @@
-import {PermissionLevel} from '../../common/enums/common.permissionlevel.enum';
+import { PermissionLevel } from '../../common/enums/common.permissionlevel.enum';
 
 export interface PutUserDTO {
   id: string;
   username: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   password: string;
   accessKey: string;
   permissionLevel: PermissionLevel;

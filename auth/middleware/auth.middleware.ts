@@ -1,12 +1,11 @@
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import UsersService from '../../users/services/users.service';
 import * as argon2 from 'argon2';
-import {User} from '../../users/daos/users.dao';
 import jwt from 'jsonwebtoken';
-import {Jwt} from '../../common/types/jwt.type';
+import { Jwt } from '../../common/types/jwt.type';
 
-// @ts-expect-error
-const jwtSecret: string = process.env.JWT_SECRET;
+const accessTokenSecret: string =
+  process.env.ACCESS_TOKEN_SECRET || 'accessToken';
 
 class AuthMiddleware {
   async verifyUserPassword(req: Request, res: Response, next: NextFunction) {
@@ -21,8 +20,9 @@ class AuthMiddleware {
         req.body = {
           userId: user._id,
           username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
           permissionLevel: user.permissionLevel,
         };
 
@@ -30,7 +30,7 @@ class AuthMiddleware {
       }
     }
 
-    res.status(400).send({errors: ['Invalid username/email and/or password']});
+    res.status(400).send({ errors: ['Die Anmeldedaten sind falsch.'] });
   }
 
   validAuthorizationNeeded(jwtAllowed: boolean, accessKeyAllowed: boolean) {
@@ -44,8 +44,9 @@ class AuthMiddleware {
             const [username, accessKey] = Buffer.from(b64Auth, 'base64')
               .toString()
               .split(':');
-            const user: User =
-              await UsersService.getUserByUsernameWithAccessKey(username);
+            const user: any = await UsersService.getUserByUsernameWithAccessKey(
+              username,
+            );
 
             if (
               user &&
@@ -62,8 +63,11 @@ class AuthMiddleware {
             return res.status(401).send();
           }
 
-          if (authorization[0] === 'Bearer') {
-            res.locals.jwt = jwt.verify(authorization[1], jwtSecret) as Jwt;
+          if (authorization[0] === 'Bearer' && jwtAllowed) {
+            res.locals.jwt = jwt.verify(
+              authorization[1],
+              accessTokenSecret,
+            ) as Jwt;
 
             return next();
           }

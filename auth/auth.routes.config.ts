@@ -1,6 +1,6 @@
-import {Application} from 'express';
-import {body} from 'express-validator';
-import {CommonRoutesConfig} from '../common/common.routes.config';
+import { Application } from 'express';
+import { body } from 'express-validator';
+import { CommonRoutesConfig } from '../common/common.routes.config';
 import AuthController from './controllers/auth.controller';
 import AuthMiddleware from './middleware/auth.middleware';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
@@ -13,18 +13,23 @@ export class AuthRoutes extends CommonRoutesConfig {
 
   configureRoutes(): Application {
     this.app.post(`/auth`, [
-      body('username').isString(),
-      body('password').isString(),
+      body('username')
+        .isString()
+        .notEmpty()
+        .withMessage('Es muss ein Nutzername angegeben werden.'),
+      body('password')
+        .isString()
+        .notEmpty()
+        .withMessage('Es muss ein Passwort angegeben werden.'),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
       AuthMiddleware.verifyUserPassword,
       AuthController.createJWT,
     ]);
 
     this.app.post(`/auth/refresh-token`, [
-      AuthMiddleware.validAuthorizationNeeded(true, false),
       JwtMiddleware.verifyRefreshBodyField,
       JwtMiddleware.validRefreshNeeded,
-      AuthController.createJWT,
+      AuthController.refreshJWT,
     ]);
 
     return this.app;

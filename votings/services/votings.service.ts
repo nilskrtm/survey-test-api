@@ -1,8 +1,8 @@
-import {CRUD} from '../../common/interfaces/crud.interface';
+import { CRUD } from '../../common/interfaces/crud.interface';
 import VotingsDAO from '../../votings/daos/votings.dao';
-import {CreateVotingDTO} from '../dto/create.voting.dto';
-import {PatchVotingDTO} from '../dto/patch.voting.dto';
-import {PutVotingDTO} from '../dto/put.voting.dto';
+import { CreateVotingDTO } from '../dto/create.voting.dto';
+import { PatchVotingDTO } from '../dto/patch.voting.dto';
+import { PutVotingDTO } from '../dto/put.voting.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 
 class VotingsService implements CRUD {

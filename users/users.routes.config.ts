@@ -1,12 +1,12 @@
-import {Application} from 'express';
-import {body} from 'express-validator';
-import {CommonRoutesConfig} from '../common/common.routes.config';
+import { Application } from 'express';
+import { body } from 'express-validator';
+import { CommonRoutesConfig } from '../common/common.routes.config';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import UsersMiddleware from './middleware/users.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import PagingMiddleware from '../common/middleware/paging.middleware';
 import UsersController from './controllers/users.controller';
-import {PermissionLevel} from '../common/enums/common.permissionlevel.enum';
+import { PermissionLevel } from '../common/enums/common.permissionlevel.enum';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
 
 export class UsersRoutes extends CommonRoutesConfig {
@@ -29,22 +29,22 @@ export class UsersRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('username')
           .isString()
-          .isLength({min: 2, max: 20})
+          .isLength({ min: 2, max: 20 })
           .withMessage(
             'Der Nutzername muss zwischen 2 und 20 Zeichen lang sein.',
           ),
-        body('firstName')
+        body('firstname')
           .isString()
-          .isLength({min: 2, max: 35})
+          .isLength({ min: 2, max: 35 })
           .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
-        body('lastName')
+        body('lastname')
           .isString()
-          .isLength({min: 2, max: 35})
+          .isLength({ min: 2, max: 35 })
           .withMessage(
             'Der Nachname muss zwischen 2 und 35 Zeichen lang sein.',
           ),
         body('password')
-          .isLength({min: 8, max: 40})
+          .isLength({ min: 8, max: 40 })
           .withMessage(
             'Das Passwort muss zwischen 8 und 40 Zeichen lang sein.',
           ),
@@ -68,16 +68,16 @@ export class UsersRoutes extends CommonRoutesConfig {
     this.app.put(`/users/:userId`, [
       body('_id').not().exists(),
       body('username').not().exists(),
-      body('firstName')
+      body('firstname')
         .isString()
-        .isLength({min: 2, max: 35})
+        .isLength({ min: 2, max: 35 })
         .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
-      body('lastName')
+      body('lastname')
         .isString()
-        .isLength({min: 2, max: 35})
+        .isLength({ min: 2, max: 35 })
         .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.'),
       body('password')
-        .isLength({min: 8, max: 40})
+        .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.'),
       body('permissionLevel').isInt(),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
@@ -88,16 +88,16 @@ export class UsersRoutes extends CommonRoutesConfig {
     this.app.patch(`/users/:userId`, [
       body('_id').not().exists(),
       body('username').not().exists(),
-      body('firstName')
+      body('firstname')
         .isString()
-        .isLength({min: 2, max: 35})
+        .isLength({ min: 2, max: 35 })
         .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
-      body('lastName')
+      body('lastname')
         .isString()
-        .isLength({min: 2, max: 35})
+        .isLength({ min: 2, max: 35 })
         .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.'),
       body('password')
-        .isLength({min: 8, max: 40})
+        .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.'),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
       UsersMiddleware.userCantChangePermission,
