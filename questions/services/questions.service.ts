@@ -4,6 +4,7 @@ import { CreateQuestionDTO } from '../dto/create.question.dto';
 import { PatchQuestionDTO } from '../dto/patch.question.dto';
 import { PutQuestionDTO } from '../dto/put.question.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
+import { RequestPagingParams } from '../../common/types/paging.params.type';
 
 class QuestionsService implements CRUD {
   async create(resource: CreateQuestionDTO) {

@@ -1,10 +1,9 @@
-type RequestPagingParams = {
+export type RequestPagingParams = {
   perPage: number;
   page: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type PagingParams = RequestPagingParams & {
+export type PagingParams = RequestPagingParams & {
   lastPage: number;
   offset?: number;
   count: number;

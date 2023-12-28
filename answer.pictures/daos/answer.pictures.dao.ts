@@ -7,6 +7,10 @@ import { CreateAnswerPictureDTO } from '../dto/create.answer.picture.dto';
 import { PatchAnswerPictureDTO } from '../dto/patch.answer.picture.dto';
 import { PutAnswerPictureDTO } from '../dto/put.answer.picture.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
+import {
+  PagingParams,
+  RequestPagingParams,
+} from '../../common/types/paging.params.type';
 
 const log: debug.IDebugger = debug('app:answer-pictures-dao');
 

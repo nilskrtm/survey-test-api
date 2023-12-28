@@ -3,6 +3,7 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { PutUserDTO } from '../dto/put.user.dto';
 import { PatchUserDTO } from '../dto/patch.user.dto';
+import { RequestPagingParams } from '../../common/types/paging.params.type';
 
 class UsersService implements CRUD {
   async create(resource: CreateUserDTO) {

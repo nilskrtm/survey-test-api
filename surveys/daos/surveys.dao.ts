@@ -9,6 +9,10 @@ import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { DAO } from '../../common/classes/dao.class';
 import QuestionsDAO from '../../questions/daos/questions.dao';
 import VotingsDAO from '../../votings/daos/votings.dao';
+import {
+  PagingParams,
+  RequestPagingParams,
+} from '../../common/types/paging.params.type';
 
 const log: debug.IDebugger = debug('app:surveys-dao');
 

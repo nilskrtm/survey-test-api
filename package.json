@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "npm run clean && tsc && nodemon --unhandled-rejections=strict",
-    "debug": "export DEBUG=* && npm run start",
+    "start": "npm run clean && tsc && node dist/app.js",
+    "dev": "nodemon --unhandled-rejections=strict",
+    "debug": "export DEBUG=* && npm run dev",
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "lint": "eslint .",
@@ -48,6 +49,7 @@
     "nodemon": "^3.0.1",
     "prettier": "^2.8.4",
     "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.0.2"
   }
 }

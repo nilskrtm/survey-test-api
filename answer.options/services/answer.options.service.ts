@@ -4,6 +4,7 @@ import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
 import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
 import { PutAnswerOptionDTO } from '../dto/put.answer.option.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
+import { RequestPagingParams } from '../../common/types/paging.params.type';
 
 class AnswerOptionsService implements CRUD {
   async create(resource: CreateAnswerOptionDTO) {

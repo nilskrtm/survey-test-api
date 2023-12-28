@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { PagingParams, RequestPagingParams } from '../types/paging.params.type';
 
 // @ts-ignore
 const maxPerPage: number = Number(process.env.MAX_PER_PAGE) || 50;

@@ -3,6 +3,7 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateSurveyDTO } from '../dto/create.survey.dto';
 import { PatchSurveyDTO } from '../dto/patch.survey.dto';
 import { PutSurveyDTO } from '../dto/put.survey.dto';
+import { RequestPagingParams } from '../../common/types/paging.params.type';
 
 class SurveysService implements CRUD {
   async create(resource: CreateSurveyDTO) {

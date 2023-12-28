@@ -4,6 +4,7 @@ import { CreateVotingDTO } from '../dto/create.voting.dto';
 import { PatchVotingDTO } from '../dto/patch.voting.dto';
 import { PutVotingDTO } from '../dto/put.voting.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
+import { RequestPagingParams } from '../../common/types/paging.params.type';
 
 class VotingsService implements CRUD {
   async create(resource: CreateVotingDTO) {

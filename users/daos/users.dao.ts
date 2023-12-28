@@ -9,6 +9,10 @@ import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { DAO } from '../../common/classes/dao.class';
 import { PermissionLevel } from '../../common/enums/common.permissionlevel.enum';
 import SurveysDAO, { Survey } from '../../surveys/daos/surveys.dao';
+import {
+  PagingParams,
+  RequestPagingParams,
+} from '../../common/types/paging.params.type';
 
 const log: debug.IDebugger = debug('app:users-dao');
 

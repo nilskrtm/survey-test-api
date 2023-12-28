@@ -1,3 +1,5 @@
+import { RequestPagingParams } from '../types/paging.params.type';
+
 export interface CRUD {
   list: (paging: RequestPagingParams, parentId?: any) => Promise<any>;
   create: (resource: any) => Promise<any>;
