@@ -32,6 +32,9 @@ const loggerOptions: expressWinston.LoggerOptions = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
     winston.format.json(),
+    winston.format.timestamp({
+      format: 'DD-MMM-YYYY HH:mm:ss',
+    }),
     winston.format.prettyPrint(),
     winston.format.colorize({ all: true }),
   ),
@@ -60,5 +63,5 @@ server.listen(port, async () => {
     debugLog(`Routes configured for ${route.getName()}`);
   });
 
-  console.log(`Server running on port ${port}`);
+  debugLog(`Server running on port ${port}`);
 });

@@ -1,0 +1,6 @@
+{
+  "watch": ["*"],
+  "ext": "ts,json",
+  "COMMENT_ignore": ["dist/app.js"],
+  "exec": "node ./dist/app.js"
+}
