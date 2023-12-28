@@ -25,7 +25,7 @@ import BodyValidationMiddleware from './common/middleware/body.validation.middle
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = parseInt(process.env.PORT || '5000') || 5000;
+const port: number = parseInt(process.env.PORT || '5000');
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 const loggerOptions: expressWinston.LoggerOptions = {
@@ -33,7 +33,7 @@ const loggerOptions: expressWinston.LoggerOptions = {
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp({
-      format: 'DD-MMM-YYYY HH:mm:ss',
+      format: 'DD-MM-YYYY HH:mm:ss',
     }),
     winston.format.prettyPrint(),
     winston.format.colorize({ all: true }),
