@@ -1,9 +1,11 @@
-import mongoose, { ConnectOptions } from 'mongoose';
+import mongoose, { ConnectOptions, Mongoose } from 'mongoose';
 import debug from 'debug';
 
 const log: debug.IDebugger = debug('app:mongoose-service');
 
 class MongooseService {
+  mongo: Mongoose = mongoose;
+
   private count = 0;
   private mongooseOptions: ConnectOptions = {
     serverSelectionTimeoutMS: 5000,
@@ -16,8 +18,8 @@ class MongooseService {
     this.connectWithRetry();
   }
 
-  getMongoose() {
-    return mongoose;
+  getMongoose(): Mongoose {
+    return this.mongo;
   }
 
   connectWithRetry = () => {
@@ -31,7 +33,9 @@ class MongooseService {
           (process.env.DATABASE_PORT || '27017'),
         this.mongooseOptions,
       )
-      .then(() => {
+      .then(mongo => {
+        this.mongo = mongo;
+
         log('MongoDB is connected');
       })
       .catch(err => {

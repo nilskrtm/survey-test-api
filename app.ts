@@ -22,6 +22,7 @@ import { AnswerOptionsRoutes } from './answer.options/answer.options.routes.conf
 import { AnswerPicturesRoutes } from './answer.pictures/answer.pictures.routes.config';
 import { VotingsRoutes } from './votings/votings.routes.config';
 import BodyValidationMiddleware from './common/middleware/body.validation.middleware';
+import WebSocketService from './common/services/ws.service';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -65,3 +66,5 @@ server.listen(port, async () => {
 
   debugLog(`Server running on port ${port}`);
 });
+
+WebSocketService.start();
