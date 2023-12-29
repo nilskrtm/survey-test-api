@@ -4,6 +4,7 @@ import * as http from 'http';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../types/jwt.type';
 import { AliveWebSocket } from '../classes/alive.websocket.class';
+import { WebSocketData } from '../interfaces/websocket.data.inteface';
 
 const log: debug.IDebugger = debug('app:ws-service');
 
@@ -67,19 +68,12 @@ class WebSocketService {
 
       let userId: string;
 
-      if (req.headers['authorization']) {
+      if (req.url && req.url.startsWith('/?accessToken=')) {
         try {
-          const authorization = req.headers['authorization'].split(' ');
+          const authorization = req.url.replace('/?accessToken=', '');
 
-          if (authorization[0] !== 'Bearer') {
-            socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-            socket.destroy();
-
-            return;
-          } else {
-            userId = (jwt.verify(authorization[1], accessTokenSecret) as Jwt)
-              .userId as string;
-          }
+          userId = (jwt.verify(authorization, accessTokenSecret) as Jwt)
+            .userId as string;
         } catch (err) {
           socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
           socket.destroy();
@@ -123,7 +117,9 @@ class WebSocketService {
         });
 
         ws.on('message', data => {
-          log('received: %s', data);
+          const webSocketData: WebSocketData = JSON.parse(data.toString());
+
+          log('received: %s', webSocketData);
           // TODO: onMessage - data
         });
       },
@@ -146,6 +142,10 @@ class WebSocketService {
     this.wss.on('close', () => {
       clearInterval(aliveInterval);
     });
+  }
+
+  send(ws: AliveWebSocket, data: WebSocketData) {
+    ws.send(JSON.stringify(data));
   }
 }
 
