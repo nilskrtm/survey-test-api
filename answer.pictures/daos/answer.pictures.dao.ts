@@ -31,24 +31,27 @@ const defaultAnswerPictureValues: Partial<AnswerPicture> = {
 };
 
 class AnswerPicturesDAO extends DAO<AnswerPicture> {
-  answerPictureSchema = new Schema<AnswerPicture>(
-    {
-      _id: String,
-      name: String,
-      fileName: String,
-      owner: { type: String, ref: 'User' },
-      created: Date,
-      edited: Date,
-    },
-    { id: false, collection: 'answer_pictures', versionKey: false },
-  );
-
-  AnswerPictureModel = mongooseService
-    .getMongoose()
-    .model('AnswerPicture', this.answerPictureSchema);
+  AnswerPictureSchema: Schema<AnswerPicture>;
+  AnswerPictureModel: Model<AnswerPicture>;
 
   constructor() {
     super();
+
+    this.AnswerPictureSchema = new Schema<AnswerPicture>(
+      {
+        _id: String,
+        name: String,
+        fileName: String,
+        owner: { type: String, ref: 'User' },
+        created: Date,
+        edited: Date,
+      },
+      { id: false, collection: 'answer_pictures', versionKey: false },
+    );
+
+    this.AnswerPictureModel = mongooseService
+      .getMongoose()
+      .model<AnswerPicture>('AnswerPicture', this.AnswerPictureSchema);
 
     log('Created new instance of AnswerPicturesDao');
   }

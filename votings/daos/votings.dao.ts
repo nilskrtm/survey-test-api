@@ -22,30 +22,33 @@ export type Voting = {
 const defaultVotingValues: Partial<Voting> = {};
 
 class VotingsDAO extends DAO<Voting> {
-  voteSchema = new Schema<Vote>(
-    {
-      question: { type: String, ref: 'Question' },
-      answerOption: { type: String, ref: 'AnswerOption' },
-    },
-    { _id: false },
-  );
-
-  votingSchema = new Schema<Voting>(
-    {
-      _id: String,
-      survey: { type: String, ref: 'Survey' },
-      date: Date,
-      votes: [this.voteSchema],
-    },
-    { id: false, collection: 'votings', versionKey: false },
-  );
-
-  VotingModel = mongooseService
-    .getMongoose()
-    .model('Voting', this.votingSchema);
+  VoteSchema: Schema<Vote>;
+  VotingSchema: Schema<Voting>;
+  VotingModel: Model<Voting>;
 
   constructor() {
     super();
+
+    this.VoteSchema = new Schema<Vote>(
+      {
+        question: { type: String, ref: 'Question' },
+        answerOption: { type: String, ref: 'AnswerOption' },
+      },
+      { _id: false },
+    );
+
+    this.VotingSchema = new Schema<Voting>(
+      {
+        _id: String,
+        survey: { type: String, ref: 'Survey' },
+        date: Date,
+        votes: [this.VoteSchema],
+      },
+      { id: false, collection: 'votings', versionKey: false },
+    );
+    this.VotingModel = mongooseService
+      .getMongoose()
+      .model<Voting>('Voting', this.VotingSchema);
 
     log('Created new instance of VotingsDao');
   }

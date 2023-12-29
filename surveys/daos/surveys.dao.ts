@@ -45,46 +45,49 @@ const defaultSurveyValues: Partial<Survey> = {
 };
 
 class SurveysDAO extends DAO<Survey> {
-  surveySchema = new Schema<Survey>(
-    {
-      _id: String,
-      name: String,
-      description: String,
-      greeting: String,
-      startDate: Date,
-      endDate: Date,
-      owner: { type: String, ref: 'User' },
-      created: Date,
-      edited: Date,
-      draft: Boolean,
-      archived: Boolean,
-      questions: [{ type: String, ref: 'Question' }],
-    },
-    { id: false, collection: 'surveys', versionKey: false },
-  ).pre('findOneAndRemove', async function (this, next) {
-    // cascade-handler
-    if (!DAO.isCascadeRemoval(this)) {
-      next();
-    }
-
-    const survey: Survey = await this.model.findOne(this.getQuery()).exec();
-    const promises: Promise<any>[] = survey.questions.map(questionId =>
-      QuestionsDAO.removeQuestionById(questionId, true),
-    );
-
-    promises.push(VotingsDAO.removeVotingsOfSurvey(survey._id));
-
-    await Promise.all(promises);
-
-    next();
-  });
-
-  SurveyModel = mongooseService
-    .getMongoose()
-    .model('Survey', this.surveySchema);
+  SurveySchema: Schema<Survey>;
+  SurveyModel: Model<Survey>;
 
   constructor() {
     super();
+
+    this.SurveySchema = new Schema<Survey>(
+      {
+        _id: String,
+        name: String,
+        description: String,
+        greeting: String,
+        startDate: Date,
+        endDate: Date,
+        owner: { type: String, ref: 'User' },
+        created: Date,
+        edited: Date,
+        draft: Boolean,
+        archived: Boolean,
+        questions: [{ type: String, ref: 'Question' }],
+      },
+      { id: false, collection: 'surveys', versionKey: false },
+    ).pre('findOneAndRemove', async function (this, next) {
+      // cascade-handler
+      if (!DAO.isCascadeRemoval(this)) {
+        next();
+      }
+
+      const survey: Survey = await this.model.findOne(this.getQuery()).exec();
+      const promises: Promise<any>[] = survey.questions.map(questionId =>
+        QuestionsDAO.removeQuestionById(questionId, true),
+      );
+
+      promises.push(VotingsDAO.removeVotingsOfSurvey(survey._id));
+
+      await Promise.all(promises);
+
+      next();
+    });
+
+    this.SurveyModel = mongooseService
+      .getMongoose()
+      .model<Survey>('Survey', this.SurveySchema);
 
     log('Created new instance of SurveysDao');
   }

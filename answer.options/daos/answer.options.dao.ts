@@ -23,22 +23,25 @@ const defaultAnswerOptionValues: Partial<AnswerOption> = {
 };
 
 class AnswerOptionsDAO extends DAO<AnswerOption> {
-  answerOptionSchema = new Schema<AnswerOption>(
-    {
-      _id: String,
-      order: Number,
-      color: String,
-      picture: { type: String, ref: 'AnswerPicture' },
-    },
-    { id: false, collection: 'answer_options', versionKey: false },
-  );
-
-  AnswerOptionModel = mongooseService
-    .getMongoose()
-    .model('AnswerOption', this.answerOptionSchema);
+  AnswerOptionSchema: Schema<AnswerOption>;
+  AnswerOptionModel: Model<AnswerOption>;
 
   constructor() {
     super();
+
+    this.AnswerOptionSchema = new Schema<AnswerOption>(
+      {
+        _id: String,
+        order: Number,
+        color: String,
+        picture: { type: String, ref: 'AnswerPicture' },
+      },
+      { id: false, collection: 'answer_options', versionKey: false },
+    );
+
+    this.AnswerOptionModel = mongooseService
+      .getMongoose()
+      .model<AnswerOption>('AnswerOption', this.AnswerOptionSchema);
 
     log('Created new instance of AnswerOptionsDao');
   }

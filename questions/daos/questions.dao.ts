@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
-import { Schema } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
 import { CreateQuestionDTO } from '../dto/create.question.dto';
 import { PatchQuestionDTO } from '../dto/patch.question.dto';
@@ -31,41 +31,48 @@ const defaultQuestionValues: Partial<Question> = {
 };
 
 class QuestionsDAO extends DAO<Question> {
-  questionSchema = new Schema<Question>(
-    {
-      _id: String,
-      question: String,
-      timeout: Number,
-      order: Number,
-      answerOptions: [{ type: String, ref: 'AnswerOption' }],
-    },
-    { id: false, collection: 'questions', versionKey: false },
-  ).pre('findOneAndRemove', async function (this, next) {
-    // cascade-handler
-    if (!DAO.isCascadeRemoval(this)) {
-      next();
-    }
+  QuestionSchema: Schema<Question>;
+  QuestionModel: Model<Question>;
 
-    const question: Question = await this.model.findOne(this.getQuery()).exec();
-    const promises: Promise<any>[] = question.answerOptions.map(
-      answerOptionId => AnswerOptionsDAO.removeAnswerOptionById(answerOptionId),
-    );
-
-    await Promise.all(promises);
-
-    next();
-  });
-
-  QuestionModel = mongooseService
-    .getMongoose()
-    .model('Question', this.questionSchema);
   constructor() {
     super();
+
+    this.QuestionSchema = new Schema<Question>(
+      {
+        _id: String,
+        question: String,
+        timeout: Number,
+        order: Number,
+        answerOptions: [{ type: String, ref: 'AnswerOption' }],
+      },
+      { id: false, collection: 'questions', versionKey: false },
+    ).pre('findOneAndRemove', async function (this, next) {
+      // cascade-handler
+      if (!DAO.isCascadeRemoval(this)) {
+        next();
+      }
+
+      const question: Question = await this.model
+        .findOne(this.getQuery())
+        .exec();
+      const promises: Promise<any>[] = question.answerOptions.map(
+        answerOptionId =>
+          AnswerOptionsDAO.removeAnswerOptionById(answerOptionId),
+      );
+
+      await Promise.all(promises);
+
+      next();
+    });
+
+    this.QuestionModel = mongooseService
+      .getMongoose()
+      .model<Question>('Question', this.QuestionSchema);
 
     log('Created new instance of QuestionsDao');
   }
 
-  getModel() {
+  getModel(): Model<Question> {
     return this.QuestionModel;
   }
 
