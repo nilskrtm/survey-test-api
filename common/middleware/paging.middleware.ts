@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { PagingParams, RequestPagingParams } from '../types/paging.params.type';
 
-// @ts-ignore
-const maxPerPage: number = Number(process.env.MAX_PER_PAGE) || 50;
+const maxPerPage: number = parseInt(process.env.MAX_PER_PAGE || '50');
 
 const roundUp = (number: number, decimals: number) => {
   if (decimals === 0) {
