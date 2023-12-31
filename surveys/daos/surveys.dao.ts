@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
-import { Schema, Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
 import { CreateSurveyDTO } from '../dto/create.survey.dto';
 import { PatchSurveyDTO } from '../dto/patch.survey.dto';
@@ -179,6 +179,10 @@ class SurveysDAO extends DAO<Survey> {
       surveys: surveys,
       paging: pagingParams,
     };
+  }
+
+  async getSurveyCountOfOwner(owner: string) {
+    return (await this.SurveyModel.find({ owner: owner }).exec()).length;
   }
 
   async updateSurveyById(

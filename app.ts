@@ -23,6 +23,7 @@ import { QuestionsRoutes } from './questions/questions.routes.config';
 import { AnswerOptionsRoutes } from './answer.options/answer.options.routes.config';
 import { AnswerPicturesRoutes } from './answer.pictures/answer.pictures.routes.config';
 import { VotingsRoutes } from './votings/votings.routes.config';
+import { DashboardRoutes } from './dashboard/dashboard.routes.config';
 import BodyValidationMiddleware from './common/middleware/body.validation.middleware';
 import WebSocketService from './common/services/ws.service';
 
@@ -58,6 +59,7 @@ routes.push(new QuestionsRoutes(app));
 routes.push(new AnswerOptionsRoutes(app));
 routes.push(new AnswerPicturesRoutes(app));
 routes.push(new VotingsRoutes(app));
+routes.push(new DashboardRoutes(app));
 
 server.listen(port, async () => {
   routes.forEach((route: CommonRoutesConfig) => {
