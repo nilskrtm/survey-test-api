@@ -120,6 +120,11 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     };
   }
 
+  async getAnswerPictureCountOfUser(userId: string) {
+    return (await this.AnswerPictureModel.find({ owner: userId }).exec())
+      .length;
+  }
+
   async updateAnswerPictureById(
     answerPictureId: string,
     answerPictureFields: PatchAnswerPictureDTO | PutAnswerPictureDTO,
