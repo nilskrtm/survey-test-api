@@ -53,7 +53,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
       .getMongoose()
       .model<AnswerPicture>('AnswerPicture', this.AnswerPictureSchema);
 
-    log('Created new instance of AnswerPicturesDao');
+    log('Created new instance of AnswerPicturesDAO');
   }
 
   getModel(): Model<AnswerPicture> {

@@ -50,7 +50,7 @@ class VotingsDAO extends DAO<Voting> {
       .getMongoose()
       .model<Voting>('Voting', this.VotingSchema);
 
-    log('Created new instance of VotingsDao');
+    log('Created new instance of VotingsDAO');
   }
 
   getModel(): Model<Voting> {

@@ -74,7 +74,7 @@ class UsersDAO extends DAO<User> {
       .getMongoose()
       .model<User>('user', this.UserSchema);
 
-    log('Created new instance of UsersDao');
+    log('Created new instance of UsersDAO');
   }
 
   getModel(): Model<User> {

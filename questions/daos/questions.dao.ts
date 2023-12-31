@@ -69,7 +69,7 @@ class QuestionsDAO extends DAO<Question> {
       .getMongoose()
       .model<Question>('Question', this.QuestionSchema);
 
-    log('Created new instance of QuestionsDao');
+    log('Created new instance of QuestionsDAO');
   }
 
   getModel(): Model<Question> {

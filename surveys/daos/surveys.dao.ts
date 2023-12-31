@@ -89,7 +89,7 @@ class SurveysDAO extends DAO<Survey> {
       .getMongoose()
       .model<Survey>('Survey', this.SurveySchema);
 
-    log('Created new instance of SurveysDao');
+    log('Created new instance of SurveysDAO');
   }
 
   getModel(): Model<Survey> {

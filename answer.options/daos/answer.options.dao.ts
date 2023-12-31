@@ -43,7 +43,7 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
       .getMongoose()
       .model<AnswerOption>('AnswerOption', this.AnswerOptionSchema);
 
-    log('Created new instance of AnswerOptionsDao');
+    log('Created new instance of AnswerOptionsDAO');
   }
 
   getModel(): Model<AnswerOption> {
