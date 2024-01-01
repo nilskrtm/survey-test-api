@@ -23,7 +23,11 @@ class S3Service {
     });
   }
 
-  async uploadPicture(fileName: string, file: Buffer, contentType: string) {
+  public async uploadPicture(
+    fileName: string,
+    file: Buffer,
+    contentType: string,
+  ) {
     const uploadParams: PutObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -45,7 +49,7 @@ class S3Service {
     });
   }
 
-  async deletePicture(fileName: string) {
+  public async deletePicture(fileName: string) {
     const deleteParams: DeleteObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -68,7 +72,7 @@ class S3Service {
     });
   }
 
-  async pictureExists(fileName: string) {
+  public async pictureExists(fileName: string) {
     const headParams: HeadObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -91,7 +95,7 @@ class S3Service {
     });
   }
 
-  async getPicture(key: string) {
+  public async getPicture(key: string) {
     const getParams: GetObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: key,
@@ -116,7 +120,7 @@ class S3Service {
     });
   }
 
-  getPictureURL(fileName: string) {
+  public getPictureURL(fileName: string) {
     const bucketName = process.env.AWS_BUCKET_NAME || '';
     const encodedFileName = encodeURIComponent(fileName);
 

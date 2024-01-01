@@ -94,14 +94,17 @@ export class UsersRoutes extends CommonRoutesConfig {
       body('firstname')
         .isString()
         .isLength({ min: 2, max: 35 })
-        .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
+        .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.')
+        .optional(),
       body('lastname')
         .isString()
         .isLength({ min: 2, max: 35 })
-        .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.'),
+        .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.')
+        .optional(),
       body('password')
         .isLength({ min: 8, max: 40 })
-        .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.'),
+        .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.')
+        .optional(),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
       UsersMiddleware.userCantChangePermission,
       UsersController.patch,

@@ -13,6 +13,9 @@ import {
   PagingParams,
   RequestPagingParams,
 } from '../../common/types/paging.params.type';
+import { UserDataWSPayload } from '../../common/interfaces/ws/user.data.ws.payload';
+import WebSocketService from '../../common/services/ws.service';
+import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
 
 const log: debug.IDebugger = debug('app:users-dao');
 
@@ -51,24 +54,41 @@ class UsersDAO extends DAO<User> {
         permissionLevel: Number,
       },
       { id: false, collection: 'users', versionKey: false },
-    ).pre('findOneAndRemove', async function (this, next) {
-      // cascade-handler
-      if (!DAO.isCascadeRemoval(this)) {
+    )
+      .pre('findOneAndRemove', async function (this, next) {
+        // cascade-handler
+        if (!DAO.isCascadeRemoval(this)) {
+          next();
+        }
+
+        const user: User = await this.model.findOne(this.getQuery()).exec();
+        const surveys: Survey[] = await SurveysDAO.getModel()
+          .find({ owner: user._id })
+          .exec();
+        const promises: Promise<any>[] = surveys.map(survey =>
+          SurveysDAO.removeSurveyById(survey._id, true),
+        );
+
+        await Promise.all(promises);
+
         next();
-      }
+      })
+      .post('findOneAndUpdate', async function (this) {
+        const user: User = await this.model.findOne(this.getQuery()).exec();
+        const payload: UserDataWSPayload = {
+          username: user.username,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          permissionLevel: user.permissionLevel,
+        };
 
-      const user: User = await this.model.findOne(this.getQuery()).exec();
-      const surveys: Survey[] = await SurveysDAO.getModel()
-        .find({ owner: user._id })
-        .exec();
-      const promises: Promise<any>[] = surveys.map(survey =>
-        SurveysDAO.removeSurveyById(survey._id, true),
-      );
-
-      await Promise.all(promises);
-
-      next();
-    });
+        WebSocketService.notifySubscriptions(
+          user._id,
+          SubscriptionType.USER_DATA,
+          payload,
+        );
+      });
 
     this.UserModel = mongooseService
       .getMongoose()

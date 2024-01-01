@@ -6,6 +6,7 @@ import { Jwt } from '../types/jwt.type';
 import { AliveWebSocket } from '../classes/alive.websocket.class';
 import {
   SubscriptionData,
+  SubscriptionType,
   WebSocketData,
   WebSocketDataType,
 } from '../interfaces/websocket.data.inteface';
@@ -51,7 +52,7 @@ class WebSocketService {
     this.setup();
   }
 
-  start() {
+  public start() {
     log('Starting WebSocket-Server');
 
     const port: number = parseInt(process.env.WEBSOCKET_PORT || '8080');
@@ -63,7 +64,7 @@ class WebSocketService {
     });
   }
 
-  setup() {
+  private setup() {
     const onSocketError = (error: any) => {
       log(error);
     };
@@ -155,7 +156,7 @@ class WebSocketService {
     );
   }
 
-  startHeartbeat() {
+  private startHeartbeat() {
     const aliveInterval = setInterval(() => {
       Array.from(this.wss.clients).forEach(ws => {
         if (!ws.isAlive) {
@@ -173,13 +174,45 @@ class WebSocketService {
     });
   }
 
-  getClientByID(connectionId: string) {
+  private getClientByID(connectionId: string) {
     return Array.from(this.wss.clients).filter(
       ws => ws.meta.connectionId === connectionId,
     )[0];
   }
 
-  send(ws: AliveWebSocket, data: WebSocketData) {
+  private getClientsByUserID(userId: string) {
+    return Array.from(this.wss.clients).filter(ws => ws.meta.userId === userId);
+  }
+
+  public notifySubscriptions<T>(
+    userId: string,
+    subscriptionType: SubscriptionType,
+    payload: T,
+  ) {
+    const clients = this.getClientsByUserID(userId);
+
+    clients.forEach(ws => {
+      const subscriptions = ws.subscriptions;
+
+      subscriptions.forEach(subscription => {
+        if (subscription.subscriptionType === subscriptionType) {
+          const data: WebSocketData<SubscriptionData<T>> = {
+            type: WebSocketDataType.SUBSCRIPTION_PAYLOAD,
+            data: {
+              subscriberId: subscription.subscriberId,
+              subscriptionId: subscription.subscriptionId,
+              subscriptionType: subscription.subscriptionType,
+              payload: payload,
+            },
+          };
+
+          this.send(ws, data);
+        }
+      });
+    });
+  }
+
+  public send(ws: AliveWebSocket, data: WebSocketData) {
     ws.send(JSON.stringify(data));
   }
 }
