@@ -121,8 +121,6 @@ class WebSocketService {
         ws.on('close', () => {
           log('closed connection:');
           log(ws.meta);
-
-          // TODO: clear subscriptions
         });
 
         ws.on('message', rawData => {
