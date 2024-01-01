@@ -187,7 +187,7 @@ class WebSocketService {
   public notifySubscriptions<T>(
     userId: string,
     subscriptionType: SubscriptionType,
-    payload: T,
+    payload?: T,
   ) {
     const clients = this.getClientsByUserID(userId);
 
