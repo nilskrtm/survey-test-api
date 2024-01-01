@@ -1,4 +1,5 @@
 import { WebSocket } from 'ws';
+import { SubscriptionData } from '../interfaces/websocket.data.inteface';
 
 type WebSocketMeta = {
   connectionId: string;
@@ -8,7 +9,7 @@ type WebSocketMeta = {
 declare class AliveWebSocket extends WebSocket {
   isAlive: boolean;
   meta: WebSocketMeta;
-  subscriptions: Map<string, string>;
+  subscriptions: Map<string, SubscriptionData>;
 }
 
 export { AliveWebSocket, WebSocketMeta };

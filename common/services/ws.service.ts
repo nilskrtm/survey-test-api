@@ -104,7 +104,7 @@ class WebSocketService {
       (ws: AliveWebSocket, req: http.IncomingMessage, userId: string) => {
         ws.isAlive = true;
         ws.meta = { connectionId: uuid(), userId: userId };
-        ws.subscriptions = new Map<string, string>();
+        ws.subscriptions = new Map<string, SubscriptionData>();
 
         log('New WebSocket connection:');
         log(ws.meta);
@@ -119,19 +119,38 @@ class WebSocketService {
         });
 
         ws.on('close', () => {
-          log('closed connection: ' + userId);
-          // TODO: onClose - userId
+          log('closed connection:');
+          log(ws.meta);
+
+          // TODO: clear subscriptions
         });
 
-        ws.on('message', data => {
-          const rawData: WebSocketData = JSON.parse(data.toString());
+        ws.on('message', rawData => {
+          const data: WebSocketData = JSON.parse(rawData.toString());
 
           log('Received: WebSocket data %s', rawData);
 
-          if (rawData.type === WebSocketDataType.SUBSCRIPTION) {
-            const subscriptionData = rawData as WebSocketData<SubscriptionData>;
+          if (data.type === WebSocketDataType.SUBSCRIPTION_REQUEST) {
+            const subscriptionData = data as WebSocketData<SubscriptionData>;
+            const confirmSubscriptionData: WebSocketData<SubscriptionData> = {
+              type: WebSocketDataType.SUBSCRIPTION_CONFIRMATION,
+              data: {
+                subscriberId: subscriptionData.data.subscriberId,
+                subscriptionId: subscriptionData.data.subscriptionId,
+              },
+            };
 
-            subscriptionData;
+            ws.subscriptions.set(
+              subscriptionData.data.subscriptionId,
+              subscriptionData.data,
+            );
+            ws.send(JSON.stringify(confirmSubscriptionData));
+          } else if (data.type === WebSocketDataType.SUBSCRIPTION_REMOVE) {
+            const subscriptionData = data as WebSocketData<SubscriptionData>;
+
+            if (ws.subscriptions.has(subscriptionData.data.subscriptionId)) {
+              ws.subscriptions.delete(subscriptionData.data.subscriptionId);
+            }
           }
         });
       },
