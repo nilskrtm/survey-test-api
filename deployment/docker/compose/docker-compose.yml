@@ -21,7 +21,7 @@ services:
       - "5000:5000"
     environment:
       # general
-      DEBUG: "app:*"
+      DEBUG: "app:*,express:false"
       META: false
       PORT: 5000
       # database

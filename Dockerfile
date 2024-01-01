@@ -1,8 +1,14 @@
 FROM node:18-alpine
 
-RUN apk update
+# RUN apk update
+
+# RUN apk add nginx
 
 RUN apk add supervisor
+
+# RUN rm -f /etc/nginx/http.d/default.conf
+
+# ADD ./deployment/docker/nginx/http.d/default.conf /etc/nginx/http.d/default.conf
 
 COPY ./deployment/docker/supervisord.conf /etc/supervisor/supervisord.conf
 

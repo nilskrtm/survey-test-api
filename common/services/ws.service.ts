@@ -18,8 +18,8 @@ const accessTokenSecret: string =
   process.env.ACCESS_TOKEN_SECRET || 'accessToken';
 
 class WebSocketService {
-  server: http.Server;
-  wss: Server<typeof AliveWebSocket, typeof http.IncomingMessage>;
+  private server: http.Server;
+  private wss: Server<typeof AliveWebSocket, typeof http.IncomingMessage>;
 
   constructor() {
     this.server = http.createServer();
@@ -48,23 +48,11 @@ class WebSocketService {
         // should not be compressed if context takeover is disabled.
       },
     });
-
-    this.setup();
   }
 
-  public start() {
-    log('Starting WebSocket-Server');
+  public setup(server: http.Server) {
+    this.server = server;
 
-    const port: number = parseInt(process.env.WEBSOCKET_PORT || '8080');
-
-    this.server.listen(port, async () => {
-      log(`Web-Socket Server running on port ${port}`);
-
-      this.startHeartbeat();
-    });
-  }
-
-  private setup() {
     const onSocketError = (error: any) => {
       log(error);
     };
@@ -168,7 +156,7 @@ class WebSocketService {
     );
   }
 
-  private startHeartbeat() {
+  public startHeartbeat() {
     const aliveInterval = setInterval(() => {
       Array.from(this.wss.clients).forEach(ws => {
         if (!ws.isAlive) {

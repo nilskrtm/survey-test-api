@@ -61,6 +61,8 @@ routes.push(new AnswerPicturesRoutes(app));
 routes.push(new VotingsRoutes(app));
 routes.push(new DashboardRoutes(app));
 
+WebSocketService.setup(server);
+
 server.listen(port, async () => {
   routes.forEach((route: CommonRoutesConfig) => {
     route.configureRoutes();
@@ -68,7 +70,7 @@ server.listen(port, async () => {
     debugLog(`Routes configured for ${route.getName()}`);
   });
 
+  WebSocketService.startHeartbeat();
+
   debugLog(`Server running on port ${port}`);
 });
-
-WebSocketService.start();
