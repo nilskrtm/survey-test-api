@@ -42,7 +42,7 @@ const loggerOptions: expressWinston.LoggerOptions = {
     winston.format.prettyPrint(),
     winston.format.colorize({ all: true }),
   ),
-  meta: !!process.env.DEBUG,
+  meta: (process.env.META || 'true') === 'true',
 };
 
 app.use(express.json());
