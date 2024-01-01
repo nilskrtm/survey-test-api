@@ -120,14 +120,19 @@ class WebSocketService {
         });
 
         ws.on('close', () => {
-          log('closed connection:');
+          ws.subscriptions.forEach(subscription => {
+            log('Unregistered Subscription:');
+            log(subscription);
+          });
+
+          ws.subscriptions.clear();
+
+          log('Closed connection:');
           log(ws.meta);
         });
 
         ws.on('message', rawData => {
           const data: WebSocketData = JSON.parse(rawData.toString());
-
-          log('Received: WebSocket data %s', rawData);
 
           if (data.type === WebSocketDataType.SUBSCRIPTION_REQUEST) {
             const subscriptionData = data as WebSocketData<SubscriptionData>;
@@ -136,6 +141,7 @@ class WebSocketService {
               data: {
                 subscriberId: subscriptionData.data.subscriberId,
                 subscriptionId: subscriptionData.data.subscriptionId,
+                subscriptionType: subscriptionData.data.subscriptionType,
               },
             };
 
@@ -144,11 +150,17 @@ class WebSocketService {
               subscriptionData.data,
             );
             ws.send(JSON.stringify(confirmSubscriptionData));
+
+            log('Registered Subscription:');
+            log(subscriptionData.data);
           } else if (data.type === WebSocketDataType.SUBSCRIPTION_REMOVE) {
             const subscriptionData = data as WebSocketData<SubscriptionData>;
 
             if (ws.subscriptions.has(subscriptionData.data.subscriptionId)) {
               ws.subscriptions.delete(subscriptionData.data.subscriptionId);
+
+              log('Unregistered Subscription:');
+              log(subscriptionData.data);
             }
           }
         });
