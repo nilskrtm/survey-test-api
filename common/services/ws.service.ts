@@ -4,7 +4,11 @@ import * as http from 'http';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../types/jwt.type';
 import { AliveWebSocket } from '../classes/alive.websocket.class';
-import { WebSocketData } from '../interfaces/websocket.data.inteface';
+import {
+  SubscriptionData,
+  WebSocketData,
+  WebSocketDataType,
+} from '../interfaces/websocket.data.inteface';
 import { v4 as uuid } from 'uuid';
 
 const log: debug.IDebugger = debug('app:ws-service');
@@ -120,10 +124,15 @@ class WebSocketService {
         });
 
         ws.on('message', data => {
-          const webSocketData: WebSocketData = JSON.parse(data.toString());
+          const rawData: WebSocketData = JSON.parse(data.toString());
 
-          log('received: %s', webSocketData);
-          // TODO: onMessage - data
+          log('Received: WebSocket data %s', rawData);
+
+          if (rawData.type === WebSocketDataType.SUBSCRIPTION) {
+            const subscriptionData = rawData as WebSocketData<SubscriptionData>;
+
+            subscriptionData;
+          }
         });
       },
     );
@@ -145,6 +154,12 @@ class WebSocketService {
     this.wss.on('close', () => {
       clearInterval(aliveInterval);
     });
+  }
+
+  getClientByID(connectionId: string) {
+    return Array.from(this.wss.clients).filter(
+      ws => ws.meta.connectionId === connectionId,
+    )[0];
   }
 
   send(ws: AliveWebSocket, data: WebSocketData) {
