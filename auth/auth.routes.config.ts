@@ -13,6 +13,7 @@ export class AuthRoutes extends CommonRoutesConfig {
 
   configureRoutes(): Application {
     this.app.post(`/auth`, [
+      BodyValidationMiddleware.decodePasswordInBody,
       body('username')
         .isString()
         .notEmpty()

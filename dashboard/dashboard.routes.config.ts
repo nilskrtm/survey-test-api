@@ -11,10 +11,10 @@ export class DashboardRoutes extends CommonRoutesConfig {
   configureRoutes() {
     this.app
       .route(`/dashboard/metrics`)
-      .get(
+      .get([
         AuthMiddleware.validAuthorizationNeeded(true, true),
         DashboardController.getDashboardMetrics,
-      );
+      ]);
 
     return this.app;
   }

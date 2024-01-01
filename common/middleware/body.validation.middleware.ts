@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 class BodyValidationMiddleware {
@@ -17,6 +17,18 @@ class BodyValidationMiddleware {
   verifyLocalsInBody(req: Request, res: Response, next: NextFunction) {
     if (!('locals' in req.body)) {
       req.body.locals = {};
+    }
+
+    next();
+  }
+
+  decodePasswordInBody(req: Request, res: Response, next: NextFunction) {
+    if (req.body['password'] && typeof req.body['password'] === 'string') {
+      const encodedPassword: string = req.body['password'];
+
+      req.body['password'] = Buffer.from(encodedPassword, 'base64').toString(
+        'ascii',
+      );
     }
 
     next();
