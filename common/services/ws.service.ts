@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { Jwt } from '../types/jwt.type';
 import { AliveWebSocket } from '../classes/alive.websocket.class';
 import { WebSocketData } from '../interfaces/websocket.data.inteface';
+import { v4 as uuid } from 'uuid';
 
 const log: debug.IDebugger = debug('app:ws-service');
 
@@ -98,9 +99,11 @@ class WebSocketService {
       'connection',
       (ws: AliveWebSocket, req: http.IncomingMessage, userId: string) => {
         ws.isAlive = true;
+        ws.meta = { connectionId: uuid(), userId: userId };
+        ws.subscriptions = new Map<string, string>();
 
-        log('new connection: ' + userId);
-        // TODO: onConnection - userId
+        log('New WebSocket connection:');
+        log(ws.meta);
 
         ws.on('pong', (pWs: AliveWebSocket) => {
           pWs.isAlive = true;
