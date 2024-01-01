@@ -26,9 +26,7 @@ class JwtMiddleware {
         refreshTokenSecret,
       ) as Jwt;
 
-      const user: any = await UsersService.getUserByUsernameWithPassword(
-        refreshToken.username,
-      );
+      const user: any = await UsersService.getById(refreshToken.userId);
 
       req.body = {
         userId: user._id,

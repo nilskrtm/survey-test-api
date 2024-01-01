@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import debug from 'debug';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../../common/types/jwt.type';
+import { User } from '../../users/daos/users.dao';
 
 const log: debug.IDebugger = debug('app:auth-controller');
 
@@ -18,7 +19,16 @@ const refreshTokenExpirationInSeconds = parseInt(
 
 class AuthController {
   createJWT(req: Request, res: Response) {
-    const payload = req.body as Jwt;
+    const payload: Jwt = {
+      userId: req.body.userId,
+      permissionLevel: req.body.permissionLevel,
+    };
+    const userData: Partial<User> = {
+      username: req.body.username,
+      email: req.body.email,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+    };
 
     try {
       const accessToken = jwt.sign(payload, accessTokenSecret, {
@@ -28,9 +38,11 @@ class AuthController {
         expiresIn: refreshTokenExpirationInSeconds,
       });
 
-      return res
-        .status(201)
-        .send({ accessToken: accessToken, refreshToken: refreshToken });
+      return res.status(201).send({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        user: userData,
+      });
     } catch (err) {
       log('createJWT error: %O', err);
 
@@ -41,11 +53,13 @@ class AuthController {
   refreshJWT(req: Request, res: Response) {
     const payload: Jwt = {
       userId: req.body.userId,
+      permissionLevel: req.body.permissionLevel,
+    };
+    const userData: Partial<User> = {
       username: req.body.username,
       email: req.body.email,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
-      permissionLevel: req.body.permissionLevel,
     };
 
     try {
@@ -53,7 +67,7 @@ class AuthController {
         expiresIn: accessTokenExpirationInSeconds,
       });
 
-      return res.status(201).send({ accessToken: accessToken });
+      return res.status(201).send({ accessToken: accessToken, user: userData });
     } catch (err) {
       log('createJWT error: %O', err);
 
