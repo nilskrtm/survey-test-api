@@ -37,5 +37,3 @@ services:
       REFRESH_TOKEN_EXPIRATION: 86400
       # paging
       MAX_PER_PAGE: 10
-      # ws
-      WEBSOCKET_PORT: 12345
