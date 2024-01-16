@@ -9,10 +9,11 @@ import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { DAO } from '../../common/classes/dao.class';
 import QuestionsDAO from '../../questions/daos/questions.dao';
 import VotingsDAO from '../../votings/daos/votings.dao';
-import {
-  PagingParams,
-  RequestPagingParams,
-} from '../../common/types/paging.params.type';
+import { PagingParams } from '../../common/types/paging.params.type';
+import SurveyQueryHelpers, {
+  ISurveyQueryHelpers,
+} from '../query/surveys.query.helpers';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 const log: debug.IDebugger = debug('app:surveys-dao');
 
@@ -44,14 +45,28 @@ const defaultSurveyValues: Partial<Survey> = {
   questions: [],
 };
 
+type SurveyModelType = Model<Survey, ISurveyQueryHelpers>;
+
 class SurveysDAO extends DAO<Survey> {
-  SurveySchema: Schema<Survey>;
-  SurveyModel: Model<Survey>;
+  SurveySchema: Schema<
+    Survey,
+    SurveyModelType,
+    ISurveyQueryHelpers,
+    {},
+    ISurveyQueryHelpers
+  >;
+  SurveyModel: SurveyModelType;
 
   constructor() {
     super();
 
-    this.SurveySchema = new Schema<Survey>(
+    this.SurveySchema = new Schema<
+      Survey,
+      SurveyModelType,
+      ISurveyQueryHelpers,
+      {},
+      ISurveyQueryHelpers
+    >(
       {
         _id: String,
         name: String,
@@ -66,7 +81,11 @@ class SurveysDAO extends DAO<Survey> {
         archived: Boolean,
         questions: [{ type: String, ref: 'Question' }],
       },
-      { id: false, collection: 'surveys', versionKey: false },
+      {
+        id: false,
+        collection: 'surveys',
+        versionKey: false,
+      },
     ).pre('findOneAndRemove', async function (this, next) {
       // cascade-handler
       if (!DAO.isCascadeRemoval(this)) {
@@ -84,15 +103,16 @@ class SurveysDAO extends DAO<Survey> {
 
       next();
     });
+    this.SurveySchema.query = SurveyQueryHelpers;
 
     this.SurveyModel = mongooseService
       .getMongoose()
-      .model<Survey>('Survey', this.SurveySchema);
+      .model<Survey, SurveyModelType>('Survey', this.SurveySchema);
 
     log('Created new instance of SurveysDAO');
   }
 
-  getModel(): Model<Survey> {
+  getModel(): Model<Survey, ISurveyQueryHelpers> {
     return this.SurveyModel;
   }
 
@@ -123,10 +143,10 @@ class SurveysDAO extends DAO<Survey> {
       .exec();
   }
 
-  async getSurveys(paging: RequestPagingParams) {
+  async getSurveys(options: RequestOptions) {
     const count = (await this.SurveyModel.find().exec()).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
-      paging,
+      options.paging,
       count,
     );
 
@@ -152,14 +172,19 @@ class SurveysDAO extends DAO<Survey> {
     };
   }
 
-  async getSurveysOfOwner(paging: RequestPagingParams, owner: string) {
-    const count = (await this.SurveyModel.find({ owner: owner }).exec()).length;
+  async getSurveysOfOwner(options: RequestOptions, owner: string) {
+    const count = (
+      await this.SurveyModel.find({ owner: owner })
+        .applyFiltering(options.filtering)
+        .exec()
+    ).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
-      paging,
+      options.paging,
       count,
     );
 
     const surveys = await this.SurveyModel.find({ owner: owner })
+      .applyFiltering(options.filtering)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .populate({

@@ -3,7 +3,7 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateSurveyDTO } from '../dto/create.survey.dto';
 import { PatchSurveyDTO } from '../dto/patch.survey.dto';
 import { PutSurveyDTO } from '../dto/put.survey.dto';
-import { RequestPagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class SurveysService implements CRUD {
   async create(resource: CreateSurveyDTO) {
@@ -14,8 +14,8 @@ class SurveysService implements CRUD {
     return await SurveysDAO.removeSurveyById(id, true);
   }
 
-  async list(paging: RequestPagingParams, ownerId: string): Promise<any> {
-    return await SurveysDAO.getSurveysOfOwner(paging, ownerId);
+  async list(options: RequestOptions, ownerId: string): Promise<any> {
+    return await SurveysDAO.getSurveysOfOwner(options, ownerId);
   }
 
   async patchById(id: string, resource: PatchSurveyDTO): Promise<any> {

@@ -9,7 +9,7 @@ const log: debug.IDebugger = debug('app:questions-controller');
 class QuestionsController {
   async listQuestions(req: Request, res: Response) {
     const questions = await QuestionsService.list(
-      req.body.paging,
+      req.body,
       req.body.locals.surveyId,
     );
 

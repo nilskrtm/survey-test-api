@@ -7,7 +7,7 @@ const log: debug.IDebugger = debug('app:surveys-controller');
 class SurveysController {
   async listSurveys(req: Request, res: Response) {
     const surveys = await SurveysService.list(
-      req.body.paging,
+      req.body,
       res.locals.jwt?.userId || res.locals.basicAuth?.userId,
     );
 

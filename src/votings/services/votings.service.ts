@@ -4,7 +4,7 @@ import { CreateVotingDTO } from '../dto/create.voting.dto';
 import { PatchVotingDTO } from '../dto/patch.voting.dto';
 import { PutVotingDTO } from '../dto/put.voting.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
-import { RequestPagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class VotingsService implements CRUD {
   async create(resource: CreateVotingDTO) {
@@ -18,8 +18,8 @@ class VotingsService implements CRUD {
     //return await VotingsDAO.removeSurveyById(id, true);
   }
 
-  async list(paging: RequestPagingParams): Promise<any> {
-    PagingMiddleware.ignoreValue(paging);
+  async list(options: RequestOptions): Promise<any> {
+    PagingMiddleware.ignoreValue(options);
 
     throw new Error('should not be used');
     //return await VotingsDAO.getSurveysOfOwner(paging, ownerId);

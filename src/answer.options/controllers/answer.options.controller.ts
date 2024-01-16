@@ -10,7 +10,7 @@ const log: debug.IDebugger = debug('app:answer-options-controller');
 class AnswerOptionsController {
   async listAnswerOptions(req: Request, res: Response) {
     const answerOptions = await AnswerOptionsService.list(
-      req.body.paging,
+      req.body,
       req.body.locals.questionId,
     );
 

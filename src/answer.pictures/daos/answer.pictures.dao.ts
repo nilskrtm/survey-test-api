@@ -11,6 +11,7 @@ import {
   PagingParams,
   RequestPagingParams,
 } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 const log: debug.IDebugger = debug('app:answer-pictures-dao');
 
@@ -99,11 +100,11 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     };
   }
 
-  async getAnswerPicturesOfUser(paging: RequestPagingParams, userId: string) {
+  async getAnswerPicturesOfUser(options: RequestOptions, userId: string) {
     const count = (await this.AnswerPictureModel.find({ owner: userId }).exec())
       .length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
-      paging,
+      options.paging,
       count,
     );
 

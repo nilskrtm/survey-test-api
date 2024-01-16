@@ -9,13 +9,11 @@ import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { DAO } from '../../common/classes/dao.class';
 import { PermissionLevel } from '../../common/enums/common.permissionlevel.enum';
 import SurveysDAO, { Survey } from '../../surveys/daos/surveys.dao';
-import {
-  PagingParams,
-  RequestPagingParams,
-} from '../../common/types/paging.params.type';
-import { UserDataWSPayload } from '../../common/interfaces/ws/user.data.ws.payload';
+import { PagingParams } from '../../common/types/paging.params.type';
+import { UserDataWSPayload } from '../../common/interfaces/user.data.ws.payload';
 import WebSocketService from '../../common/services/ws.service';
 import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 const log: debug.IDebugger = debug('app:users-dao');
 
@@ -140,10 +138,10 @@ class UsersDAO extends DAO<User> {
     return await this.UserModel.findOne({ _id: userId }).exec();
   }
 
-  async getUsers(paging: RequestPagingParams) {
+  async getUsers(options: RequestOptions) {
     const count = (await this.UserModel.find().exec()).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
-      paging,
+      options.paging,
       count,
     );
 

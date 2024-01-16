@@ -51,6 +51,7 @@ app.use(cors());
 app.use(helmet());
 app.use(expressWinston.logger(loggerOptions));
 app.use(BodyValidationMiddleware.verifyLocalsInBody);
+app.use(BodyValidationMiddleware.verifyRequestOptionsInBody);
 
 routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));

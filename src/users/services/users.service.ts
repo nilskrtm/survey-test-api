@@ -3,7 +3,7 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { PutUserDTO } from '../dto/put.user.dto';
 import { PatchUserDTO } from '../dto/patch.user.dto';
-import { RequestPagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class UsersService implements CRUD {
   async create(resource: CreateUserDTO) {
@@ -14,8 +14,8 @@ class UsersService implements CRUD {
     return await UsersDAO.removeUserById(id);
   }
 
-  async list(paging: RequestPagingParams) {
-    return await UsersDAO.getUsers(paging);
+  async list(options: RequestOptions) {
+    return await UsersDAO.getUsers(options);
   }
 
   async patchById(id: string, resource: PatchUserDTO) {

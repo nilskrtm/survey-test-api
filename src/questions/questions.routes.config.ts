@@ -2,7 +2,6 @@ import { Application } from 'express';
 import { CommonRoutesConfig } from '../common/common.routes.config';
 import QuestionsMiddleware from '../questions/middleware/questions.middleware';
 import QuestionsController from './controllers/questions.controller';
-import PagingMiddleware from '../common/middleware/paging.middleware';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
 import SurveysMiddleware from '../surveys/middleware/surveys.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
@@ -23,7 +22,6 @@ export class QuestionsRoutes extends CommonRoutesConfig {
         SurveysMiddleware.extractSurveyId,
         SurveysMiddleware.validateSurveyExists,
         PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
-        PagingMiddleware.dummyPagingParameters,
         QuestionsController.listQuestions,
       )
       .post(

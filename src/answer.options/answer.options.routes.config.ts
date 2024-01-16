@@ -3,7 +3,6 @@ import { CommonRoutesConfig } from '../common/common.routes.config';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
 import SurveysMiddleware from '../surveys/middleware/surveys.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
-import PagingMiddleware from '../common/middleware/paging.middleware';
 import QuestionsMiddleware from '../questions/middleware/questions.middleware';
 import AnswerOptionsController from './controllers/answer.options.controller';
 import { body } from 'express-validator';
@@ -25,7 +24,6 @@ export class AnswerOptionsRoutes extends CommonRoutesConfig {
         PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
         QuestionsMiddleware.extractQuestionId,
         QuestionsMiddleware.validateQuestionExists,
-        PagingMiddleware.dummyPagingParameters,
         AnswerOptionsController.listAnswerOptions,
       )
       .post(

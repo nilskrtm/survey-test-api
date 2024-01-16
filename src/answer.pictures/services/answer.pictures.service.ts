@@ -3,7 +3,7 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateAnswerPictureDTO } from '../dto/create.answer.picture.dto';
 import { PatchAnswerPictureDTO } from '../dto/patch.answer.picture.dto';
 import { PutAnswerPictureDTO } from '../dto/put.answer.picture.dto';
-import { RequestPagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class AnswerPicturesService implements CRUD {
   async create(resource: CreateAnswerPictureDTO) {
@@ -14,8 +14,8 @@ class AnswerPicturesService implements CRUD {
     return await AnswerPicturesDAO.removeAnswerPictureById(id);
   }
 
-  async list(paging: RequestPagingParams, userId: string): Promise<any> {
-    return await AnswerPicturesDAO.getAnswerPicturesOfUser(paging, userId);
+  async list(options: RequestOptions, userId: string): Promise<any> {
+    return await AnswerPicturesDAO.getAnswerPicturesOfUser(options, userId);
   }
 
   async patchById(id: string, resource: PatchAnswerPictureDTO): Promise<any> {

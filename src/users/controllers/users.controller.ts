@@ -7,7 +7,7 @@ const log: debug.IDebugger = debug('app:users-controller');
 
 class UsersController {
   async listUsers(req: Request, res: Response) {
-    const data = await UsersService.list(req.body.paging);
+    const data = await UsersService.list(req.body);
 
     res.status(200).send(data);
   }

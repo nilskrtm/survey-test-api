@@ -9,10 +9,8 @@ import { DAO } from '../../common/classes/dao.class';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
 import AnswerOptionsDAO from '../../answer.options/daos/answer.options.dao';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
-import {
-  PagingParams,
-  RequestPagingParams,
-} from '../../common/types/paging.params.type';
+import { PagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 const log: debug.IDebugger = debug('app:questions-dao');
 
@@ -100,10 +98,10 @@ class QuestionsDAO extends DAO<Question> {
       .exec();
   }
 
-  async getQuestions(paging: RequestPagingParams) {
+  async getQuestions(options: RequestOptions) {
     const count = (await this.QuestionModel.find().exec()).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
-      paging,
+      options.paging,
       count,
     );
 

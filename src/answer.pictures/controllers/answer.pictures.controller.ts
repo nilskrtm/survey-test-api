@@ -10,7 +10,7 @@ const log: debug.IDebugger = debug('app:answer-pictures-controller');
 class AnswerPicturesController {
   async listAnswerPictures(req: Request, res: Response) {
     const answerPictures = await AnswerPicturesService.list(
-      req.body.paging,
+      req.body,
       res.locals.jwt?.userId || res.locals.basicAuth?.userId,
     );
 

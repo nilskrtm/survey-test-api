@@ -7,6 +7,8 @@ import { body, oneOf } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import PagingMiddleware from '../common/middleware/paging.middleware';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
+import FilteringMiddleware from '../common/middleware/filtering.middleware';
+import SortingMiddleware from '../common/middleware/sorting.middleware';
 
 export class SurveysRoutes extends CommonRoutesConfig {
   constructor(app: Application) {
@@ -19,6 +21,8 @@ export class SurveysRoutes extends CommonRoutesConfig {
       .get(
         AuthMiddleware.validAuthorizationNeeded(true, true),
         PagingMiddleware.extractPagingParameters,
+        FilteringMiddleware.extractFilteringParameters,
+        SortingMiddleware.extractSortingParameters,
         SurveysController.listSurveys,
       )
       .post(

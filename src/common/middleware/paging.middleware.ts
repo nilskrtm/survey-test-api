@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { PagingParams, RequestPagingParams } from '../types/paging.params.type';
 
-const maxPerPage: number = parseInt(process.env.MAX_PER_PAGE || '50');
+export const maxPerPage: number = parseInt(process.env.MAX_PER_PAGE || '50');
 
 const roundUp = (number: number, decimals: number) => {
   if (decimals === 0) {
@@ -36,21 +36,6 @@ class PagingMiddleware {
       req.body.paging = paging;
     } catch (err) {
       return res.status(400).send({ errors: ['Invalid paging info'] });
-    }
-
-    next();
-  }
-
-  dummyPagingParameters(req: Request, res: Response, next: NextFunction) {
-    try {
-      req.body.paging = {
-        page: 1,
-        perPage: maxPerPage,
-      };
-    } catch (err) {
-      return res
-        .status(400)
-        .send({ errors: ['Error setting dummy paging info'] });
     }
 
     next();

@@ -4,7 +4,7 @@ import { CreateQuestionDTO } from '../dto/create.question.dto';
 import { PatchQuestionDTO } from '../dto/patch.question.dto';
 import { PutQuestionDTO } from '../dto/put.question.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
-import { RequestPagingParams } from '../../common/types/paging.params.type';
+import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class QuestionsService implements CRUD {
   async create(resource: CreateQuestionDTO) {
@@ -15,8 +15,8 @@ class QuestionsService implements CRUD {
     return await QuestionsDAO.removeQuestionById(id, true);
   }
 
-  async list(paging: RequestPagingParams, surveyId: string): Promise<any> {
-    PagingMiddleware.ignoreValue(paging);
+  async list(options: RequestOptions, surveyId: string): Promise<any> {
+    PagingMiddleware.ignoreValue(options);
 
     return await QuestionsDAO.getQuestionsOfSurvey(surveyId);
   }
