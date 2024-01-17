@@ -12,7 +12,7 @@ export interface QueryHelpers<T> {
   >;
 
   applySorting(
-    sortingParams: SortingParams,
+    sortingParams?: SortingParams,
   ): QueryWithHelpers<
     HydratedDocument<T>[],
     HydratedDocument<T>,

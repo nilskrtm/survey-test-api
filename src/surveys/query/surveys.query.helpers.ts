@@ -38,17 +38,21 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
       HydratedDocument<Survey>,
       ISurveyQueryHelpers
     >,
-    sortingParams: SortingParams,
+    sortingParams?: SortingParams,
   ): QueryWithHelpers<
     HydratedDocument<Survey>[],
     HydratedDocument<Survey>,
     QueryHelpers<Survey>
   > {
-    const sorter = {
-      [sortingParams.sortingOption]: sortingParams.sortingType,
-    };
+    if (sortingParams) {
+      const sorter = {
+        [sortingParams.sortingOption]: sortingParams.sortingType,
+      };
 
-    return this.sort(sorter);
+      return this.sort(sorter);
+    }
+
+    return this;
   },
 };
 

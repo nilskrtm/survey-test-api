@@ -151,6 +151,8 @@ class SurveysDAO extends DAO<Survey> {
     );
 
     const surveys = await this.SurveyModel.find()
+      .applyFiltering(options.filtering)
+      .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .populate({
@@ -185,6 +187,7 @@ class SurveysDAO extends DAO<Survey> {
 
     const surveys = await this.SurveyModel.find({ owner: owner })
       .applyFiltering(options.filtering)
+      .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .populate({
