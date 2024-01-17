@@ -11,7 +11,6 @@ class FilteringMiddleware {
       let filtering: FilteringParams = {};
 
       for (let param in req.query) {
-        console.log(param);
         if (!filteringParamBlacklist.includes(param.toLowerCase())) {
           const value = req.query[param];
 

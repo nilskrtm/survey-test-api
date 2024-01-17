@@ -131,9 +131,6 @@ class QuestionsController {
     const patchQuestions: Promise<any>[] = [];
     const questionIds: string[] = Array(survey.questions.length).fill('');
 
-    console.log(survey.questions.length);
-    console.log(questionIds.length);
-
     Object.keys(newSorting).forEach(questionId => {
       questionIds[newSorting[questionId] - 1] = questionId;
       patchQuestions.push(
