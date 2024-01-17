@@ -11,6 +11,7 @@ import {
   WebSocketDataType,
 } from '../interfaces/websocket.data.inteface';
 import { v4 as uuid } from 'uuid';
+import stream from 'node:stream';
 
 const log: debug.IDebugger = debug('app:ws-service');
 
@@ -22,7 +23,7 @@ class WebSocketService {
   private wss: Server<typeof AliveWebSocket, typeof http.IncomingMessage>;
 
   constructor() {
-    this.server = http.createServer();
+    this.server = http.createServer(); // create dummy server
     this.wss = new WebSocketServer<
       typeof AliveWebSocket,
       typeof http.IncomingMessage
@@ -69,14 +70,12 @@ class WebSocketService {
           userId = (jwt.verify(authorization, accessTokenSecret) as Jwt)
             .userId as string;
         } catch (err) {
-          socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
-          socket.destroy();
+          this.closeSocket(socket, 401);
 
           return;
         }
       } else {
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
+        this.closeSocket(socket, 400);
 
         return;
       }
@@ -99,7 +98,7 @@ class WebSocketService {
         log(ws.meta);
 
         ws.on('pong', (pWs: AliveWebSocket) => {
-          pWs.isAlive = true;
+          pWs.isAlive = true; // somehow not working
           ws.isAlive = true;
         });
 
@@ -115,7 +114,7 @@ class WebSocketService {
 
           ws.subscriptions.clear();
 
-          log('Closed connection:');
+          log('Closed WebSocket connection:');
           log(ws.meta);
         });
 
@@ -126,11 +125,7 @@ class WebSocketService {
             const subscriptionData = data as WebSocketData<SubscriptionData>;
             const confirmSubscriptionData: WebSocketData<SubscriptionData> = {
               type: WebSocketDataType.SUBSCRIPTION_CONFIRMATION,
-              data: {
-                subscriberId: subscriptionData.data.subscriberId,
-                subscriptionId: subscriptionData.data.subscriptionId,
-                subscriptionType: subscriptionData.data.subscriptionType,
-              },
+              data: subscriptionData.data,
             };
 
             ws.subscriptions.set(
@@ -140,7 +135,7 @@ class WebSocketService {
             ws.send(JSON.stringify(confirmSubscriptionData));
 
             log('Registered Subscription:');
-            log(subscriptionData.data);
+            log(JSON.stringify(subscriptionData.data));
           } else if (data.type === WebSocketDataType.SUBSCRIPTION_REMOVE) {
             const subscriptionData = data as WebSocketData<SubscriptionData>;
 
@@ -148,7 +143,9 @@ class WebSocketService {
               ws.subscriptions.delete(subscriptionData.data.subscriptionId);
 
               log('Unregistered Subscription:');
-              log(subscriptionData.data);
+              log(JSON.stringify(subscriptionData.data));
+            } else {
+              log('Received unsubscribe for non-registered subscription');
             }
           }
         });
@@ -172,6 +169,25 @@ class WebSocketService {
     this.wss.on('close', () => {
       clearInterval(aliveInterval);
     });
+  }
+
+  private closeSocket(socket: stream.Duplex, code: number) {
+    switch (code) {
+      case 400:
+        socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
+        socket.destroy();
+        break;
+      case 401:
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        break;
+      case 403:
+        socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
+        socket.destroy();
+        break;
+      default:
+        socket.destroy();
+    }
   }
 
   private getClientByID(connectionId: string) {
