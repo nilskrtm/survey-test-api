@@ -28,7 +28,9 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
       };
     }
 
-    console.log(filter);
+    if ('archived' in filterParams) {
+      filter.archived = filterParams.archived === 'true';
+    }
 
     return this.find(filter);
   },
