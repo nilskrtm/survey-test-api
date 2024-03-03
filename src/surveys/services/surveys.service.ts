@@ -19,7 +19,10 @@ class SurveysService implements CRUD {
   }
 
   async patchById(id: string, resource: PatchSurveyDTO): Promise<any> {
-    return await SurveysDAO.updateSurveyById(id, resource);
+    return await SurveysDAO.updateSurveyById(id, {
+      ...resource,
+      edited: new Date(),
+    });
   }
 
   async getById(id: string): Promise<any> {

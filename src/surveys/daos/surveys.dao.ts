@@ -14,6 +14,9 @@ import SurveyQueryHelpers, {
   ISurveyQueryHelpers,
 } from '../query/surveys.query.helpers';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
+import WebSocketService from '../../common/services/ws.service';
+import { SubscriptionType } from '../../common/interfaces/websocket/websocket.data.inteface';
+import { SurveyCreatedWSPayload } from '../../common/interfaces/websocket/survey.created.ws.payload';
 
 const log: debug.IDebugger = debug('app:surveys-dao');
 
@@ -24,7 +27,7 @@ export type Survey = {
   greeting: string;
   startDate: Date;
   endDate: Date;
-  owner: {};
+  owner: {} | string;
   created: Date;
   edited: Date;
   draft: boolean;
@@ -86,23 +89,39 @@ class SurveysDAO extends DAO<Survey> {
         collection: 'surveys',
         versionKey: false,
       },
-    ).pre('findOneAndRemove', async function (this, next) {
-      // cascade-handler
-      if (!DAO.isCascadeRemoval(this)) {
+    )
+      .pre('findOneAndRemove', async function (this, next) {
+        // cascade-handler
+        if (!DAO.isCascadeRemoval(this)) {
+          next();
+        }
+
+        const survey: Survey = await this.model.findOne(this.getQuery()).exec();
+        const promises: Promise<any>[] = survey.questions.map(questionId =>
+          QuestionsDAO.removeQuestionById(questionId, true),
+        );
+
+        promises.push(VotingsDAO.removeVotingsOfSurvey(survey._id));
+
+        await Promise.all(promises);
+
         next();
-      }
+      })
+      .post('save', async function (this) {
+        const survey: Survey = this;
+        const payload: SurveyCreatedWSPayload = { _id: survey._id };
 
-      const survey: Survey = await this.model.findOne(this.getQuery()).exec();
-      const promises: Promise<any>[] = survey.questions.map(questionId =>
-        QuestionsDAO.removeQuestionById(questionId, true),
-      );
+        WebSocketService.notifySubscriptions(
+          survey.owner as string,
+          SubscriptionType.SURVEY_CREATED,
+          payload,
+        );
+        WebSocketService.notifySubscriptions(
+          survey.owner as string,
+          SubscriptionType.DASHBOARD_METRICS,
+        );
+      });
 
-      promises.push(VotingsDAO.removeVotingsOfSurvey(survey._id));
-
-      await Promise.all(promises);
-
-      next();
-    });
     this.SurveySchema.query = SurveyQueryHelpers;
 
     this.SurveyModel = mongooseService

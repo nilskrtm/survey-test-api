@@ -12,7 +12,7 @@ import SurveysDAO, { Survey } from '../../surveys/daos/surveys.dao';
 import { PagingParams } from '../../common/types/paging.params.type';
 import { UserDataWSPayload } from '../../common/interfaces/user.data.ws.payload';
 import WebSocketService from '../../common/services/ws.service';
-import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
+import { SubscriptionType } from '../../common/interfaces/websocket/websocket.data.inteface';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 const log: debug.IDebugger = debug('app:users-dao');
