@@ -2,7 +2,7 @@ import debug from 'debug';
 import { Request, Response } from 'express';
 import QuestionsService from '../../questions/services/questions.service';
 import SurveysService from '../../surveys/services/surveys.service';
-import { Survey } from '../../surveys/daos/surveys.dao';
+import { PopulatedSurvey } from '../../surveys/daos/surveys.dao';
 
 const log: debug.IDebugger = debug('app:questions-controller');
 
@@ -23,7 +23,7 @@ class QuestionsController {
   }
 
   async createQuestion(req: Request, res: Response) {
-    const survey: Survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
     const questionId = await QuestionsService.create({
       ...req.body,
       order: survey.questions.length + 1,
@@ -85,14 +85,14 @@ class QuestionsController {
   }
 
   async removeQuestion(req: Request, res: Response) {
-    const survey: Survey = res.locals.survey;
-    const questionIds = survey.questions
+    const survey: PopulatedSurvey = res.locals.survey;
+    const questionIds: Array<string> = survey.questions
       .map(questionObject => {
         if (questionObject._id !== req.body.locals.questionId) {
           return questionObject._id;
         }
       })
-      .filter(questionId => questionId);
+      .filter(questionId => questionId) as string[];
     const newSorting: { [index: string]: number } = {};
 
     questionIds.map((questionId, index) => {
@@ -126,7 +126,7 @@ class QuestionsController {
   }
 
   async reorderQuestions(req: Request, res: Response) {
-    const survey: Survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
     const newSorting = req.body.ordering;
     const patchQuestions: Promise<any>[] = [];
     const questionIds: string[] = Array(survey.questions.length).fill('');

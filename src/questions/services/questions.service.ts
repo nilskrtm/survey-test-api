@@ -11,25 +11,25 @@ class QuestionsService implements CRUD {
     return await QuestionsDAO.addQuestion(resource);
   }
 
-  async deleteById(id: string): Promise<any> {
+  async deleteById(id: string) {
     return await QuestionsDAO.removeQuestionById(id, true);
   }
 
-  async list(options: RequestOptions, surveyId: string): Promise<any> {
+  async list(options: RequestOptions, surveyId: string) {
     PagingMiddleware.ignoreValue(options);
 
     return await QuestionsDAO.getQuestionsOfSurvey(surveyId);
   }
 
-  async patchById(id: string, resource: PatchQuestionDTO): Promise<any> {
+  async patchById(id: string, resource: PatchQuestionDTO) {
     return await QuestionsDAO.updateQuestionById(id, resource);
   }
 
-  async getById(id: string): Promise<any> {
+  async getById(id: string) {
     return await QuestionsDAO.getQuestionById(id);
   }
 
-  async putById(id: string, resource: PutQuestionDTO): Promise<any> {
+  async putById(id: string, resource: PutQuestionDTO) {
     return await QuestionsDAO.updateQuestionById(id, resource);
   }
 }

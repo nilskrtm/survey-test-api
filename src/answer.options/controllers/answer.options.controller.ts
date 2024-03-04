@@ -2,7 +2,7 @@ import debug from 'debug';
 import { Request, Response } from 'express';
 import QuestionsService from '../../questions/services/questions.service';
 import SurveysService from '../../surveys/services/surveys.service';
-import { Question } from '../../questions/daos/questions.dao';
+import { PopulatedQuestion } from '../../questions/daos/questions.dao';
 import AnswerOptionsService from '../services/answer.options.service';
 
 const log: debug.IDebugger = debug('app:answer-options-controller');
@@ -26,7 +26,7 @@ class AnswerOptionsController {
   }
 
   async createAnswerOption(req: Request, res: Response) {
-    const question: Question = res.locals.question;
+    const question: PopulatedQuestion = res.locals.question;
     const answerOptionId = await AnswerOptionsService.create({
       ...req.body,
       order: question.answerOptions.length + 1,
@@ -92,14 +92,14 @@ class AnswerOptionsController {
   }
 
   async removeAnswerOption(req: Request, res: Response) {
-    const question: Question = res.locals.question;
+    const question: PopulatedQuestion = res.locals.question;
     const answerOptionIds = question.answerOptions
       .map(answerOptionObject => {
         if (answerOptionObject._id !== req.body.locals.answerOptionId) {
           return answerOptionObject._id;
         }
       })
-      .filter(answerOptionId => answerOptionId);
+      .filter(answerOptionId => answerOptionId) as string[];
     const newSorting: { [index: string]: number } = {};
 
     answerOptionIds.map((answerOptionId, index) => {
@@ -141,7 +141,7 @@ class AnswerOptionsController {
   }
 
   async reorderAnswerOptions(req: Request, res: Response) {
-    const question: Question = res.locals.question;
+    const question: PopulatedQuestion = res.locals.question;
     const newSorting = req.body.ordering;
     const patchAnswerOptions: Promise<any>[] = [];
     const answerOptionIds: string[] = Array(question.answerOptions.length).fill(

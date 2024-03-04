@@ -10,26 +10,26 @@ class SurveysService implements CRUD {
     return await SurveysDAO.addSurvey(resource);
   }
 
-  async deleteById(id: string): Promise<any> {
+  async deleteById(id: string) {
     return await SurveysDAO.removeSurveyById(id, true);
   }
 
-  async list(options: RequestOptions, ownerId: string): Promise<any> {
+  async list(options: RequestOptions, ownerId: string) {
     return await SurveysDAO.getSurveysOfOwner(options, ownerId);
   }
 
-  async patchById(id: string, resource: PatchSurveyDTO): Promise<any> {
+  async patchById(id: string, resource: PatchSurveyDTO) {
     return await SurveysDAO.updateSurveyById(id, {
       ...resource,
       edited: new Date(),
     });
   }
 
-  async getById(id: string): Promise<any> {
+  async getById(id: string) {
     return await SurveysDAO.getSurveyById(id);
   }
 
-  async putById(id: string, resource: PutSurveyDTO): Promise<any> {
+  async putById(id: string, resource: PutSurveyDTO) {
     return await SurveysDAO.updateSurveyById(id, resource);
   }
 }

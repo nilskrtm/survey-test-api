@@ -21,11 +21,21 @@ class AnswerPicturesController {
     const answerPicture = await AnswerPicturesService.getById(
       req.body.locals.answerPictureId,
     );
-    const answerPictureWithUrl = Object.assign({}, answerPicture._doc, {
-      url: S3Service.getPictureURL(answerPicture.fileName),
-    });
 
-    res.status(200).send({ answerPicture: answerPictureWithUrl });
+    // CAUTION: normally this method is only called after AnswerPicturesMiddleware.validateAnswerPictureExists(...) was called,
+    // by this 'answerPicture' should always be non-null
+    // nevertheless, the opposite case has to be intercepted here later
+    if (answerPicture) {
+      const answerPictureWithUrl = Object.assign(
+        {},
+        answerPicture as AnswerPicture,
+        {
+          url: S3Service.getPictureURL(answerPicture.fileName),
+        },
+      );
+
+      res.status(200).send({ answerPicture: answerPictureWithUrl });
+    }
   }
 
   async createAnswerPicture(req: Request, res: Response) {

@@ -19,7 +19,7 @@ export type AnswerPicture = {
   _id: string;
   name: string;
   fileName: string;
-  owner: {};
+  owner: string;
   created: Date;
   edited: Date;
 };

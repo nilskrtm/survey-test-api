@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { Question } from '../../questions/daos/questions.dao';
-import { AnswerOption } from '../daos/answer.options.dao';
-import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
+import { PopulatedQuestion } from '../../questions/daos/questions.dao';
 import AnswerPicturesService from '../../answer.pictures/services/answer.pictures.service';
 
 //const log: debug.IDebugger = debug('app:answer-options-controllers');
 
 class AnswerOptionsMiddleware {
   isValidAnswerOptionOrdering(req: Request, res: Response, next: NextFunction) {
-    const question: Question = res.locals.question;
+    const question: PopulatedQuestion = res.locals.question;
     const newSorting = req.body.ordering;
 
     if (question.answerOptions.length == Object.keys(newSorting).length) {
@@ -62,7 +60,7 @@ class AnswerOptionsMiddleware {
     const answerPictureId = req.body.picture;
 
     if (answerPictureId) {
-      const answerPicture: AnswerPicture = await AnswerPicturesService.getById(
+      const answerPicture = await AnswerPicturesService.getById(
         answerPictureId,
       );
 
@@ -81,8 +79,8 @@ class AnswerOptionsMiddleware {
     res: Response,
     next: NextFunction,
   ) {
-    const question: Question = res.locals.question;
-    const answerOptions: AnswerOption[] = question.answerOptions.filter(
+    const question: PopulatedQuestion = res.locals.question;
+    const answerOptions = question.answerOptions.filter(
       answerOptionObject =>
         answerOptionObject._id === req.body.locals.answerOptionId,
     );

@@ -7,7 +7,9 @@ import { PatchQuestionDTO } from '../dto/patch.question.dto';
 import { PutQuestionDTO } from '../dto/put.question.dto';
 import { DAO } from '../../common/classes/dao.class';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
-import AnswerOptionsDAO from '../../answer.options/daos/answer.options.dao';
+import AnswerOptionsDAO, {
+  PopulatedAnswerOption,
+} from '../../answer.options/daos/answer.options.dao';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { PagingParams } from '../../common/types/paging.params.type';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
@@ -19,7 +21,11 @@ export type Question = {
   question: string;
   timeout: number;
   order: number;
-  answerOptions: any[];
+  answerOptions: Array<string>;
+};
+
+export type PopulatedQuestion = Omit<Question, 'answerOptions'> & {
+  answerOptions: Array<PopulatedAnswerOption>;
 };
 
 const defaultQuestionValues: Partial<Question> = {
@@ -89,7 +95,7 @@ class QuestionsDAO extends DAO<Question> {
 
   async getQuestionById(questionId: string) {
     return await this.QuestionModel.findOne({ _id: questionId })
-      .populate({
+      .populate<Pick<PopulatedQuestion, 'answerOptions'>>({
         path: 'answerOptions',
         populate: {
           path: 'picture',
@@ -108,7 +114,7 @@ class QuestionsDAO extends DAO<Question> {
     const questions = await this.QuestionModel.find()
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
-      .populate({
+      .populate<Pick<PopulatedQuestion, 'answerOptions'>>({
         path: 'answerOptions',
         populate: {
           path: 'picture',

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../../common/types/jwt.type';
 import UsersService from '../../users/services/users.service';
+import { User } from '../../users/daos/users.dao';
 
 const accessTokenSecret: string =
   process.env.ACCESS_TOKEN_SECRET || 'accessToken';
@@ -26,7 +27,11 @@ class JwtMiddleware {
         refreshTokenSecret,
       ) as Jwt;
 
-      const user: any = await UsersService.getById(refreshToken.userId);
+      // 'user' could be null here, but in reality this method is only called after UsersMiddleware.validateUserExists(...)
+      // is called, so use also has to exist here
+      const user: User = (await UsersService.getById(
+        refreshToken.userId,
+      )) as User;
 
       req.body = {
         userId: user._id,

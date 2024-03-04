@@ -100,9 +100,8 @@ class AnswerPicturesMiddleware {
     res: Response,
     next: NextFunction,
   ) {
-    const answerPicture: AnswerPicture = await AnswerPicturesService.getById(
-      req.body.locals.answerPictureId,
-    );
+    const answerPicture: AnswerPicture | null =
+      await AnswerPicturesService.getById(req.body.locals.answerPictureId);
 
     if (answerPicture) {
       res.locals.answerPicture = answerPicture;

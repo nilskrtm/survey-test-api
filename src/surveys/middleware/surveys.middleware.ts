@@ -1,15 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import SurveyService from '../services/surveys.service';
-import { Survey } from '../daos/surveys.dao';
-import { Question } from '../../questions/daos/questions.dao';
-import { AnswerOption } from '../../answer.options/daos/answer.options.dao';
+import { PopulatedSurvey } from '../daos/surveys.dao';
 import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 
 //const log: debug.IDebugger = debug('app:surveys-controllers');
 
 class SurveyMiddleware {
   validateSetStartEndDates(req: Request, res: Response, next: NextFunction) {
-    const survey: Survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
     const surveyStartDate = new Date(survey.startDate).getTime();
     const surveyEndDate = new Date(survey.endDate).getTime();
     const currentDate = new Date().getTime();
@@ -59,7 +57,7 @@ class SurveyMiddleware {
   }
 
   validateSurveyIsNoDraft(req: Request, res: Response, next: NextFunction) {
-    const survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
 
     if (!survey.draft) {
       next();
@@ -71,7 +69,7 @@ class SurveyMiddleware {
   }
 
   validateSurveyIsDraft(req: Request, res: Response, next: NextFunction) {
-    const survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
 
     if (survey.draft) {
       next();
@@ -83,7 +81,7 @@ class SurveyMiddleware {
   }
 
   validateSurveyModifiable(req: Request, res: Response, next: NextFunction) {
-    const survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
 
     if (!survey.draft) {
       if (
@@ -104,7 +102,7 @@ class SurveyMiddleware {
 
   validateSurveyFinalizable(req: Request, res: Response, next: NextFunction) {
     if ('draft' in req.body && req.body.draft === false) {
-      const survey: Survey = res.locals.survey;
+      const survey: PopulatedSurvey = res.locals.survey;
       const surveyStartDate = new Date(survey.startDate).getTime();
       const surveyEndDate = new Date(survey.endDate).getTime();
       const currentDate = new Date().getTime();
@@ -124,7 +122,7 @@ class SurveyMiddleware {
         });
         const questionsOrderValid =
           survey.questions.reduce(
-            (accumulator: number, questionObject: Question) =>
+            (accumulator: number, questionObject) =>
               accumulator + questionObject.order,
             0,
           ) ==
@@ -139,15 +137,13 @@ class SurveyMiddleware {
 
           for (let questionObject of survey.questions) {
             if (
-              !questionObject.answerOptions.every(
-                (answerOptionObject: AnswerOption) => {
-                  return (
-                    answerOptionObject.picture &&
-                    answerOptionObject.color &&
-                    answerOptionObject.order > 0
-                  );
-                },
-              )
+              !questionObject.answerOptions.every(answerOptionObject => {
+                return (
+                  answerOptionObject.picture &&
+                  answerOptionObject.color &&
+                  answerOptionObject.order > 0
+                );
+              })
             ) {
               allQuestionsAnswerOptionsValid = false;
 
@@ -156,7 +152,7 @@ class SurveyMiddleware {
 
             if (
               questionObject.answerOptions.reduce(
-                (accumulator: number, answerOptionObject: AnswerOption) =>
+                (accumulator: number, answerOptionObject) =>
                   accumulator + answerOptionObject.order,
                 0,
               ) !==
@@ -201,7 +197,7 @@ class SurveyMiddleware {
   }
 
   async validateSurveyExists(req: Request, res: Response, next: NextFunction) {
-    const survey: Survey = await SurveyService.getById(
+    const survey: PopulatedSurvey | null = await SurveyService.getById(
       req.body.locals.surveyId,
     );
 

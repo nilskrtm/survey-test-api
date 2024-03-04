@@ -9,7 +9,7 @@ const accessTokenSecret: string =
 
 class AuthMiddleware {
   async verifyUserPassword(req: Request, res: Response, next: NextFunction) {
-    const user: any = await UsersService.getUserByUsernameWithPassword(
+    const user = await UsersService.getUserByUsernameWithPassword(
       req.body.username,
     );
 

@@ -7,6 +7,7 @@ import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
 import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
 import { PutAnswerOptionDTO } from '../dto/put.answer.option.dto';
 import QuestionsDAO from '../../questions/daos/questions.dao';
+import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 
 const log: debug.IDebugger = debug('app:answer-options-dao');
 
@@ -14,7 +15,11 @@ export type AnswerOption = {
   _id: string;
   order: number;
   color: string;
-  picture: string | {};
+  picture: string;
+};
+
+export type PopulatedAnswerOption = Omit<AnswerOption, 'picture'> & {
+  picture: AnswerPicture;
 };
 
 const defaultAnswerOptionValues: Partial<AnswerOption> = {
@@ -82,7 +87,7 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
     const answerOptions = await this.AnswerOptionModel.find()
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
-      .populate({
+      .populate<Pick<PopulatedAnswerOption, 'picture'>>({
         path: 'picture',
       })
       .exec();

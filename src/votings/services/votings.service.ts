@@ -11,41 +11,41 @@ class VotingsService implements CRUD {
     return await VotingsDAO.addVoting(resource);
   }
 
-  async deleteById(id: string): Promise<any> {
+  async deleteById(id: string) {
     PagingMiddleware.ignoreValue(id);
 
     throw new Error('should not be used');
-    //return await VotingsDAO.removeSurveyById(id, true);
+    // return await VotingsDAO.removeSurveyById(id, true);
   }
 
-  async list(options: RequestOptions): Promise<any> {
+  async list(options: RequestOptions) {
     PagingMiddleware.ignoreValue(options);
 
     throw new Error('should not be used');
-    //return await VotingsDAO.getSurveysOfOwner(paging, ownerId);
+    // return await VotingsDAO.getSurveysOfOwner(paging, ownerId);
   }
 
-  async patchById(id: string, resource: PatchVotingDTO): Promise<any> {
+  async patchById(id: string, resource: PatchVotingDTO) {
     PagingMiddleware.ignoreValue(id);
     PagingMiddleware.ignoreValue(resource);
 
     throw new Error('should not be used');
-    //return await VotingsDAO.updateSurveyById(id, resource);
+    // return await VotingsDAO.updateSurveyById(id, resource);
   }
 
-  async getById(id: string): Promise<any> {
+  async getById(id: string) {
     PagingMiddleware.ignoreValue(id);
 
     throw new Error('should not be used');
-    //return await VotingsDAO.getSurveyById(id);
+    // return await VotingsDAO.getSurveyById(id);
   }
 
-  async putById(id: string, resource: PutVotingDTO): Promise<any> {
+  async putById(id: string, resource: PutVotingDTO) {
     PagingMiddleware.ignoreValue(id);
     PagingMiddleware.ignoreValue(resource);
 
     throw new Error('should not be used');
-    //return await VotingsDAO.updateSurveyById(id, resource);
+    // return await VotingsDAO.updateSurveyById(id, resource);
   }
 }
 

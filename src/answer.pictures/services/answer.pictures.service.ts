@@ -10,23 +10,23 @@ class AnswerPicturesService implements CRUD {
     return await AnswerPicturesDAO.addAnswerPicture(resource);
   }
 
-  async deleteById(id: string): Promise<any> {
+  async deleteById(id: string) {
     return await AnswerPicturesDAO.removeAnswerPictureById(id);
   }
 
-  async list(options: RequestOptions, userId: string): Promise<any> {
+  async list(options: RequestOptions, userId: string) {
     return await AnswerPicturesDAO.getAnswerPicturesOfUser(options, userId);
   }
 
-  async patchById(id: string, resource: PatchAnswerPictureDTO): Promise<any> {
+  async patchById(id: string, resource: PatchAnswerPictureDTO) {
     return await AnswerPicturesDAO.updateAnswerPictureById(id, resource);
   }
 
-  async getById(id: string): Promise<any> {
+  async getById(id: string) {
     return await AnswerPicturesDAO.getAnswerPictureById(id);
   }
 
-  async putById(id: string, resource: PutAnswerPictureDTO): Promise<any> {
+  async putById(id: string, resource: PutAnswerPictureDTO) {
     return await AnswerPicturesDAO.updateAnswerPictureById(id, resource);
   }
 }

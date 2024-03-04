@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { Survey } from '../../surveys/daos/surveys.dao';
-import { Question } from '../daos/questions.dao';
+import { PopulatedSurvey } from '../../surveys/daos/surveys.dao';
 
 //const log: debug.IDebugger = debug('app:questions-controllers');
 
 class QuestionsMiddleware {
   isValidQuestionOrdering(req: Request, res: Response, next: NextFunction) {
-    const survey: Survey = res.locals.survey;
+    const survey: PopulatedSurvey = res.locals.survey;
     const newSorting = req.body.ordering;
 
     if (survey.questions.length == Object.keys(newSorting).length) {
@@ -53,8 +52,8 @@ class QuestionsMiddleware {
   }
 
   validateQuestionExists(req: Request, res: Response, next: NextFunction) {
-    const survey: Survey = res.locals.survey;
-    const questions: Question[] = survey.questions.filter(
+    const survey: PopulatedSurvey = res.locals.survey;
+    const questions = survey.questions.filter(
       questionObject => questionObject._id === req.body.locals.questionId,
     );
 

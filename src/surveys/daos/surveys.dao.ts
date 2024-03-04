@@ -7,7 +7,9 @@ import { PatchSurveyDTO } from '../dto/patch.survey.dto';
 import { PutSurveyDTO } from '../dto/put.survey.dto';
 import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { DAO } from '../../common/classes/dao.class';
-import QuestionsDAO from '../../questions/daos/questions.dao';
+import QuestionsDAO, {
+  PopulatedQuestion,
+} from '../../questions/daos/questions.dao';
 import VotingsDAO from '../../votings/daos/votings.dao';
 import { PagingParams } from '../../common/types/paging.params.type';
 import SurveyQueryHelpers, {
@@ -27,12 +29,17 @@ export type Survey = {
   greeting: string;
   startDate: Date;
   endDate: Date;
-  owner: {} | string;
+  owner: string;
   created: Date;
   edited: Date;
   draft: boolean;
   archived: boolean;
-  questions: any[];
+  questions: Array<string>;
+};
+
+export type PopulatedSurvey = Omit<Survey, 'questions'> & {
+  // 'owner' never gets populated
+  questions: Array<PopulatedQuestion>;
 };
 
 const defaultSurveyValues: Partial<Survey> = {
@@ -150,7 +157,7 @@ class SurveysDAO extends DAO<Survey> {
 
   async getSurveyById(surveyId: string) {
     return await this.SurveyModel.findOne({ _id: surveyId })
-      .populate({
+      .populate<Pick<PopulatedSurvey, 'questions'>>({
         path: 'questions',
         populate: {
           path: 'answerOptions',
@@ -174,7 +181,7 @@ class SurveysDAO extends DAO<Survey> {
       .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
-      .populate({
+      .populate<Pick<PopulatedSurvey, 'questions'>>({
         path: 'questions',
         populate: {
           path: 'answerOptions',
@@ -209,7 +216,7 @@ class SurveysDAO extends DAO<Survey> {
       .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
-      .populate({
+      .populate<Pick<PopulatedSurvey, 'questions'>>({
         path: 'questions',
         populate: {
           path: 'answerOptions',

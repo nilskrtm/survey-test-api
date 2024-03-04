@@ -8,15 +8,15 @@ import { CreateVotingDTO } from '../dto/create.voting.dto';
 const log: debug.IDebugger = debug('app:votings-dao');
 
 export type Vote = {
-  question: {};
-  answerOption: {};
+  question: string;
+  answerOption: string;
 };
 
 export type Voting = {
   _id: string;
-  survey: {};
+  survey: string;
   date: Date;
-  votes: any[];
+  votes: Array<Vote>;
 };
 
 const defaultVotingValues: Partial<Voting> = {};

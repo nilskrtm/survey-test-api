@@ -23,8 +23,8 @@ export type User = {
   email: string;
   firstname: string;
   lastname: string;
-  password: string | {};
-  accessKey: string | {};
+  password: string;
+  accessKey: string;
   permissionLevel: number;
 };
 
