@@ -190,11 +190,13 @@ class WebSocketService {
     }
   }
 
+  /*
   private getClientByID(connectionId: string) {
     return Array.from(this.wss.clients).filter(
       ws => ws.meta.connectionId === connectionId,
     )[0];
   }
+   */
 
   private getClientsByUserID(userId: string) {
     return Array.from(this.wss.clients).filter(ws => ws.meta.userId === userId);
