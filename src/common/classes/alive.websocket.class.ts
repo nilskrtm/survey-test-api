@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import { SubscriptionData } from '../interfaces/websocket/websocket.data.inteface';
+import { SubscriptionData } from '../interfaces/websocket.data.inteface';
 
 type WebSocketMeta = {
   connectionId: string;

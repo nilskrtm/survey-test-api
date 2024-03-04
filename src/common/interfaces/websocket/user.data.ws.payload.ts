@@ -1,4 +1,4 @@
-import { User } from '../../users/daos/users.dao';
+import { User } from '../../../users/daos/users.dao';
 
 export interface UserDataWSPayload
   extends Pick<

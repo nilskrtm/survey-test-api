@@ -15,7 +15,7 @@ import SurveyQueryHelpers, {
 } from '../query/surveys.query.helpers';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 import WebSocketService from '../../common/services/ws.service';
-import { SubscriptionType } from '../../common/interfaces/websocket/websocket.data.inteface';
+import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
 import { SurveyCreatedWSPayload } from '../../common/interfaces/websocket/survey.created.ws.payload';
 
 const log: debug.IDebugger = debug('app:surveys-dao');

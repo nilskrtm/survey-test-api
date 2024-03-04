@@ -1,14 +1,22 @@
 FROM node:18-alpine
 
-# RUN apk update
+# use integrated nginx or only provide socket
+ARG INTEGRATE_NGINX="false"
 
-# RUN apk add nginx
+RUN apk update
+
+RUN if [ "$INTEGRATE_NGINX" = "true" ] ; then apk add nginx ; fi
 
 RUN apk add supervisor
 
-# RUN rm -f /etc/nginx/http.d/default.conf
+# create dummy nginx directory
+RUN if [ "$INTEGRATE_NGINX" = "false" ] ; then mkdir -p /etc/nginx/http.d ; fi
 
-# ADD ./deployment/docker/nginx/http.d/default.conf /etc/nginx/http.d/default.conf
+# remove nginx default config (only if nginx is really installed)
+RUN if [ "$INTEGRATE_NGINX" = "true" ] ; then rm -f /etc/nginx/http.d/default.conf ; fi
+
+# add nginx config (also add to dummy directory if nginx not installed)
+ADD ./deployment/docker/nginx/http.d/default.conf /etc/nginx/http.d/default.conf
 
 COPY ./deployment/docker/supervisord.conf /etc/supervisor/supervisord.conf
 
@@ -28,7 +36,4 @@ COPY --chown=node:node . ./
 
 RUN npm run build
 
-EXPOSE 5000
-
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
-

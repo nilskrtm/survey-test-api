@@ -17,10 +17,10 @@ services:
       context: ../../..
       dockerfile: Dockerfile
       args:
-        INTEGRATE_NGINX: "false"
+        INTEGRATE_NGINX: "true"
     restart: always
     ports:
-      - "5000:5000"
+      - "5000:80"
     environment:
       # general
       DEBUG: "app:*,express:false"

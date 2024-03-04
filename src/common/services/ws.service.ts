@@ -9,7 +9,7 @@ import {
   SubscriptionType,
   WebSocketData,
   WebSocketDataType,
-} from '../interfaces/websocket/websocket.data.inteface';
+} from '../interfaces/websocket.data.inteface';
 import { v4 as uuid } from 'uuid';
 import stream from 'node:stream';
 
