@@ -2,8 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from 'express';
 
 class CombinerMiddleware {
   combine(middlewares: RequestHandler[]) {
-    return middlewares.reduce(function (a, b) {
-      return function (req: Request, res: Response, next: NextFunction) {
+    return middlewares.reduce(
+      (a, b) => (req: Request, res: Response, next: NextFunction) => {
         a(req, res, function (err: any) {
           if (err) {
             return next(err);
@@ -11,8 +11,8 @@ class CombinerMiddleware {
 
           b(req, res, next);
         });
-      };
-    });
+      },
+    );
   }
 }
 
