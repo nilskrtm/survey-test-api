@@ -167,7 +167,7 @@ class UsersDAO extends DAO<User> {
   }
 
   async removeUserById(userId: string, cascade?: boolean) {
-    return await this.UserModel.findOneAndRemove({ _id: userId })
+    return await this.UserModel.deleteOne({ _id: userId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

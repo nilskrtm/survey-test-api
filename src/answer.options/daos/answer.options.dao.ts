@@ -127,7 +127,7 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
   }
 
   async removeAnswerOptionById(answerOptionId: string) {
-    return await this.AnswerOptionModel.findOneAndRemove({
+    return await this.AnswerOptionModel.deleteOne({
       _id: answerOptionId,
     }).exec();
   }

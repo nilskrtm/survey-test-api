@@ -19,6 +19,7 @@ import { RequestOptions } from '../../common/interfaces/request.options.interfac
 import WebSocketService from '../../common/services/ws.service';
 import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
 import { SurveyCreatedWSPayload } from '../../common/interfaces/websocket/survey.created.ws.payload';
+import { SurveyDeletedWSPayload } from '../../common/interfaces/websocket/survey.deleted.ws.payload';
 
 const log: debug.IDebugger = debug('app:surveys-dao');
 
@@ -97,7 +98,7 @@ class SurveysDAO extends DAO<Survey> {
         versionKey: false,
       },
     )
-      .pre('findOneAndRemove', async function (this, next) {
+      .pre('deleteOne', async function (this, next) {
         // cascade-handler
         if (!DAO.isCascadeRemoval(this)) {
           next();
@@ -111,6 +112,14 @@ class SurveysDAO extends DAO<Survey> {
         promises.push(VotingsDAO.removeVotingsOfSurvey(survey._id));
 
         await Promise.all(promises);
+
+        const payload: SurveyDeletedWSPayload = { _id: survey._id };
+
+        WebSocketService.notifySubscriptions(
+          survey.owner as string,
+          SubscriptionType.SURVEY_DELETED,
+          payload,
+        );
 
         next();
       })
@@ -251,7 +260,7 @@ class SurveysDAO extends DAO<Survey> {
   }
 
   async removeSurveyById(surveyId: string, cascade?: boolean) {
-    return await this.SurveyModel.findOneAndRemove({ _id: surveyId })
+    return await this.SurveyModel.deleteOne({ _id: surveyId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

@@ -50,7 +50,7 @@ class QuestionsDAO extends DAO<Question> {
         answerOptions: [{ type: String, ref: 'AnswerOption' }],
       },
       { id: false, collection: 'questions', versionKey: false },
-    ).pre('findOneAndRemove', async function (this, next) {
+    ).pre('deleteOne', async function (this, next) {
       // cascade-handler
       if (!DAO.isCascadeRemoval(this)) {
         next();
@@ -156,7 +156,7 @@ class QuestionsDAO extends DAO<Question> {
   }
 
   async removeQuestionById(questionId: string, cascade?: boolean) {
-    return await this.QuestionModel.findOneAndRemove({ _id: questionId })
+    return await this.QuestionModel.deleteOne({ _id: questionId })
       .setOptions({
         comment: {
           cascade: cascade ? cascade : false,

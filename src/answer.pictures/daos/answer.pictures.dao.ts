@@ -138,7 +138,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
   }
 
   async removeAnswerPictureById(answerPictureId: string) {
-    return await this.AnswerPictureModel.findOneAndRemove({
+    return await this.AnswerPictureModel.deleteOne({
       _id: answerPictureId,
     }).exec();
   }
