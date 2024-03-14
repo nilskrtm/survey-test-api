@@ -63,9 +63,9 @@ class WebSocketService {
 
       let userId: string;
 
-      if (req.url && req.url.startsWith('/?accessToken=')) {
+      if (req.url && req.url.startsWith('/ws/')) {
         try {
-          const authorization = req.url.replace('/?accessToken=', '');
+          const authorization = req.url.replace('/ws/', '');
 
           userId = (jwt.verify(authorization, accessTokenSecret) as Jwt)
             .userId as string;
