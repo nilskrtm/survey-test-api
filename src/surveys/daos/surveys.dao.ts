@@ -43,17 +43,19 @@ export type PopulatedSurvey = Omit<Survey, 'questions'> & {
   questions: Array<PopulatedQuestion>;
 };
 
-const defaultSurveyValues: Partial<Survey> = {
-  name: 'Neue Umfrage',
-  description: 'Noch keine Beschreibung',
-  greeting: 'Noch keine Begrüßung',
-  startDate: new Date(),
-  endDate: new Date(),
-  created: new Date(),
-  edited: new Date(),
-  draft: true,
-  archived: false,
-  questions: [],
+const defaultSurveyValues: () => Partial<Survey> = () => {
+  return {
+    name: 'Neue Umfrage',
+    description: 'Noch keine Beschreibung',
+    greeting: 'Noch keine Begrüßung',
+    startDate: new Date(),
+    endDate: new Date(),
+    created: new Date(),
+    edited: new Date(),
+    draft: true,
+    archived: false,
+    questions: [],
+  };
 };
 
 type SurveyModelType = Model<Survey, ISurveyQueryHelpers>;
@@ -155,7 +157,7 @@ class SurveysDAO extends DAO<Survey> {
     const surveyId = uuid();
     const survey = new this.SurveyModel({
       _id: surveyId,
-      ...defaultSurveyValues,
+      ...defaultSurveyValues(),
       ...surveyFields,
     });
 
