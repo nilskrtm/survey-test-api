@@ -7,7 +7,6 @@ import SurveysMiddleware from '../surveys/middleware/surveys.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import { body } from 'express-validator';
-import SurveysController from '../surveys/controllers/surveys.controller';
 
 export class QuestionsRoutes extends CommonRoutesConfig {
   constructor(app: Application) {
@@ -119,7 +118,7 @@ export class QuestionsRoutes extends CommonRoutesConfig {
         body('order').not().exists(),
         body('answerOptions').not().exists(),
         BodyValidationMiddleware.verifyBodyFieldsErrors,
-        SurveysController.patch,
+        QuestionsController.patch,
       );
 
     return this.app;
