@@ -24,9 +24,9 @@ import { AnswerOptionsRoutes } from './src/answer.options/answer.options.routes.
 import { AnswerPicturesRoutes } from './src/answer.pictures/answer.pictures.routes.config';
 import { VotingsRoutes } from './src/votings/votings.routes.config';
 import { DashboardRoutes } from './src/dashboard/dashboard.routes.config';
+import ArtificialDelayMiddleware from './src/common/middleware/artificial.delay.middleware';
 import BodyValidationMiddleware from './src/common/middleware/body.validation.middleware';
 import WebSocketService from './src/common/services/ws.service';
-import ArtificialDelayMiddleware from './src/common/middleware/artificial.delay.middleware';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
