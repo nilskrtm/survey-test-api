@@ -47,6 +47,10 @@ class VotingsService implements CRUD {
     throw new Error('should not be used');
     // return await VotingsDAO.updateSurveyById(id, resource);
   }
+
+  async getVotingCount(surveyId: string) {
+    return await VotingsDAO.getVotingCount(surveyId);
+  }
 }
 
 export default new VotingsService();

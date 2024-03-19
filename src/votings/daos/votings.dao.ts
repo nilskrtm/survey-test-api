@@ -92,6 +92,14 @@ class VotingsDAO extends DAO<Voting> {
   }
   */
 
+  async getVotingCount(surveyId: string) {
+    return (
+      await this.VotingModel.find({
+        survey: surveyId,
+      }).exec()
+    ).length;
+  }
+
   async removeVotingsOfSurvey(surveyId: string) {
     return await this.VotingModel.findOneAndRemove({
       survey: surveyId,

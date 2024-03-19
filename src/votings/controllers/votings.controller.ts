@@ -19,6 +19,13 @@ class VotingsController {
 
     res.status(201).send({ id: votingId });
   }
+
+  async getVotingCount(req: Request, res: Response) {
+    const survey: PopulatedSurvey = res.locals.survey;
+    const votingCount = await VotingsService.getVotingCount(survey._id);
+
+    res.status(200).send({ count: votingCount });
+  }
 }
 
 export default new VotingsController();
