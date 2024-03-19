@@ -26,6 +26,8 @@ services:
       DEBUG: "app:*,express:false"
       META: false
       PORT: 5000
+      # artificial delay
+      ARTIFICIAL_DELAY: -1
       # database
       DATABASE_HOST: mongo
       DATABASE_PORT: 27017

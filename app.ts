@@ -26,6 +26,7 @@ import { VotingsRoutes } from './src/votings/votings.routes.config';
 import { DashboardRoutes } from './src/dashboard/dashboard.routes.config';
 import BodyValidationMiddleware from './src/common/middleware/body.validation.middleware';
 import WebSocketService from './src/common/services/ws.service';
+import ArtificialDelayMiddleware from './src/common/middleware/artificial.delay.middleware';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -50,6 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.use(expressWinston.logger(loggerOptions));
+app.use(ArtificialDelayMiddleware.addArtificialDelay);
 app.use(BodyValidationMiddleware.verifyLocalsInBody);
 app.use(BodyValidationMiddleware.verifyRequestOptionsInBody);
 
