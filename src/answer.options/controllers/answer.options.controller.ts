@@ -170,7 +170,7 @@ class AnswerOptionsController {
     await Promise.all([...[patchQuestion, patchSurvey], ...patchAnswerOptions]);
 
     log(
-      `reordered answer-options of question ${req.body.local.questionId} of survey ${req.body.locals.surveyId}`,
+      `reordered answer-options of question ${req.body.locals.questionId} of survey ${req.body.locals.surveyId}`,
     );
 
     res.status(204).send();
