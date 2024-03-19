@@ -148,6 +148,23 @@ class AnswerPicturesController {
 
     res.status(204).send();
   }
+
+  async getAnswerPictureUrls(req: Request, res: Response) {
+    const fileNames: string | Array<string> = req.query['fileNames'] as
+      | string
+      | string[];
+    const urls: { [fileName: string]: string } = {};
+
+    if (Array.isArray(fileNames)) {
+      for (let fileName of fileNames) {
+        urls[fileName] = S3Service.getPictureURL(fileName);
+      }
+    } else {
+      urls[fileNames] = S3Service.getPictureURL(fileNames);
+    }
+
+    res.status(200).send({ urls: urls });
+  }
 }
 
 export default new AnswerPicturesController();

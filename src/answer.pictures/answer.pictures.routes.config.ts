@@ -4,7 +4,7 @@ import AuthMiddleware from '../auth/middleware/auth.middleware';
 import PagingMiddleware from '../common/middleware/paging.middleware';
 import AnswerPicturesController from './controllers/answer.pictures.controller';
 import AnswerPicturesMiddleware from './middleware/answer.pictures.middleware';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import multer from 'multer';
@@ -38,6 +38,15 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
         BodyValidationMiddleware.verifyBodyFieldsErrors,
         AnswerPicturesMiddleware.validateFormDataPictureValid,
         AnswerPicturesController.createAnswerPicture,
+      );
+
+    this.app
+      .route(`/answer-pictures/urls`)
+      .get(
+        AuthMiddleware.validAuthorizationNeeded(true, true),
+        query('fileNames').exists(),
+        BodyValidationMiddleware.verifyBodyFieldsErrors,
+        AnswerPicturesController.getAnswerPictureUrls,
       );
 
     this.app.param(
