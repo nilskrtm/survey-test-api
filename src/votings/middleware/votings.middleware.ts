@@ -39,7 +39,7 @@ class VotingsMiddleware {
     }
 
     res.status(400).send({
-      error: `Die Votes passen nicht zu der Umfrage.`,
+      errors: [`Die Votes passen nicht zu der Umfrage.`],
     });
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import UserService from '../services/users.service';
 
-//const log: debug.IDebugger = debug('app:users-controllers');
+// const log: debug.IDebugger = debug('app:users-controllers');
 
 class UsersMiddleware {
   async validateSameUsernameDoesntExist(
@@ -12,7 +12,9 @@ class UsersMiddleware {
     const user = await UserService.getUserByUsername(req.body.username);
 
     if (user) {
-      res.status(400).send({ error: `User username already exists` });
+      res
+        .status(400)
+        .send({ errors: [`Der Nutzername ist bereits vergeben.`] });
     } else {
       next();
     }

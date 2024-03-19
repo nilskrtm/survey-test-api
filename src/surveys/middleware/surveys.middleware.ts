@@ -3,7 +3,7 @@ import SurveyService from '../services/surveys.service';
 import { PopulatedSurvey } from '../daos/surveys.dao';
 import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
 
-//const log: debug.IDebugger = debug('app:surveys-controllers');
+// const log: debug.IDebugger = debug('app:surveys-controllers');
 
 class SurveyMiddleware {
   validateSetStartEndDates(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +19,7 @@ class SurveyMiddleware {
 
       if (startDateToSet >= surveyEndDate) {
         return res.status(400).send({
-          error: `Das Startdatum muss vor dem Enddatum der Umfrage liegen.`,
+          errors: [`Das Startdatum muss vor dem Enddatum der Umfrage liegen.`],
         });
       }
     } else if (!startDateToSet && endDateToSet) {
@@ -27,13 +27,15 @@ class SurveyMiddleware {
 
       if (endDateToSet <= surveyStartDate) {
         return res.status(400).send({
-          error: `Das Enddatum muss hinter dem Startdatum der Umfrage liegen.`,
+          errors: [
+            `Das Enddatum muss hinter dem Startdatum der Umfrage liegen.`,
+          ],
         });
       }
 
       if (endDateToSet <= currentDate) {
         return res.status(400).send({
-          error: `Das Enddatum der Umfrage muss in der Zukunft liegen.`,
+          errors: [`Das Enddatum der Umfrage muss in der Zukunft liegen.`],
         });
       }
     } else if (startDateToSet && endDateToSet) {
@@ -42,13 +44,15 @@ class SurveyMiddleware {
 
       if (endDateToSet <= currentDate) {
         return res.status(400).send({
-          error: `Das Enddatum der Umfrage muss in der Zukunft liegen.`,
+          errors: [`Das Enddatum der Umfrage muss in der Zukunft liegen.`],
         });
       }
 
       if (endDateToSet <= startDateToSet) {
         return res.status(400).send({
-          error: `Das Enddatum muss hinter dem Startdatum der Umfrage liegen.`,
+          errors: [
+            `Das Enddatum muss hinter dem Startdatum der Umfrage liegen.`,
+          ],
         });
       }
     }
