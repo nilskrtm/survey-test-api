@@ -37,7 +37,7 @@ export class VotingsRoutes extends CommonRoutesConfig {
         SurveysMiddleware.extractSurveyId,
         SurveysMiddleware.validateSurveyExists,
         PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
-        VotingsController.getVotingCount,
+        VotingsController.getVotingCountOfSurvey,
       );
 
     return this.app;

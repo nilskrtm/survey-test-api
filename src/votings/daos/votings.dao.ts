@@ -92,12 +92,32 @@ class VotingsDAO extends DAO<Voting> {
   }
   */
 
-  async getVotingCount(surveyId: string) {
+  async getVotingCountOfUser(userId: string) {
+    // TODO: do with query helpers
+
     return (
-      await this.VotingModel.find({
-        survey: surveyId,
-      }).exec()
+      await this.VotingModel.aggregate([
+        { $unwind: '$survey' },
+        {
+          $lookup: {
+            from: 'surveys',
+            localField: 'survey',
+            foreignField: '_id',
+            as: 'survey',
+          },
+        },
+        {
+          $match: {
+            'survey.owner': userId,
+          },
+        },
+        { $group: { _id: '$_id' } },
+      ]).exec()
     ).length;
+  }
+
+  async getVotingCountOfSurvey(surveyId: string) {
+    return (await this.VotingModel.find({ survey: surveyId }).exec()).length;
   }
 
   async removeVotingsOfSurvey(surveyId: string) {
