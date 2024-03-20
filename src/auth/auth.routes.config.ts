@@ -17,7 +17,9 @@ export class AuthRoutes extends CommonRoutesConfig {
       body('username')
         .isString()
         .notEmpty()
-        .withMessage('Es muss ein Nutzername angegeben werden.'),
+        .withMessage(
+          'Es muss ein Nutzername oder eine E-Mail Adresse angegeben werden.',
+        ),
       body('password')
         .isString()
         .notEmpty()

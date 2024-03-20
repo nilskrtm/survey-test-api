@@ -9,11 +9,16 @@ const accessTokenSecret: string =
 
 class AuthMiddleware {
   async verifyUserPassword(req: Request, res: Response, next: NextFunction) {
-    const user = await UsersService.getUserByUsernameWithPassword(
+    let user = await UsersService.getUserByUsernameWithPassword(
       req.body.username,
     );
 
+    if (!user) {
+      user = await UsersService.getUserByEmailWithPassword(req.body.username);
+    }
+
     if (user) {
+      console.log(user);
       const passwordHash = user.password;
 
       if (await argon2.verify(passwordHash, req.body.password)) {
