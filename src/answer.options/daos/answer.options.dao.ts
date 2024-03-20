@@ -23,7 +23,7 @@ export type PopulatedAnswerOption = Omit<AnswerOption, 'picture'> & {
 };
 
 const defaultAnswerOptionValues: Partial<AnswerOption> = {
-  color: '',
+  color: 'rgb(0,0,0)',
   picture: '',
 };
 
