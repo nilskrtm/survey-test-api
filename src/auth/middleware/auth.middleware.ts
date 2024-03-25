@@ -3,6 +3,7 @@ import UsersService from '../../users/services/users.service';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../../common/types/jwt.type';
+import { User } from '../../users/daos/users.dao';
 
 const accessTokenSecret: string =
   process.env.ACCESS_TOKEN_SECRET || 'accessToken';
@@ -49,17 +50,13 @@ class AuthMiddleware {
             const [username, accessKey] = Buffer.from(b64Auth, 'base64')
               .toString()
               .split(':');
-            const user: any = await UsersService.getUserByUsernameWithAccessKey(
-              username,
-            );
+            const user: User | null =
+              await UsersService.getUserByUsernameWithAccessKey(username);
 
-            if (
-              user &&
-              (user.accessKey as string).localeCompare(accessKey) === 0
-            ) {
+            if (user && user.accessKey.localeCompare(accessKey) === 0) {
               res.locals.basicAuth = {
                 userId: user._id,
-                username: user.username,
+                permissionLevel: user.permissionLevel,
               };
 
               return next();
