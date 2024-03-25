@@ -17,6 +17,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { CommonRoutesConfig } from './src/common/common.routes.config';
 import { UsersRoutes } from './src/users/users.routes.config';
+import { AccessKeyRoutes } from './src/users/access.key.routes.config';
 import { AuthRoutes } from './src/auth/auth.routes.config';
 import { SurveysRoutes } from './src/surveys/surveys.routes.config';
 import { QuestionsRoutes } from './src/questions/questions.routes.config';
@@ -56,6 +57,7 @@ app.use(BodyValidationMiddleware.verifyLocalsInBody);
 app.use(BodyValidationMiddleware.verifyRequestOptionsInBody);
 
 routes.push(new UsersRoutes(app));
+routes.push(new AccessKeyRoutes(app));
 routes.push(new AuthRoutes(app));
 routes.push(new SurveysRoutes(app));
 routes.push(new QuestionsRoutes(app));

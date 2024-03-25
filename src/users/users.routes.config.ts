@@ -34,6 +34,10 @@ export class UsersRoutes extends CommonRoutesConfig {
           .withMessage(
             'Der Nutzername muss zwischen 2 und 20 Zeichen lang sein.',
           ),
+        body('email')
+          .isString()
+          .isEmail()
+          .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.'),
         body('firstname')
           .isString()
           .isLength({ min: 2, max: 35 })
@@ -49,6 +53,8 @@ export class UsersRoutes extends CommonRoutesConfig {
           .withMessage(
             'Das Passwort muss zwischen 8 und 40 Zeichen lang sein.',
           ),
+        body('accessKey').isString().optional(),
+        body('permissionLevel').isInt({ min: 0, max: 1 }).optional(),
         BodyValidationMiddleware.verifyBodyFieldsErrors,
         UsersMiddleware.validateSameUsernameDoesntExist,
         UsersController.createUser,
@@ -70,6 +76,10 @@ export class UsersRoutes extends CommonRoutesConfig {
       BodyValidationMiddleware.decodePasswordInBody,
       body('_id').not().exists(),
       body('username').not().exists(),
+      body('email')
+        .isString()
+        .isEmail()
+        .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.'),
       body('firstname')
         .isString()
         .isLength({ min: 2, max: 35 })
@@ -81,7 +91,8 @@ export class UsersRoutes extends CommonRoutesConfig {
       body('password')
         .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.'),
-      body('permissionLevel').isInt(),
+      body('accessKey').not().exists(),
+      body('permissionLevel').isInt({ min: 0, max: 1 }),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
       UsersMiddleware.userCantChangePermission,
       UsersController.put,
@@ -105,6 +116,7 @@ export class UsersRoutes extends CommonRoutesConfig {
         .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.')
         .optional(),
+      body('permissionLevel').isInt({ min: 0, max: 1 }).optional(),
       BodyValidationMiddleware.verifyBodyFieldsErrors,
       UsersMiddleware.userCantChangePermission,
       UsersController.patch,

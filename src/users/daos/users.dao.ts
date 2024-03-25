@@ -14,6 +14,7 @@ import { UserDataWSPayload } from '../../common/interfaces/websocket/user.data.w
 import WebSocketService from '../../common/services/ws.service';
 import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
+import { generateAccessKey } from '../../common/utils/access.key.util';
 
 const log: debug.IDebugger = debug('app:users-dao');
 
@@ -28,9 +29,11 @@ export type User = {
   permissionLevel: number;
 };
 
-const defaultUserValues: Partial<User> = {
-  accessKey: '',
-  permissionLevel: PermissionLevel.USER,
+const defaultUserValues: () => Partial<User> = () => {
+  return {
+    accessKey: generateAccessKey(10),
+    permissionLevel: PermissionLevel.USER,
+  };
 };
 
 class UsersDAO extends DAO<User> {
@@ -150,6 +153,14 @@ class UsersDAO extends DAO<User> {
 
   async getUserById(userId: string) {
     return await this.UserModel.findOne({ _id: userId }).exec();
+  }
+
+  async getUserByIdWithAccessKey(userId: string) {
+    return await this.UserModel.findOne({ _id: userId })
+      .select(
+        '_id username email firstname lastname permissionLevel +accessKey',
+      )
+      .exec();
   }
 
   async getUsers(options: RequestOptions) {
