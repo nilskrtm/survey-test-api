@@ -102,6 +102,11 @@ export class UsersRoutes extends CommonRoutesConfig {
       BodyValidationMiddleware.decodePasswordInBody,
       body('_id').not().exists(),
       body('username').not().exists(),
+      body('email')
+        .isString()
+        .isEmail()
+        .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.')
+        .optional(),
       body('firstname')
         .isString()
         .isLength({ min: 2, max: 35 })
