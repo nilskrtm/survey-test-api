@@ -12,6 +12,9 @@ import {
   RequestPagingParams,
 } from '../../common/types/paging.params.type';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
+import AnswerPictureQueryHelpers, {
+  IAnswerPictureQueryHelpers,
+} from '../query/answer.pictures.query.helpers';
 
 const log: debug.IDebugger = debug('app:answer-pictures-dao');
 
@@ -31,14 +34,28 @@ const defaultAnswerPictureValues: Partial<AnswerPicture> = {
   edited: new Date(),
 };
 
+type AnswerPictureModelType = Model<AnswerPicture, IAnswerPictureQueryHelpers>;
+
 class AnswerPicturesDAO extends DAO<AnswerPicture> {
-  AnswerPictureSchema: Schema<AnswerPicture>;
-  AnswerPictureModel: Model<AnswerPicture>;
+  AnswerPictureSchema: Schema<
+    AnswerPicture,
+    AnswerPictureModelType,
+    IAnswerPictureQueryHelpers,
+    {},
+    IAnswerPictureQueryHelpers
+  >;
+  AnswerPictureModel: AnswerPictureModelType;
 
   constructor() {
     super();
 
-    this.AnswerPictureSchema = new Schema<AnswerPicture>(
+    this.AnswerPictureSchema = new Schema<
+      AnswerPicture,
+      AnswerPictureModelType,
+      IAnswerPictureQueryHelpers,
+      {},
+      IAnswerPictureQueryHelpers
+    >(
       {
         _id: String,
         name: String,
@@ -50,9 +67,14 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
       { id: false, collection: 'answer_pictures', versionKey: false },
     );
 
+    this.AnswerPictureSchema.query = AnswerPictureQueryHelpers;
+
     this.AnswerPictureModel = mongooseService
       .getMongoose()
-      .model<AnswerPicture>('AnswerPicture', this.AnswerPictureSchema);
+      .model<AnswerPicture, AnswerPictureModelType>(
+        'AnswerPicture',
+        this.AnswerPictureSchema,
+      );
 
     log('Created new instance of AnswerPicturesDAO');
   }
@@ -109,6 +131,8 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     );
 
     const answerPictures = await this.AnswerPictureModel.find({ owner: userId })
+      .applyFiltering(options.filtering)
+      .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .exec();
