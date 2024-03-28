@@ -8,6 +8,8 @@ import { body, query } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import PermissionMiddleware from '../common/middleware/permission.middleware';
 import multer from 'multer';
+import FilteringMiddleware from '../common/middleware/filtering.middleware';
+import SortingMiddleware from '../common/middleware/sorting.middleware';
 
 export class AnswerPicturesRoutes extends CommonRoutesConfig {
   constructor(app: Application) {
@@ -20,6 +22,8 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       .get(
         AuthMiddleware.validAuthorizationNeeded(true, false),
         PagingMiddleware.extractPagingParameters,
+        FilteringMiddleware.extractFilteringParameters,
+        SortingMiddleware.extractSortingParameters,
         AnswerPicturesController.listAnswerPictures,
       )
       .post(
