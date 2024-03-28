@@ -4,6 +4,7 @@ import AnswerPicturesService from '../services/answer.pictures.service';
 import S3Service from '../../common/services/s3.service';
 import * as mime from 'mime-types';
 import { AnswerPicture } from '../daos/answer.pictures.dao';
+import SurveysDAO from '../../surveys/daos/surveys.dao';
 
 const log: debug.IDebugger = debug('app:answer-pictures-controller');
 
@@ -162,6 +163,69 @@ class AnswerPicturesController {
     }
 
     res.status(200).send({ urls: urls });
+  }
+
+  async getAnswerPictureStatus(req: Request, res: Response) {
+    const answerPicture: AnswerPicture = res.locals.answerPicture;
+    const result = await SurveysDAO.getModel()
+      .aggregate([
+        {
+          $match: {
+            draft: false,
+          },
+        },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: 'questions',
+            foreignField: '_id',
+            as: 'questionObjects',
+          },
+        },
+        {
+          $unwind: {
+            path: '$questionObjects',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: 'answer_options',
+            localField: 'questionObjects.answerOptions',
+            foreignField: '_id',
+            as: 'answerOptions',
+          },
+        },
+        {
+          $unwind: {
+            path: '$answerOptions.picture',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $match: {
+            'answerOptions.picture': answerPicture._id,
+            draft: false,
+          },
+        },
+        {
+          $count: 'count',
+        },
+      ])
+      .exec();
+
+    if (
+      result.length === 0 ||
+      ('count' in result[0] && result[0].count === 0)
+    ) {
+      return res.status(200).send({
+        used: false,
+      });
+    }
+
+    res.status(200).send({
+      used: true,
+    });
   }
 }
 

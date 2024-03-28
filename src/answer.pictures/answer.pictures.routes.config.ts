@@ -123,6 +123,15 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       AnswerPicturesController.patch,
     );
 
+    this.app
+      .route(`/answer-pictures/:answerPictureId/status`)
+      .get(
+        AuthMiddleware.validAuthorizationNeeded(true, true),
+        AnswerPicturesMiddleware.validateAnswerPictureExists,
+        PermissionMiddleware.onlyAnswerPictureOwnerOrAdminCanDoThisAction,
+        AnswerPicturesController.getAnswerPictureStatus,
+      );
+
     return this.app;
   }
 }
