@@ -26,15 +26,13 @@ class AnswerPicturesController {
     // by this 'answerPicture' should always be non-null
     // nevertheless, the opposite case has to be intercepted here later
     if (answerPicture) {
-      const answerPictureWithUrl = Object.assign(
-        {},
-        answerPicture as AnswerPicture,
-        {
-          url: S3Service.getPictureURL(answerPicture.fileName),
-        },
-      );
+      const answerPictureWithUrl = Object.assign({}, answerPicture.toObject(), {
+        url: S3Service.getPictureURL(answerPicture.fileName),
+      });
 
-      res.status(200).send({ answerPicture: answerPictureWithUrl });
+      res.status(200).send({
+        answerPicture: answerPictureWithUrl,
+      });
     }
   }
 
