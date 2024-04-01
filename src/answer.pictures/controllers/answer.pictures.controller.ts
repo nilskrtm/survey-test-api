@@ -169,11 +169,13 @@ class AnswerPicturesController {
     const answerPicture: AnswerPicture = res.locals.answerPicture;
     const result = await SurveysDAO.getModel()
       .aggregate([
+        /*
         {
           $match: {
             draft: false,
           },
         },
+         */
         {
           $lookup: {
             from: 'questions',
