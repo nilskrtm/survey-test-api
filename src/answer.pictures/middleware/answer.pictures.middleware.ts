@@ -50,7 +50,7 @@ class AnswerPicturesMiddleware {
         {
           $match: {
             'answerOptions.picture': answerPicture._id,
-            draft: false,
+            // draft: false,
           },
         },
         {
