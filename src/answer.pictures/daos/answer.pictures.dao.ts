@@ -89,7 +89,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     const answerPictureId = uuid();
     const answerPicture = new this.AnswerPictureModel({
       _id: answerPictureId,
-      ...defaultAnswerPictureValues,
+      ...defaultAnswerPictureValues(),
       ...answerPictureFields,
     });
 
