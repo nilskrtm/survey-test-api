@@ -27,11 +27,13 @@ export type AnswerPicture = {
   edited: Date;
 };
 
-const defaultAnswerPictureValues: Partial<AnswerPicture> = {
-  name: 'Name noch nicht festgelegt',
-  fileName: '',
-  created: new Date(),
-  edited: new Date(),
+const defaultAnswerPictureValues: () => Partial<AnswerPicture> = () => {
+  return {
+    name: 'Name noch nicht festgelegt',
+    fileName: '',
+    created: new Date(),
+    edited: new Date(),
+  };
 };
 
 type AnswerPictureModelType = Model<AnswerPicture, IAnswerPictureQueryHelpers>;
