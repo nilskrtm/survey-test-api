@@ -29,6 +29,9 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       .post(
         AuthMiddleware.validAuthorizationNeeded(true, false),
         multer().single('file'),
+        body('file').custom((_, { req }) => {
+          return !!req.file;
+        }),
         body('_id').not().exists(),
         body('name')
           .isString()
