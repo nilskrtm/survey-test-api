@@ -30,7 +30,11 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
         AuthMiddleware.validAuthorizationNeeded(true, false),
         multer().single('file'),
         body('file').custom((_, { req }) => {
-          return !!req.file;
+          if (!('file' in req) || !req.file) {
+            throw new Error('Es muss ein Bild hochgeladen werden.');
+          } else {
+            return true;
+          }
         }),
         body('_id').not().exists(),
         body('name')
