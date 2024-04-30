@@ -3,7 +3,6 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
 import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
 import { PutAnswerOptionDTO } from '../dto/put.answer.option.dto';
-import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class AnswerOptionsService implements CRUD {
@@ -15,9 +14,7 @@ class AnswerOptionsService implements CRUD {
     return await AnswerOptionsDAO.removeAnswerOptionById(id);
   }
 
-  async list(options: RequestOptions, questionId: string): Promise<any> {
-    PagingMiddleware.ignoreValue(options);
-
+  async list(_options: RequestOptions, questionId: string): Promise<any> {
     return await AnswerOptionsDAO.getAnswerOptionsOfQuestion(questionId);
   }
 

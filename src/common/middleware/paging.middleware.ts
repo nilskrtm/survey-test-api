@@ -70,10 +70,6 @@ class PagingMiddleware {
 
     return paging;
   }
-
-  ignoreValue<T>(value: T): T {
-    return value;
-  }
 }
 
 export default new PagingMiddleware();

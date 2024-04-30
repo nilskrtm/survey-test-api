@@ -3,7 +3,6 @@ import VotingsDAO from '../../votings/daos/votings.dao';
 import { CreateVotingDTO } from '../dto/create.voting.dto';
 import { PatchVotingDTO } from '../dto/patch.voting.dto';
 import { PutVotingDTO } from '../dto/put.voting.dto';
-import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class VotingsService implements CRUD {
@@ -11,41 +10,24 @@ class VotingsService implements CRUD {
     return await VotingsDAO.addVoting(resource);
   }
 
-  async deleteById(id: string) {
-    PagingMiddleware.ignoreValue(id);
-
+  async deleteById(_id: string) {
     throw new Error('should not be used');
-    // return await VotingsDAO.removeSurveyById(id, true);
   }
 
-  async list(options: RequestOptions) {
-    PagingMiddleware.ignoreValue(options);
-
+  async list(_options: RequestOptions) {
     throw new Error('should not be used');
-    // return await VotingsDAO.getSurveysOfOwner(paging, ownerId);
   }
 
-  async patchById(id: string, resource: PatchVotingDTO) {
-    PagingMiddleware.ignoreValue(id);
-    PagingMiddleware.ignoreValue(resource);
-
+  async patchById(_id: string, _resource: PatchVotingDTO) {
     throw new Error('should not be used');
-    // return await VotingsDAO.updateSurveyById(id, resource);
   }
 
-  async getById(id: string) {
-    PagingMiddleware.ignoreValue(id);
-
+  async getById(_id: string) {
     throw new Error('should not be used');
-    // return await VotingsDAO.getSurveyById(id);
   }
 
-  async putById(id: string, resource: PutVotingDTO) {
-    PagingMiddleware.ignoreValue(id);
-    PagingMiddleware.ignoreValue(resource);
-
+  async putById(_id: string, _resource: PutVotingDTO) {
     throw new Error('should not be used');
-    // return await VotingsDAO.updateSurveyById(id, resource);
   }
 
   async getVotingCountOfUser(userId: string) {

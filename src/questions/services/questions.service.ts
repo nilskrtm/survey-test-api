@@ -3,7 +3,6 @@ import { CRUD } from '../../common/interfaces/crud.interface';
 import { CreateQuestionDTO } from '../dto/create.question.dto';
 import { PatchQuestionDTO } from '../dto/patch.question.dto';
 import { PutQuestionDTO } from '../dto/put.question.dto';
-import PagingMiddleware from '../../common/middleware/paging.middleware';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 
 class QuestionsService implements CRUD {
@@ -16,8 +15,6 @@ class QuestionsService implements CRUD {
   }
 
   async list(options: RequestOptions, surveyId: string) {
-    PagingMiddleware.ignoreValue(options);
-
     return await QuestionsDAO.getQuestionsOfSurvey(surveyId);
   }
 
