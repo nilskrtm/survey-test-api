@@ -28,8 +28,20 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
       };
     }
 
-    if ('archived' in filterParams) {
-      filter.archived = filterParams.archived === 'true';
+    if (
+      'archived' in filterParams &&
+      (filterParams.archived.toLowerCase() === 'true' ||
+        filterParams.archived.toLowerCase() === 'false')
+    ) {
+      filter.archived = filterParams.archived;
+    }
+
+    if (
+      'draft' in filterParams &&
+      (filterParams.draft.toLowerCase() === 'true' ||
+        filterParams.draft.toLowerCase() === 'false')
+    ) {
+      filter.draft = filterParams.draft;
     }
 
     return this.find(filter);

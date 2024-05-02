@@ -31,6 +31,16 @@ export class VotingsRoutes extends CommonRoutesConfig {
       );
 
     this.app
+      .route(`/surveys/:surveyId/votings/absolute`)
+      .get(
+        AuthMiddleware.validAuthorizationNeeded(true, false),
+        SurveysMiddleware.extractSurveyId,
+        SurveysMiddleware.validateSurveyExists,
+        PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
+        VotingsController.getVotingsAbsoluteOfSurvey,
+      );
+
+    this.app
       .route(`/surveys/:surveyId/votings/count`)
       .get(
         AuthMiddleware.validAuthorizationNeeded(true, false),

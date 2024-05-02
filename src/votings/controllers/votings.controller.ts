@@ -20,6 +20,18 @@ class VotingsController {
     res.status(201).send({ id: votingId });
   }
 
+  async getVotingsAbsoluteOfSurvey(req: Request, res: Response) {
+    const survey: PopulatedSurvey = res.locals.survey;
+    const answerOptionVotings = await VotingsService.getVotingsAbsoluteOfSurvey(
+      survey._id,
+    );
+
+    res.status(200).send({
+      answerOptions: answerOptionVotings.answerOptions,
+      count: answerOptionVotings.count,
+    });
+  }
+
   async getVotingCountOfUser(req: Request, res: Response) {
     const votingCount = await VotingsService.getVotingCountOfUser(
       res.locals.jwt?.userId || res.locals.basicAuth?.userId,

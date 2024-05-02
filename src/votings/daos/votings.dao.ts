@@ -4,6 +4,7 @@ import { Model, Schema } from 'mongoose';
 import mongooseService from '../../common/services/mongoose.service';
 import { v4 as uuid } from 'uuid';
 import { CreateVotingDTO } from '../dto/create.voting.dto';
+import SurveysDAO from '../../surveys/daos/surveys.dao';
 
 const log: debug.IDebugger = debug('app:votings-dao');
 
@@ -114,6 +115,212 @@ class VotingsDAO extends DAO<Voting> {
         { $group: { _id: '$_id' } },
       ]).exec()
     ).length;
+  }
+
+  async getVotingsAbsoluteOfSurvey(surveyId: string) {
+    const answerOptionsVotes = await SurveysDAO.getModel()
+      .aggregate<{
+        questionId: string;
+        answerOptions: [{ answerOptionId: string; count: number }];
+        count: number;
+      }>([
+        {
+          $match: {
+            _id: surveyId,
+          },
+        },
+        {
+          $unwind: '$questions',
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questions',
+          },
+        },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: 'questionId',
+            foreignField: '_id',
+            as: 'question',
+          },
+        },
+        {
+          $set: {
+            question: {
+              $first: '$question',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$question.answerOptions',
+          },
+        },
+        {
+          $unwind: '$answerOptions',
+        },
+        {
+          $lookup: {
+            from: 'votings',
+            localField: 'answerOptions',
+            foreignField: 'votes.answerOption',
+            as: 'votings',
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptionId: '$answerOptions',
+            count: {
+              $size: '$votings',
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$questionId',
+            questionId: {
+              $first: '$questionId',
+            },
+            answerOptions: {
+              $push: {
+                answerOptionId: '$answerOptionId',
+                count: '$count',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$answerOptions',
+            count: {
+              $sum: '$answerOptions.count',
+            },
+          },
+        },
+      ])
+      .exec();
+
+    const sum = answerOptionsVotes.reduce((accumulator, value) => {
+      return accumulator + value.count;
+    }, 0);
+
+    return { answerOptions: answerOptionsVotes, count: sum };
+  }
+
+  async getVotingsAbsoluteOfSurveyByQuestion(
+    surveyId: string,
+    questionId: string,
+  ) {
+    const answerOptionsVotes = await SurveysDAO.getModel()
+      .aggregate<{
+        questionId: string;
+        answerOptions: [{ answerOptionId: string; count: number }];
+        count: number;
+      }>([
+        {
+          $match: {
+            _id: surveyId,
+          },
+        },
+        {
+          $unwind: '$questions',
+        },
+        {
+          $match: {
+            questions: {
+              $in: [questionId],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questions',
+          },
+        },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: 'questionId',
+            foreignField: '_id',
+            as: 'question',
+          },
+        },
+        {
+          $set: {
+            question: {
+              $first: '$question',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$question.answerOptions',
+          },
+        },
+        {
+          $unwind: '$answerOptions',
+        },
+        {
+          $lookup: {
+            from: 'votings',
+            localField: 'answerOptions',
+            foreignField: 'votes.answerOption',
+            as: 'votings',
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptionId: '$answerOptions',
+            count: {
+              $size: '$votings',
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$questionId',
+            questionId: {
+              $first: '$questionId',
+            },
+            answerOptions: {
+              $push: {
+                answerOptionId: '$answerOptionId',
+                count: '$count',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$answerOptions',
+            count: {
+              $sum: '$answerOptions.count',
+            },
+          },
+        },
+      ])
+      .exec();
+
+    const sum = answerOptionsVotes.reduce((accumulator, value) => {
+      return accumulator + value.count;
+    }, 0);
+
+    return { answerOptions: answerOptionsVotes, count: sum };
   }
 
   async getVotingCountOfSurvey(surveyId: string) {

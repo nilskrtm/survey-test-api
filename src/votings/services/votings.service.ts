@@ -30,6 +30,10 @@ class VotingsService implements CRUD {
     throw new Error('should not be used');
   }
 
+  async getVotingsAbsoluteOfSurvey(surveyId: string) {
+    return await VotingsDAO.getVotingsAbsoluteOfSurvey(surveyId);
+  }
+
   async getVotingCountOfUser(userId: string) {
     return await VotingsDAO.getVotingCountOfUser(userId);
   }
