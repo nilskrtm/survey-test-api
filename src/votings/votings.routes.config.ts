@@ -41,6 +41,16 @@ export class VotingsRoutes extends CommonRoutesConfig {
       );
 
     this.app
+      .route(`/surveys/:surveyId/votings/day-span`)
+      .get(
+        AuthMiddleware.validAuthorizationNeeded(true, false),
+        SurveysMiddleware.extractSurveyId,
+        SurveysMiddleware.validateSurveyExists,
+        PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
+        VotingsController.getVotingsDaySpanOfSurvey,
+      );
+
+    this.app
       .route(`/surveys/:surveyId/votings/count`)
       .get(
         AuthMiddleware.validAuthorizationNeeded(true, false),

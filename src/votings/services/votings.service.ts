@@ -34,6 +34,10 @@ class VotingsService implements CRUD {
     return await VotingsDAO.getVotingsAbsoluteOfSurvey(surveyId);
   }
 
+  async getVotingsDaySpanOfSurvey(surveyId: string) {
+    return await VotingsDAO.getVotingsDaySpanOfSurvey(surveyId);
+  }
+
   async getVotingCountOfUser(userId: string) {
     return await VotingsDAO.getVotingCountOfUser(userId);
   }

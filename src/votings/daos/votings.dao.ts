@@ -200,19 +200,12 @@ class VotingsDAO extends DAO<Voting> {
             _id: 0,
             questionId: '$questionId',
             answerOptions: '$answerOptions',
-            count: {
-              $sum: '$answerOptions.count',
-            },
           },
         },
       ])
       .exec();
 
-    const sum = answerOptionsVotes.reduce((accumulator, value) => {
-      return accumulator + value.count;
-    }, 0);
-
-    return { answerOptions: answerOptionsVotes, count: sum };
+    return { questions: answerOptionsVotes };
   }
 
   async getVotingsAbsoluteOfSurveyByQuestion(
@@ -321,6 +314,119 @@ class VotingsDAO extends DAO<Voting> {
     }, 0);
 
     return { answerOptions: answerOptionsVotes, count: sum };
+  }
+
+  async getVotingsDaySpanOfSurvey(surveyId: string) {
+    const answerOptionsVotes = await SurveysDAO.getModel()
+      .aggregate<{
+        questionId: string;
+        answerOptions: [{ answerOptionId: string; count: number }];
+        count: number;
+      }>([
+        {
+          $match: {
+            _id: surveyId,
+          },
+        },
+        {
+          $unwind: '$questions',
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questions',
+          },
+        },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: 'questionId',
+            foreignField: '_id',
+            as: 'question',
+          },
+        },
+        {
+          $set: {
+            question: {
+              $first: '$question',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$question.answerOptions',
+          },
+        },
+        {
+          $unwind: '$answerOptions',
+        },
+        {
+          $lookup: {
+            from: 'votings',
+            localField: 'answerOptions',
+            foreignField: 'votes.answerOption',
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $gt: [
+                          '$date',
+                          new Date('2024-01-14T19:32:13.017+00:00'),
+                        ],
+                      },
+                      {
+                        $lt: [
+                          '$date',
+                          new Date('2024-06-14T19:32:13.017+00:00'),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'votings',
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptionId: '$answerOptions',
+            count: {
+              $size: '$votings',
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$questionId',
+            questionId: {
+              $first: '$questionId',
+            },
+            answerOptions: {
+              $push: {
+                answerOptionId: '$answerOptionId',
+                count: '$count',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            questionId: '$questionId',
+            answerOptions: '$answerOptions',
+          },
+        },
+      ])
+      .exec();
+
+    return { questions: answerOptionsVotes };
   }
 
   async getVotingCountOfSurvey(surveyId: string) {

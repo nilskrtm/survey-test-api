@@ -27,8 +27,18 @@ class VotingsController {
     );
 
     res.status(200).send({
-      answerOptions: answerOptionVotings.answerOptions,
-      count: answerOptionVotings.count,
+      questions: answerOptionVotings.questions,
+    });
+  }
+
+  async getVotingsDaySpanOfSurvey(req: Request, res: Response) {
+    const survey: PopulatedSurvey = res.locals.survey;
+    const answerOptionVotings = await VotingsService.getVotingsDaySpanOfSurvey(
+      survey._id,
+    );
+
+    res.status(200).send({
+      questions: answerOptionVotings.questions,
     });
   }
 
