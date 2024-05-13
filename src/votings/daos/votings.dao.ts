@@ -5,6 +5,10 @@ import mongooseService from '../../common/services/mongoose.service';
 import { v4 as uuid } from 'uuid';
 import { CreateVotingDTO } from '../dto/create.voting.dto';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
+import {
+  formatDateYYYmmdd,
+  getDatesBetweenDates,
+} from '../../common/utils/time.util';
 
 const log: debug.IDebugger = debug('app:votings-dao');
 
@@ -316,102 +320,115 @@ class VotingsDAO extends DAO<Voting> {
     return { answerOptions: answerOptionsVotes, count: sum };
   }
 
-  async getVotingsDaySpanOfSurvey(surveyId: string) {
-    const answerOptionsVotes = await SurveysDAO.getModel()
-      .aggregate<{
+  async getVotingsDaySpanOfSurvey(
+    surveyId: string,
+    timezone: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    const survey = await SurveysDAO.getSurveyById(surveyId);
+    const questions: {
+      questions: {
+        [questionId: string]: {
+          dates: {
+            [date: string]: {
+              votes: Array<{ answerOptionId: string; votes: number }>;
+            };
+          };
+        };
+      };
+    } = { questions: {} };
+
+    if (!survey) return questions;
+
+    const dayVotes = [
+      ...(await this.VotingModel.aggregate<{
+        date: string;
         questionId: string;
-        answerOptions: [{ answerOptionId: string; count: number }];
-        count: number;
+        votings: Array<{ answerOptionId: string; votes: number }>;
       }>([
         {
           $match: {
-            _id: surveyId,
-          },
-        },
-        {
-          $unwind: '$questions',
-        },
-        {
-          $project: {
-            _id: 0,
-            questionId: '$questions',
-          },
-        },
-        {
-          $lookup: {
-            from: 'questions',
-            localField: 'questionId',
-            foreignField: '_id',
-            as: 'question',
-          },
-        },
-        {
-          $set: {
-            question: {
-              $first: '$question',
+            survey: surveyId,
+            'votes.question': {
+              $in: survey.questions.map(question => question._id),
             },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            questionId: '$questionId',
-            answerOptions: '$question.answerOptions',
-          },
-        },
-        {
-          $unwind: '$answerOptions',
-        },
-        {
-          $lookup: {
-            from: 'votings',
-            localField: 'answerOptions',
-            foreignField: 'votes.answerOption',
-            pipeline: [
+            $and: [
               {
-                $match: {
-                  $expr: {
-                    $and: [
-                      {
-                        $gt: [
-                          '$date',
-                          new Date('2024-01-14T19:32:13.017+00:00'),
-                        ],
-                      },
-                      {
-                        $lt: [
-                          '$date',
-                          new Date('2024-06-14T19:32:13.017+00:00'),
-                        ],
-                      },
-                    ],
-                  },
+                date: {
+                  $gt: new Date(startDate),
+                },
+              },
+              {
+                date: {
+                  $lt: new Date(endDate),
                 },
               },
             ],
-            as: 'votings',
+          },
+        },
+        {
+          $unwind: '$votes',
+        },
+        {
+          $set: {
+            question: '$votes.question',
+            answerOption: '$votes.answerOption',
+            date: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                timezone: timezone,
+                date: '$date',
+              },
+            },
           },
         },
         {
           $project: {
-            _id: 0,
-            questionId: '$questionId',
-            answerOptionId: '$answerOptions',
-            count: {
-              $size: '$votings',
-            },
+            _id: '$_id',
+            surveyId: '$survey',
+            questionId: '$question',
+            answerOptionId: '$answerOption',
+            date: '$date',
           },
         },
         {
           $group: {
-            _id: '$questionId',
-            questionId: {
-              $first: '$questionId',
+            _id: {
+              date: '$date',
+              questionId: '$questionId',
+              answerOptionId: '$answerOptionId',
             },
-            answerOptions: {
+            surveyId: {
+              $first: '$surveyId',
+            },
+            votes: {
+              $push: '$_id',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: '$_id.date',
+            surveyId: '$surveyId',
+            questionId: '$_id.questionId',
+            answerOptionId: '$_id.answerOptionId',
+            votes: '$votes',
+          },
+        },
+        {
+          $group: {
+            _id: {
+              date: '$date',
+              questionId: '$questionId',
+            },
+            votings: {
               $push: {
                 answerOptionId: '$answerOptionId',
-                count: '$count',
+                votes: {
+                  $size: '$votes',
+                },
               },
             },
           },
@@ -419,14 +436,64 @@ class VotingsDAO extends DAO<Voting> {
         {
           $project: {
             _id: 0,
-            questionId: '$questionId',
-            answerOptions: '$answerOptions',
+            date: '$_id.date',
+            questionId: '$_id.questionId',
+            votings: '$votings',
           },
         },
-      ])
-      .exec();
+      ]).exec()),
+    ];
+    const datesBetweenDates = getDatesBetweenDates(
+      new Date(startDate),
+      new Date(endDate),
+    );
+    const daysBetweenDates = datesBetweenDates.map(date =>
+      formatDateYYYmmdd(date),
+    );
 
-    return { questions: answerOptionsVotes };
+    survey.questions.forEach(question => {
+      const dates: {
+        [date: string]: {
+          votes: Array<{ answerOptionId: string; votes: number }>;
+        };
+      } = {};
+
+      daysBetweenDates.forEach(day => {
+        const dayVotesFound = dayVotes.find(
+          dayVote =>
+            dayVote.questionId === question._id && dayVote.date === day,
+        );
+
+        const votes: Array<{ answerOptionId: string; votes: number }> =
+          question.answerOptions.map(answerOption => {
+            let voteCount = 0;
+
+            if (dayVotesFound) {
+              const answerOptionVote = dayVotesFound.votings.find(
+                answerOptionVotes =>
+                  answerOptionVotes.answerOptionId === answerOption._id,
+              );
+
+              if (answerOptionVote) {
+                voteCount = answerOptionVote.votes;
+              }
+            }
+
+            return {
+              answerOptionId: answerOption._id,
+              votes: voteCount,
+            };
+          });
+
+        dates[day] = { votes: votes };
+      });
+
+      questions.questions[question._id] = {
+        dates: dates,
+      };
+    });
+
+    return questions;
   }
 
   async getVotingCountOfSurvey(surveyId: string) {

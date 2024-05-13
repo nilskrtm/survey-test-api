@@ -1,7 +1,7 @@
 import { CommonRoutesConfig } from '../common/common.routes.config';
 import { Application } from 'express';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import BodyValidationMiddleware from '../common/middleware/body.validation.middleware';
 import VotingsMiddleware from './middleware/votings.middleware';
 import VotingsController from './controllers/votings.controller';
@@ -50,15 +50,28 @@ export class VotingsRoutes extends CommonRoutesConfig {
         VotingsController.getVotingsDaySpanOfSurvey,
       );
 
-    this.app
-      .route(`/surveys/:surveyId/votings/count`)
-      .get(
-        AuthMiddleware.validAuthorizationNeeded(true, false),
-        SurveysMiddleware.extractSurveyId,
-        SurveysMiddleware.validateSurveyExists,
-        PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
-        VotingsController.getVotingCountOfSurvey,
-      );
+    this.app.route(`/surveys/:surveyId/votings/count`).get(
+      AuthMiddleware.validAuthorizationNeeded(true, false),
+      SurveysMiddleware.extractSurveyId,
+      SurveysMiddleware.validateSurveyExists,
+      PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
+      query('timezone')
+        .custom(value => {
+          if (typeof value === 'string') {
+            try {
+              Intl.DateTimeFormat(undefined, { timeZone: value });
+
+              return true;
+            } catch (ex) {}
+          }
+
+          throw new Error('invalid value for timezone');
+        })
+        .optional(),
+      query('startDate').isISO8601().exists(),
+      query('endDate').isISO8601().exists(),
+      VotingsController.getVotingCountOfSurvey,
+    );
 
     return this.app;
   }
