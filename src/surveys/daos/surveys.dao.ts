@@ -155,9 +155,25 @@ class SurveysDAO extends DAO<Survey> {
 
   async addSurvey(surveyFields: CreateSurveyDTO) {
     const surveyId = uuid();
+    const defaultValues = defaultSurveyValues();
+
+    if (
+      !('name' in surveyFields) &&
+      !surveyFields.name &&
+      'owner' in surveyFields &&
+      surveyFields.owner
+    ) {
+      defaultValues.name =
+        'Umfrage ' +
+        Number(
+          (await this.SurveyModel.find({ owner: surveyFields.owner }).exec())
+            .length + 1,
+        );
+    }
+
     const survey = new this.SurveyModel({
       _id: surveyId,
-      ...defaultSurveyValues(),
+      ...defaultValues,
       ...surveyFields,
     });
 
