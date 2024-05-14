@@ -22,6 +22,33 @@ export const getDatesBetweenDates: (
   return dates;
 };
 
+export const getHoursBetweenDates: (
+  startDate: Date,
+  endDate: Date,
+  includeUpperBound?: boolean,
+) => Array<Date> = (startDate, endDate, includeUpperBound) => {
+  const hours: Array<Date> = [];
+
+  const fixedStartDate = new Date(startDate);
+  const fixedEndDate = new Date(endDate);
+
+  fixedStartDate.setMinutes(0, 0, 0);
+  fixedEndDate.setHours(fixedEndDate.getHours() + 1, 0, 0, 0);
+
+  const iDate = new Date(fixedStartDate);
+
+  while (iDate < fixedEndDate) {
+    hours.push(new Date(iDate));
+    iDate.setHours(iDate.getHours() + 1);
+  }
+
+  if (includeUpperBound !== undefined && includeUpperBound) {
+    hours.push(fixedEndDate);
+  }
+
+  return hours;
+};
+
 export const formatDateYYYmmdd: (date: Date) => string = date => {
   let month = '' + (date.getMonth() + 1);
   let day = '' + date.getDate();
@@ -31,4 +58,10 @@ export const formatDateYYYmmdd: (date: Date) => string = date => {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
+};
+
+export const formateDayHH: (date: Date) => string = date => {
+  return String(date.getHours()).length === 1
+    ? '0' + date.getHours()
+    : '' + date.getHours();
 };

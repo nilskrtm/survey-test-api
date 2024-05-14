@@ -48,6 +48,22 @@ class VotingsService implements CRUD {
     );
   }
 
+  async getVotingsHourSpanOfSurvey(
+    surveyId: string,
+    timezone: string,
+    dayDate: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    return await VotingsDAO.getVotingsHourSpanOfSurvey(
+      surveyId,
+      timezone,
+      dayDate,
+      startDate,
+      endDate,
+    );
+  }
+
   async getVotingCountOfUser(userId: string) {
     return await VotingsDAO.getVotingCountOfUser(userId);
   }

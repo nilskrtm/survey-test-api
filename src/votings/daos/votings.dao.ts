@@ -7,7 +7,9 @@ import { CreateVotingDTO } from '../dto/create.voting.dto';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
 import {
   formatDateYYYmmdd,
+  formateDayHH,
   getDatesBetweenDates,
+  getHoursBetweenDates,
 } from '../../common/utils/time.util';
 
 const log: debug.IDebugger = debug('app:votings-dao');
@@ -44,6 +46,18 @@ export type DayVotings = {
 export type DaySpanVotingsResponse = {
   votes: Array<DayVotings>;
   days: Array<string>;
+};
+
+export type HourVotings = {
+  hour: string;
+  questionId: string;
+  answerOptionId: string;
+  votes: number;
+};
+
+export type HourSpanVotingsResponse = {
+  votes: Array<HourVotings>;
+  hours: Array<string>;
 };
 
 const defaultVotingValues: Partial<Voting> = {};
@@ -262,7 +276,7 @@ class VotingsDAO extends DAO<Voting> {
       ...(await this.VotingModel.aggregate<DayVotings>([
         {
           $match: {
-            survey: 'd4a72159-d672-4ebd-af3c-255561cb13d8',
+            survey: surveyId,
             // can be used later to only get votings for specific question(-s)
             'votes.question': {
               $in: survey.questions.map(question => question._id),
@@ -336,6 +350,97 @@ class VotingsDAO extends DAO<Voting> {
     ).map(formatDateYYYmmdd);
 
     return { votes: votes, days: daysBetweenDates };
+  }
+
+  async getVotingsHourSpanOfSurvey(
+    surveyId: string,
+    timezone: string,
+    _dayDate: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<HourSpanVotingsResponse> {
+    const survey = await SurveysDAO.getSurveyById(surveyId);
+
+    if (!survey) return { votes: [], hours: [] };
+
+    const votes = [
+      ...(await this.VotingModel.aggregate<HourVotings>([
+        {
+          $match: {
+            survey: 'd4a72159-d672-4ebd-af3c-255561cb13d8',
+            // can be used later to only get votings for specific question(-s)
+            'votes.question': {
+              $in: survey.questions.map(question => question._id),
+            },
+            $and: [
+              {
+                date: {
+                  $gt: new Date(startDate),
+                },
+              },
+              {
+                date: {
+                  $lt: new Date(endDate),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: '$votes',
+        },
+        {
+          $set: {
+            question: '$votes.question',
+            answerOption: '$votes.answerOption',
+            hour: {
+              $dateToString: {
+                format: '%H',
+                timezone: timezone,
+                date: '$date',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id',
+            questionId: '$question',
+            answerOptionId: '$answerOption',
+            hour: '$hour',
+          },
+        },
+        {
+          $group: {
+            _id: {
+              hour: '$hour',
+              questionId: '$questionId',
+              answerOptionId: '$answerOptionId',
+            },
+            votes: {
+              $push: '$_id',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            hour: '$_id.hour',
+            questionId: '$_id.questionId',
+            answerOptionId: '$_id.answerOptionId',
+            votes: {
+              $size: '$votes',
+            },
+          },
+        },
+      ]).exec()),
+    ];
+    const hoursBetweenDates = getHoursBetweenDates(
+      new Date(startDate),
+      new Date(endDate),
+    ).map(formateDayHH);
+
+    return { votes: votes, hours: hoursBetweenDates };
   }
 
   async getVotingCountOfSurvey(surveyId: string) {

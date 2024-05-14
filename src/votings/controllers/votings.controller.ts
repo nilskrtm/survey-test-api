@@ -34,14 +34,14 @@ class VotingsController {
     const timezone: string = req.query.timezone
       ? (req.query.timezone as string)
       : 'UTC';
-    let startDate: string = req.query.startDate as string;
-    let endDate: string = req.query.endDate as string;
-    let timezoneStartDate = new Date(
+    const startDate: string = req.query.startDate as string;
+    const endDate: string = req.query.endDate as string;
+    const timezoneStartDate = new Date(
       new Date(startDate).toLocaleString('en-US', {
         timeZone: timezone,
       }),
     );
-    let timezoneEndDate = new Date(
+    const timezoneEndDate = new Date(
       new Date(endDate).toLocaleString('en-US', {
         timeZone: timezone,
       }),
@@ -53,6 +53,55 @@ class VotingsController {
     const votingsResponse = await VotingsService.getVotingsDaySpanOfSurvey(
       survey._id,
       timezone,
+      timezoneStartDate.toISOString(),
+      timezoneEndDate.toISOString(),
+    );
+
+    res.status(200).send(votingsResponse);
+  }
+
+  async getVotingsHourSpanOfSurvey(req: Request, res: Response) {
+    const survey: PopulatedSurvey = res.locals.survey;
+    const timezone: string = req.query.timezone
+      ? (req.query.timezone as string)
+      : 'UTC';
+    const dayDate: string = req.query.dayDate as string;
+    const startDate: string = req.query.startDate as string;
+    const endDate: string = req.query.endDate as string;
+    let timezoneDayDate = new Date(
+      new Date(dayDate).toLocaleString('en-US', {
+        timeZone: timezone,
+      }),
+    );
+
+    timezoneDayDate.setHours(0, 0, 0, 0);
+
+    let timezoneStartDate = new Date(
+      new Date(startDate).toLocaleString('en-US', {
+        timeZone: timezone,
+      }),
+    );
+    let timezoneEndDate = new Date(
+      new Date(endDate).toLocaleString('en-US', {
+        timeZone: timezone,
+      }),
+    );
+
+    timezoneStartDate.setFullYear(
+      timezoneDayDate.getFullYear(),
+      timezoneDayDate.getMonth(),
+      timezoneDayDate.getDate(),
+    );
+    timezoneEndDate.setFullYear(
+      timezoneDayDate.getFullYear(),
+      timezoneDayDate.getMonth(),
+      timezoneDayDate.getDate(),
+    );
+
+    const votingsResponse = await VotingsService.getVotingsHourSpanOfSurvey(
+      survey._id,
+      timezone,
+      timezoneDayDate.toISOString(),
       timezoneStartDate.toISOString(),
       timezoneEndDate.toISOString(),
     );

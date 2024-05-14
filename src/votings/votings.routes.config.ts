@@ -40,17 +40,7 @@ export class VotingsRoutes extends CommonRoutesConfig {
         VotingsController.getVotingsAbsoluteOfSurvey,
       );
 
-    this.app
-      .route(`/surveys/:surveyId/votings/day-span`)
-      .get(
-        AuthMiddleware.validAuthorizationNeeded(true, false),
-        SurveysMiddleware.extractSurveyId,
-        SurveysMiddleware.validateSurveyExists,
-        PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
-        VotingsController.getVotingsDaySpanOfSurvey,
-      );
-
-    this.app.route(`/surveys/:surveyId/votings/count`).get(
+    this.app.route(`/surveys/:surveyId/votings/day-span`).get(
       AuthMiddleware.validAuthorizationNeeded(true, false),
       SurveysMiddleware.extractSurveyId,
       SurveysMiddleware.validateSurveyExists,
@@ -70,8 +60,42 @@ export class VotingsRoutes extends CommonRoutesConfig {
         .optional(),
       query('startDate').isISO8601().exists(),
       query('endDate').isISO8601().exists(),
-      VotingsController.getVotingCountOfSurvey,
+      VotingsController.getVotingsDaySpanOfSurvey,
     );
+
+    this.app.route(`/surveys/:surveyId/votings/hour-span`).get(
+      AuthMiddleware.validAuthorizationNeeded(true, false),
+      SurveysMiddleware.extractSurveyId,
+      SurveysMiddleware.validateSurveyExists,
+      PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
+      query('timezone')
+        .custom(value => {
+          if (typeof value === 'string') {
+            try {
+              Intl.DateTimeFormat(undefined, { timeZone: value });
+
+              return true;
+            } catch (ex) {}
+          }
+
+          throw new Error('invalid value for timezone');
+        })
+        .optional(),
+      query('dayDate').isISO8601().exists(),
+      query('startDate').isISO8601().exists(),
+      query('endDate').isISO8601().exists(),
+      VotingsController.getVotingsHourSpanOfSurvey,
+    );
+
+    this.app
+      .route(`/surveys/:surveyId/votings/count`)
+      .get(
+        AuthMiddleware.validAuthorizationNeeded(true, false),
+        SurveysMiddleware.extractSurveyId,
+        SurveysMiddleware.validateSurveyExists,
+        PermissionMiddleware.onlySurveyOwnerOrAdminCanDoThisAction,
+        VotingsController.getVotingCountOfSurvey,
+      );
 
     return this.app;
   }
