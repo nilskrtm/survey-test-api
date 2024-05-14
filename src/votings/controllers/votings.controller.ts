@@ -22,13 +22,11 @@ class VotingsController {
 
   async getVotingsAbsoluteOfSurvey(req: Request, res: Response) {
     const survey: PopulatedSurvey = res.locals.survey;
-    const answerOptionVotings = await VotingsService.getVotingsAbsoluteOfSurvey(
+    const votingsResponse = await VotingsService.getVotingsAbsoluteOfSurvey(
       survey._id,
     );
 
-    res.status(200).send({
-      questions: answerOptionVotings.questions,
-    });
+    res.status(200).send(votingsResponse);
   }
 
   async getVotingsDaySpanOfSurvey(req: Request, res: Response) {
@@ -52,16 +50,14 @@ class VotingsController {
     timezoneStartDate.setHours(0, 0, 0, 0);
     timezoneEndDate.setHours(23, 59, 59, 999);
 
-    const answerOptionVotings = await VotingsService.getVotingsDaySpanOfSurvey(
+    const votingsResponse = await VotingsService.getVotingsDaySpanOfSurvey(
       survey._id,
       timezone,
       timezoneStartDate.toISOString(),
       timezoneEndDate.toISOString(),
     );
 
-    res.status(200).send({
-      questions: answerOptionVotings.questions,
-    });
+    res.status(200).send(votingsResponse);
   }
 
   async getVotingCountOfUser(req: Request, res: Response) {
