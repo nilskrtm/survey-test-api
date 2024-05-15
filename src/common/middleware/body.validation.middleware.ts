@@ -37,18 +37,6 @@ class BodyValidationMiddleware {
 
     next();
   }
-
-  decodePasswordInBody(req: Request, res: Response, next: NextFunction) {
-    if (req.body['password'] && typeof req.body['password'] === 'string') {
-      const encodedPassword: string = req.body['password'];
-
-      req.body['password'] = Buffer.from(encodedPassword, 'base64').toString(
-        'ascii',
-      );
-    }
-
-    next();
-  }
 }
 
 export default new BodyValidationMiddleware();

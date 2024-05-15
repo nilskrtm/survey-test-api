@@ -26,7 +26,6 @@ export class UsersRoutes extends CommonRoutesConfig {
       .post(
         AuthMiddleware.validAuthorizationNeeded(true, false),
         PermissionMiddleware.permissionLevelRequired(PermissionLevel.ADMIN),
-        BodyValidationMiddleware.decodePasswordInBody,
         body('_id').not().exists(),
         body('username')
           .isString()
@@ -78,7 +77,6 @@ export class UsersRoutes extends CommonRoutesConfig {
       .delete(UsersMiddleware.userCantDeleteSelf, UsersController.removeUser);
 
     this.app.put(`/users/:userId`, [
-      BodyValidationMiddleware.decodePasswordInBody,
       body('_id').not().exists(),
       body('username').not().exists(),
       body('email')
@@ -108,7 +106,6 @@ export class UsersRoutes extends CommonRoutesConfig {
     ]);
 
     this.app.patch(`/users/:userId`, [
-      BodyValidationMiddleware.decodePasswordInBody,
       body('_id').not().exists(),
       body('username').not().exists(),
       body('email')
