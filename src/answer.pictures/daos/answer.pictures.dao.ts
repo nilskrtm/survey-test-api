@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { DAO } from '../../common/classes/dao.class';
 import { CreateAnswerPictureDTO } from '../dto/create.answer.picture.dto';
 import { PatchAnswerPictureDTO } from '../dto/patch.answer.picture.dto';
@@ -71,12 +71,10 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
 
     this.AnswerPictureSchema.query = AnswerPictureQueryHelpers;
 
-    this.AnswerPictureModel = mongooseService
-      .getMongoose()
-      .model<AnswerPicture, AnswerPictureModelType>(
-        'AnswerPicture',
-        this.AnswerPictureSchema,
-      );
+    this.AnswerPictureModel = MongooseService.getMongoose().model<
+      AnswerPicture,
+      AnswerPictureModelType
+    >('AnswerPicture', this.AnswerPictureSchema);
 
     log('Created new instance of AnswerPicturesDAO');
   }

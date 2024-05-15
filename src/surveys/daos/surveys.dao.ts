@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { CreateSurveyDTO } from '../dto/create.survey.dto';
 import { PatchSurveyDTO } from '../dto/patch.survey.dto';
 import { PutSurveyDTO } from '../dto/put.survey.dto';
@@ -142,9 +142,10 @@ class SurveysDAO extends DAO<Survey> {
 
     this.SurveySchema.query = SurveyQueryHelpers;
 
-    this.SurveyModel = mongooseService
-      .getMongoose()
-      .model<Survey, SurveyModelType>('Survey', this.SurveySchema);
+    this.SurveyModel = MongooseService.getMongoose().model<
+      Survey,
+      SurveyModelType
+    >('Survey', this.SurveySchema);
 
     log('Created new instance of SurveysDAO');
   }

@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { CreateQuestionDTO } from '../dto/create.question.dto';
 import { PatchQuestionDTO } from '../dto/patch.question.dto';
 import { PutQuestionDTO } from '../dto/put.question.dto';
@@ -69,9 +69,10 @@ class QuestionsDAO extends DAO<Question> {
       next();
     });
 
-    this.QuestionModel = mongooseService
-      .getMongoose()
-      .model<Question>('Question', this.QuestionSchema);
+    this.QuestionModel = MongooseService.getMongoose().model<Question>(
+      'Question',
+      this.QuestionSchema,
+    );
 
     log('Created new instance of QuestionsDAO');
   }

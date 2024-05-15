@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { CreateUserDTO } from '../dto/create.user.dto';
 import { PatchUserDTO } from '../dto/patch.user.dto';
 import { PutUserDTO } from '../dto/put.user.dto';
@@ -15,6 +15,9 @@ import WebSocketService from '../../common/services/ws.service';
 import { SubscriptionType } from '../../common/interfaces/websocket.data.inteface';
 import { RequestOptions } from '../../common/interfaces/request.options.interface';
 import { generateAccessKey } from '../../common/utils/access.key.util';
+import UserQueryHelpers, {
+  IUserQueryHelpers,
+} from '../../users/query/users.query.helpers';
 
 const log: debug.IDebugger = debug('app:users-dao');
 
@@ -36,14 +39,28 @@ const defaultUserValues: () => Partial<User> = () => {
   };
 };
 
+type UserModelType = Model<User, IUserQueryHelpers>;
+
 class UsersDAO extends DAO<User> {
-  UserSchema: Schema<User>;
-  UserModel: Model<User>;
+  UserSchema: Schema<
+    User,
+    UserModelType,
+    IUserQueryHelpers,
+    {},
+    IUserQueryHelpers
+  >;
+  UserModel: UserModelType;
 
   constructor() {
     super();
 
-    this.UserSchema = new Schema<User>(
+    this.UserSchema = new Schema<
+      User,
+      UserModelType,
+      IUserQueryHelpers,
+      {},
+      IUserQueryHelpers
+    >(
       {
         _id: String,
         username: String,
@@ -91,14 +108,17 @@ class UsersDAO extends DAO<User> {
         );
       });
 
-    this.UserModel = mongooseService
-      .getMongoose()
-      .model<User>('user', this.UserSchema);
+    this.UserSchema.query = UserQueryHelpers;
+
+    this.UserModel = MongooseService.getMongoose().model<User, UserModelType>(
+      'user',
+      this.UserSchema,
+    );
 
     log('Created new instance of UsersDAO');
   }
 
-  getModel(): Model<User> {
+  getModel(): Model<User, IUserQueryHelpers> {
     return this.UserModel;
   }
 
@@ -164,13 +184,17 @@ class UsersDAO extends DAO<User> {
   }
 
   async getUsers(options: RequestOptions) {
-    const count = (await this.UserModel.find().exec()).length;
+    const count = (
+      await this.UserModel.find().applyFiltering(options.filtering).exec()
+    ).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
       options.paging,
       count,
     );
 
     const users = await this.UserModel.find()
+      .applyFiltering(options.filtering)
+      .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
       .exec();

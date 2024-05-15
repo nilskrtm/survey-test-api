@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { DAO } from '../../common/classes/dao.class';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { v4 as uuid } from 'uuid';
 import { CreateVotingDTO } from '../dto/create.voting.dto';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
@@ -87,9 +87,10 @@ class VotingsDAO extends DAO<Voting> {
       },
       { id: false, collection: 'votings', versionKey: false },
     );
-    this.VotingModel = mongooseService
-      .getMongoose()
-      .model<Voting>('Voting', this.VotingSchema);
+    this.VotingModel = MongooseService.getMongoose().model<Voting>(
+      'Voting',
+      this.VotingSchema,
+    );
 
     log('Created new instance of VotingsDAO');
   }

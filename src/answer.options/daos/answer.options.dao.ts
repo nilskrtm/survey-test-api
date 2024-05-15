@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { v4 as uuid } from 'uuid';
 import { Model, Schema } from 'mongoose';
-import mongooseService from '../../common/services/mongoose.service';
+import MongooseService from '../../common/services/mongoose.service';
 import { DAO } from '../../common/classes/dao.class';
 import { CreateAnswerOptionDTO } from '../dto/create.answer.option.dto';
 import { PatchAnswerOptionDTO } from '../dto/patch.answer.option.dto';
@@ -44,9 +44,10 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
       { id: false, collection: 'answer_options', versionKey: false },
     );
 
-    this.AnswerOptionModel = mongooseService
-      .getMongoose()
-      .model<AnswerOption>('AnswerOption', this.AnswerOptionSchema);
+    this.AnswerOptionModel = MongooseService.getMongoose().model<AnswerOption>(
+      'AnswerOption',
+      this.AnswerOptionSchema,
+    );
 
     log('Created new instance of AnswerOptionsDAO');
   }
