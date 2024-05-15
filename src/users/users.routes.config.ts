@@ -8,6 +8,8 @@ import PagingMiddleware from '../common/middleware/paging.middleware';
 import UsersController from './controllers/users.controller';
 import { PermissionLevel } from '../common/enums/common.permissionlevel.enum';
 import AuthMiddleware from '../auth/middleware/auth.middleware';
+import FilteringMiddleware from '../common/middleware/filtering.middleware';
+import SortingMiddleware from '../common/middleware/sorting.middleware';
 
 export class UsersRoutes extends CommonRoutesConfig {
   constructor(app: Application) {
@@ -21,6 +23,8 @@ export class UsersRoutes extends CommonRoutesConfig {
         AuthMiddleware.validAuthorizationNeeded(true, false),
         PermissionMiddleware.permissionLevelRequired(PermissionLevel.ADMIN),
         PagingMiddleware.extractPagingParameters,
+        FilteringMiddleware.extractFilteringParameters,
+        SortingMiddleware.extractSortingParameters,
         UsersController.listUsers,
       )
       .post(
