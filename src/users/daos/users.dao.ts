@@ -126,7 +126,7 @@ class UsersDAO extends DAO<User> {
     const userId = uuid();
     const user = new this.UserModel({
       _id: userId,
-      ...defaultUserValues,
+      ...defaultUserValues(),
       ...userFields,
     });
 
