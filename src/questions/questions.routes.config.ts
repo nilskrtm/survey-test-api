@@ -89,6 +89,7 @@ export class QuestionsRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('question')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 300 })
           .withMessage('Die Frage darf maximal 300 Zeichen lang sein.')
           .optional(),
@@ -111,6 +112,7 @@ export class QuestionsRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('question')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 300 })
           .withMessage('Die Frage darf maximal 300 Zeichen lang sein.')
           .optional(),

@@ -31,12 +31,14 @@ export class SurveysRoutes extends CommonRoutesConfig {
         SurveysMiddleware.prepareValidateSurveyNameNotExist,
         body('name')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
           .custom(SurveysMiddleware.validateSurveyNameNotExists)
           .optional(),
         body('description')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 150 })
           .withMessage(
             'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
@@ -44,6 +46,7 @@ export class SurveysRoutes extends CommonRoutesConfig {
           .optional(),
         body('greeting')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 300 })
           .withMessage(
             'Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.',
@@ -114,12 +117,14 @@ export class SurveysRoutes extends CommonRoutesConfig {
       SurveysMiddleware.prepareValidateSurveyNameNotExist,
       body('name')
         .isString()
+        .trim()
         .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
         .custom(SurveysMiddleware.validateSurveyNameNotExists)
         .optional(),
       body('description')
         .isString()
+        .trim()
         .isLength({ min: 1, max: 150 })
         .withMessage(
           'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
@@ -127,6 +132,7 @@ export class SurveysRoutes extends CommonRoutesConfig {
         .optional(),
       body('greeting')
         .isString()
+        .trim()
         .isLength({ min: 1, max: 300 })
         .withMessage('Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.')
         .optional(),
@@ -155,12 +161,14 @@ export class SurveysRoutes extends CommonRoutesConfig {
         SurveysMiddleware.prepareValidateSurveyNameNotExist,
         body('name')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
           .custom(SurveysMiddleware.validateSurveyNameNotExists)
           .optional(),
         body('description')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 150 })
           .withMessage(
             'Die Beschreibung muss zwischen 1 und 150 Zeichen lang sein.',
@@ -168,6 +176,7 @@ export class SurveysRoutes extends CommonRoutesConfig {
           .optional(),
         body('greeting')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 300 })
           .withMessage(
             'Die Begrüßung muss zwischen 1 und 300 Zeichen lang sein.',

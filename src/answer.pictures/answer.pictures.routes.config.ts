@@ -39,6 +39,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('name')
           .isString()
+          .trim()
           .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
           .optional(),
@@ -95,6 +96,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       body('_id').not().exists(),
       body('name')
         .isString()
+        .trim()
         .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
         .optional(),
@@ -118,6 +120,7 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       body('_id').not().exists(),
       body('name')
         .isString()
+        .trim()
         .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
         .optional(),

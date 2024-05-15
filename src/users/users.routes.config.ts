@@ -30,25 +30,30 @@ export class UsersRoutes extends CommonRoutesConfig {
         body('_id').not().exists(),
         body('username')
           .isString()
+          .trim()
           .isLength({ min: 2, max: 20 })
           .withMessage(
             'Der Nutzername muss zwischen 2 und 20 Zeichen lang sein.',
           ),
         body('email')
           .isString()
+          .trim()
           .isEmail()
           .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.'),
         body('firstname')
           .isString()
+          .trim()
           .isLength({ min: 2, max: 35 })
           .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
         body('lastname')
           .isString()
+          .trim()
           .isLength({ min: 2, max: 35 })
           .withMessage(
             'Der Nachname muss zwischen 2 und 35 Zeichen lang sein.',
           ),
         body('password')
+          .isString()
           .isLength({ min: 8, max: 40 })
           .withMessage(
             'Das Passwort muss zwischen 8 und 40 Zeichen lang sein.',
@@ -78,17 +83,21 @@ export class UsersRoutes extends CommonRoutesConfig {
       body('username').not().exists(),
       body('email')
         .isString()
+        .trim()
         .isEmail()
         .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.'),
       body('firstname')
         .isString()
+        .trim()
         .isLength({ min: 2, max: 35 })
         .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.'),
       body('lastname')
         .isString()
+        .trim()
         .isLength({ min: 2, max: 35 })
         .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.'),
       body('password')
+        .isString()
         .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.'),
       body('accessKey').not().exists(),
@@ -104,20 +113,24 @@ export class UsersRoutes extends CommonRoutesConfig {
       body('username').not().exists(),
       body('email')
         .isString()
+        .trim()
         .isEmail()
         .withMessage('Es muss eine gültige E-Mail Adresse angegeben werden.')
         .optional(),
       body('firstname')
         .isString()
+        .trim()
         .isLength({ min: 2, max: 35 })
         .withMessage('Der Vorname muss zwischen 2 und 35 Zeichen lang sein.')
         .optional(),
       body('lastname')
         .isString()
+        .trim()
         .isLength({ min: 2, max: 35 })
         .withMessage('Der Nachname muss zwischen 2 und 35 Zeichen lang sein.')
         .optional(),
       body('password')
+        .isString()
         .isLength({ min: 8, max: 40 })
         .withMessage('Das Passwort muss zwischen 8 und 40 Zeichen lang sein.')
         .optional(),
