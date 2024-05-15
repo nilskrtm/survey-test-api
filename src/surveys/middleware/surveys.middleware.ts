@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import SurveyService from '../services/surveys.service';
 import { PopulatedSurvey } from '../daos/surveys.dao';
 import { AnswerPicture } from '../../answer.pictures/daos/answer.pictures.dao';
+import { Meta } from 'express-validator';
+import SurveysDAO from '../../surveys/daos/surveys.dao';
 
 // const log: debug.IDebugger = debug('app:surveys-controllers');
 
@@ -197,6 +199,43 @@ class SurveyMiddleware {
       });
     } else {
       next();
+    }
+  }
+
+  // needed to get userId in custom validator for name of survey
+  prepareValidateSurveyNameNotExist(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    req.body._local_owner = res.locals.jwt.userId;
+
+    next();
+  }
+
+  async validateSurveyNameNotExists(value: string, meta: Meta) {
+    const surveys = await SurveysDAO.getModel().aggregate([
+      {
+        $match: {
+          owner: meta.req.body._local_owner,
+        },
+      },
+      {
+        $match: {
+          $expr: {
+            $eq: [
+              {
+                $toLower: '$name',
+              },
+              value.toLowerCase(),
+            ],
+          },
+        },
+      },
+    ]);
+
+    if (surveys.length > 0) {
+      throw new Error('Es existiert bereits eine Umfrage mit diesem Namen.');
     }
   }
 
