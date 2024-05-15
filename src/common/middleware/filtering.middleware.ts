@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { FilteringParams } from '../types/filtering.params.type';
 
-const filteringParamBlacklist = ['page', 'perPage'].map(param =>
-  param.toLowerCase(),
-);
+const filteringParamBlacklist = [
+  'page',
+  'perPage',
+  'unusedAnswerPictureIds',
+].map(param => param.toLowerCase());
 
 class FilteringMiddleware {
   extractFilteringParameters(req: Request, res: Response, next: NextFunction) {
@@ -18,9 +20,7 @@ class FilteringMiddleware {
             if (typeof value === 'string') {
               filtering[param] = value;
             } else if (Array.isArray(value))
-              if ((value as string[]).length > 0) {
-                filtering[param] = value.pop() as string;
-              }
+              filtering[param] = value as string[];
           }
         }
       }

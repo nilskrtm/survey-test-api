@@ -4,7 +4,7 @@ import AnswerPicturesService from '../services/answer.pictures.service';
 import S3Service from '../../common/services/s3.service';
 import * as mime from 'mime-types';
 import { AnswerPicture } from '../daos/answer.pictures.dao';
-import SurveysDAO from '../../surveys/daos/surveys.dao';
+import AnswerOptionsDAO from '../../answer.options/daos/answer.options.dao';
 
 const log: debug.IDebugger = debug('app:answer-pictures-controller');
 
@@ -167,39 +167,42 @@ class AnswerPicturesController {
 
   async getAnswerPictureStatus(req: Request, res: Response) {
     const answerPicture: AnswerPicture = res.locals.answerPicture;
-    const result = await SurveysDAO.getModel()
+    const result = await AnswerOptionsDAO.getModel()
       .aggregate<{ count: number }>([
+        {
+          $match: {
+            picture: answerPicture._id,
+          },
+        },
         {
           $lookup: {
             from: 'questions',
-            localField: 'questions',
-            foreignField: '_id',
-            as: 'questionObjects',
+            localField: '_id',
+            foreignField: 'answerOptions',
+            as: 'question',
           },
         },
         {
-          $unwind: {
-            path: '$questionObjects',
-            preserveNullAndEmptyArrays: true,
+          $project: {
+            questionId: {
+              $first: '$question._id',
+            },
           },
         },
         {
           $lookup: {
-            from: 'answer_options',
-            localField: 'questionObjects.answerOptions',
-            foreignField: '_id',
-            as: 'answerOptions',
+            from: 'surveys',
+            localField: 'questionId',
+            foreignField: 'questions',
+            as: 'survey',
           },
         },
         {
-          $unwind: {
-            path: '$answerOptions.picture',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $match: {
-            'answerOptions.picture': answerPicture._id,
+          $project: {
+            _id: 0,
+            surveyId: {
+              $first: '$survey._id',
+            },
           },
         },
         {

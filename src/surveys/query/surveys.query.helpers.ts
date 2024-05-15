@@ -30,6 +30,7 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
 
     if (
       'archived' in filterParams &&
+      typeof filterParams.archived === 'string' &&
       (filterParams.archived.toLowerCase() === 'true' ||
         filterParams.archived.toLowerCase() === 'false')
     ) {
@@ -38,6 +39,7 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
 
     if (
       'draft' in filterParams &&
+      typeof filterParams.draft === 'string' &&
       (filterParams.draft.toLowerCase() === 'true' ||
         filterParams.draft.toLowerCase() === 'false')
     ) {

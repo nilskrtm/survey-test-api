@@ -125,15 +125,29 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
   }
 
   async getAnswerPicturesOfUser(options: RequestOptions, userId: string) {
-    const count = (await this.AnswerPictureModel.find({ owner: userId }).exec())
-      .length;
+    const unusedAnswerPictureIds: Array<string> =
+      'used' in options.filtering
+        ? await this.getUnusedAnswerPicturesOfUser(userId)
+        : [];
+
+    const count = (
+      await this.AnswerPictureModel.find({ owner: userId })
+        .applyFiltering({
+          ...options.filtering,
+          unusedAnswerPictureIds: unusedAnswerPictureIds,
+        })
+        .exec()
+    ).length;
     const pagingParams: PagingParams = PagingMiddleware.calculatePaging(
       options.paging,
       count,
     );
 
     const answerPictures = await this.AnswerPictureModel.find({ owner: userId })
-      .applyFiltering(options.filtering)
+      .applyFiltering({
+        ...options.filtering,
+        unusedAnswerPictureIds: unusedAnswerPictureIds,
+      })
       .applySorting(options.sorting)
       .limit(pagingParams.perPage)
       .skip(pagingParams.offset || 0)
@@ -150,6 +164,59 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
   async getAnswerPictureCountOfUser(userId: string) {
     return (await this.AnswerPictureModel.find({ owner: userId }).exec())
       .length;
+  }
+
+  async getUnusedAnswerPicturesOfUser(userId: string) {
+    return (
+      await this.AnswerPictureModel.aggregate<{ _id: string }>([
+        {
+          $match: {
+            owner: userId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'answer_options',
+            localField: '_id',
+            foreignField: 'picture',
+            as: 'answerOptions',
+          },
+        },
+        {
+          $lookup: {
+            from: 'questions',
+            localField: 'answerOptions._id',
+            foreignField: 'answerOptions',
+            as: 'questions',
+          },
+        },
+        {
+          $lookup: {
+            from: 'surveys',
+            localField: 'questions._id',
+            foreignField: 'questions',
+            as: 'surveys',
+          },
+        },
+        {
+          $match: {
+            $expr: {
+              $eq: [
+                0,
+                {
+                  $size: '$surveys',
+                },
+              ],
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id',
+          },
+        },
+      ]).exec()
+    ).map(answerPicture => answerPicture._id);
   }
 
   async updateAnswerPictureById(

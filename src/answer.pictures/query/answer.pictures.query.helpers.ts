@@ -22,7 +22,7 @@ const AnswerPictureQueryHelpers: IAnswerPictureQueryHelpers = {
   > {
     const filter: FilterQuery<AnswerPicture> = {};
 
-    if ('keyword' in filterParams) {
+    if ('keyword' in filterParams && typeof filterParams.keyword === 'string') {
       filter.name = {
         $regex: '.*' + filterParams.keyword + '.*',
         $options: 'i',
@@ -31,13 +31,22 @@ const AnswerPictureQueryHelpers: IAnswerPictureQueryHelpers = {
 
     if (
       'used' in filterParams &&
+      typeof filterParams.used === 'string' &&
       (filterParams.used.toLowerCase() === 'true' ||
         filterParams.used.toLowerCase() === 'false')
     ) {
-      // filter.used = filterParams.used;
+      if (filterParams.used === 'true') {
+        filter.$expr = {
+          $not: { $in: ['$_id', filterParams.unusedAnswerPictureIds] },
+        };
+      } else {
+        filter.$expr = {
+          $in: ['$_id', filterParams.unusedAnswerPictureIds],
+        };
+      }
     }
 
-    return this.find();
+    return this.find(filter);
   },
   applySorting(
     this: QueryWithHelpers<

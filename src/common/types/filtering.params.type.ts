@@ -1,1 +1,1 @@
-export type FilteringParams = { [param: string]: string };
+export type FilteringParams = { [param: string]: string | string[] };
