@@ -178,7 +178,7 @@ class UsersDAO extends DAO<User> {
     delete pagingParams.offset;
 
     return {
-      data: users,
+      users: users,
       paging: pagingParams,
     };
   }
