@@ -29,11 +29,15 @@ const AnswerPictureQueryHelpers: IAnswerPictureQueryHelpers = {
       };
     }
 
-    if ('archived' in filterParams) {
-      filter.archived = filterParams.archived === 'true';
+    if (
+      'used' in filterParams &&
+      (filterParams.used.toLowerCase() === 'true' ||
+        filterParams.used.toLowerCase() === 'false')
+    ) {
+      // filter.used = filterParams.used;
     }
 
-    return this.find(filter);
+    return this.find();
   },
   applySorting(
     this: QueryWithHelpers<

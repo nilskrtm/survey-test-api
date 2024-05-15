@@ -1,9 +1,12 @@
 import debug from 'debug';
 import {
   DeleteObjectCommandInput,
+  DeleteObjectCommandOutput,
   GetObjectCommandInput,
+  GetObjectCommandOutput,
   HeadObjectCommandInput,
   PutObjectCommandInput,
+  PutObjectCommandOutput,
   S3,
 } from '@aws-sdk/client-s3';
 
@@ -27,7 +30,7 @@ class S3Service {
     fileName: string,
     file: Buffer,
     contentType: string,
-  ) {
+  ): Promise<PutObjectCommandOutput | unknown | undefined> {
     const uploadParams: PutObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -36,7 +39,7 @@ class S3Service {
     };
 
     return new Promise((resolve, reject) => {
-      this.S3.putObject(uploadParams, (err: Error, data) => {
+      this.S3.putObject(uploadParams, (err, data) => {
         if (err) {
           log(`error uploading picture to S3: ${err}`);
 
@@ -49,7 +52,9 @@ class S3Service {
     });
   }
 
-  public async deletePicture(fileName: string) {
+  public async deletePicture(
+    fileName: string,
+  ): Promise<DeleteObjectCommandOutput | unknown | undefined> {
     const deleteParams: DeleteObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -72,7 +77,7 @@ class S3Service {
     });
   }
 
-  public async pictureExists(fileName: string) {
+  public async pictureExists(fileName: string): Promise<boolean | unknown> {
     const headParams: HeadObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: fileName,
@@ -95,7 +100,9 @@ class S3Service {
     });
   }
 
-  public async getPicture(key: string) {
+  public async getPicture(
+    key: string,
+  ): Promise<GetObjectCommandOutput | unknown | undefined> {
     const getParams: GetObjectCommandInput = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
       Key: key,

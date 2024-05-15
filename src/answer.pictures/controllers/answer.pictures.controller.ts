@@ -136,7 +136,7 @@ class AnswerPicturesController {
 
     if (
       answerPicture.fileName &&
-      (await S3Service.pictureExists(answerPicture.fileName))
+      (await S3Service.pictureExists(answerPicture.fileName)) === true
     ) {
       await S3Service.deletePicture(answerPicture.fileName);
     }
@@ -168,14 +168,7 @@ class AnswerPicturesController {
   async getAnswerPictureStatus(req: Request, res: Response) {
     const answerPicture: AnswerPicture = res.locals.answerPicture;
     const result = await SurveysDAO.getModel()
-      .aggregate([
-        /*
-        {
-          $match: {
-            draft: false,
-          },
-        },
-         */
+      .aggregate<{ count: number }>([
         {
           $lookup: {
             from: 'questions',
@@ -207,7 +200,6 @@ class AnswerPicturesController {
         {
           $match: {
             'answerOptions.picture': answerPicture._id,
-            // draft: false,
           },
         },
         {
@@ -216,10 +208,7 @@ class AnswerPicturesController {
       ])
       .exec();
 
-    if (
-      result.length === 0 ||
-      ('count' in result[0] && result[0].count === 0)
-    ) {
+    if (result.length === 0 || result[0].count === 0) {
       return res.status(200).send({
         used: false,
       });
