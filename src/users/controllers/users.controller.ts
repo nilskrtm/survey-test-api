@@ -31,7 +31,9 @@ class UsersController {
       req.body.password = await argon2.hash(req.body.password);
     }
 
-    log(await UsersService.patchById(req.body.locals.userId, req.body));
+    await UsersService.patchById(req.body.locals.userId, req.body);
+
+    log(`updated user ${req.body.locals.userId}`);
 
     res.status(204).send();
   }
@@ -39,13 +41,17 @@ class UsersController {
   async put(req: Request, res: Response) {
     req.body.password = await argon2.hash(req.body.password);
 
-    log(await UsersService.putById(req.body.locals.userId, req.body));
+    await UsersService.putById(req.body.locals.userId, req.body);
+
+    log(`updated user ${req.body.locals.userId}`);
 
     res.status(204).send();
   }
 
   async removeUser(req: Request, res: Response) {
-    log(await UsersService.deleteById(req.body.locals.userId));
+    await UsersService.deleteById(req.body.locals.userId);
+
+    log(`deleted user ${req.body.locals.userId}`);
 
     res.status(204).send();
   }
