@@ -85,9 +85,28 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
 
   async addAnswerPicture(answerPictureFields: CreateAnswerPictureDTO) {
     const answerPictureId = uuid();
+    const defaultValues = defaultAnswerPictureValues();
+
+    if (
+      !('name' in answerPictureFields) &&
+      !answerPictureFields.name &&
+      'owner' in answerPictureFields &&
+      answerPictureFields.owner
+    ) {
+      defaultValues.name =
+        'Bild ' +
+        Number(
+          (
+            await this.AnswerPictureModel.find({
+              owner: answerPictureFields.owner,
+            }).exec()
+          ).length + 1,
+        );
+    }
+
     const answerPicture = new this.AnswerPictureModel({
       _id: answerPictureId,
-      ...defaultAnswerPictureValues(),
+      ...defaultValues,
       ...answerPictureFields,
     });
 

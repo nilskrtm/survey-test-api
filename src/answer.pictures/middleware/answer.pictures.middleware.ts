@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnswerPicture } from '../daos/answer.pictures.dao';
+import AnswerPicturesDAO, { AnswerPicture } from '../daos/answer.pictures.dao';
 import AnswerPicturesService from '../../answer.pictures/services/answer.pictures.service';
 import SurveysDAO from '../../surveys/daos/surveys.dao';
+import { Meta } from 'express-validator';
 
 //const log: debug.IDebugger = debug('app:answer-pictures-controllers');
 
@@ -94,6 +95,43 @@ class AnswerPicturesMiddleware {
       }
     } else {
       next();
+    }
+  }
+
+  // needed to get userId in custom validator for name of survey
+  prepareValidateAnswerPictureNameNotExist(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    req.body._local_owner = res.locals.jwt.userId;
+
+    next();
+  }
+
+  async validateAnswerPictureNameNotExists(value: string, meta: Meta) {
+    const surveys = await AnswerPicturesDAO.getModel().aggregate([
+      {
+        $match: {
+          owner: meta.req.body._local_owner,
+        },
+      },
+      {
+        $match: {
+          $expr: {
+            $eq: [
+              {
+                $toLower: '$name',
+              },
+              value.toLowerCase(),
+            ],
+          },
+        },
+      },
+    ]);
+
+    if (surveys.length > 0) {
+      throw new Error('Es existiert bereits ein Bild mit diesem Namen.');
     }
   }
 

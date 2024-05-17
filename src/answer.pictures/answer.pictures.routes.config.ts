@@ -37,11 +37,13 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
           }
         }),
         body('_id').not().exists(),
+        AnswerPicturesMiddleware.prepareValidateAnswerPictureNameNotExist,
         body('name')
           .isString()
           .trim()
           .isLength({ min: 1, max: 50 })
           .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
+          .custom(AnswerPicturesMiddleware.validateAnswerPictureNameNotExists)
           .optional(),
         body('fileName').not().exists(),
         body('owner').not().exists(),
@@ -94,11 +96,13 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       BodyValidationMiddleware.verifyLocalsInBody, // needed because of multer
       AnswerPicturesMiddleware.extractAnswerPictureId, // needed because of multer
       body('_id').not().exists(),
+      AnswerPicturesMiddleware.prepareValidateAnswerPictureNameNotExist,
       body('name')
         .isString()
         .trim()
         .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
+        .custom(AnswerPicturesMiddleware.validateAnswerPictureNameNotExists)
         .optional(),
       body('fileName').not().exists(),
       body('owner').not().exists(),
@@ -118,11 +122,13 @@ export class AnswerPicturesRoutes extends CommonRoutesConfig {
       BodyValidationMiddleware.verifyLocalsInBody, // needed because of multer
       AnswerPicturesMiddleware.extractAnswerPictureId, // needed because of multer
       body('_id').not().exists(),
+      AnswerPicturesMiddleware.prepareValidateAnswerPictureNameNotExist,
       body('name')
         .isString()
         .trim()
         .isLength({ min: 1, max: 50 })
         .withMessage('Der Name muss zwischen 1 und 50 Zeichen lang sein.')
+        .custom(AnswerPicturesMiddleware.validateAnswerPictureNameNotExists)
         .optional(),
       body('fileName').not().exists(),
       body('owner').not().exists(),
