@@ -34,16 +34,38 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
       (filterParams.archived.toLowerCase() === 'true' ||
         filterParams.archived.toLowerCase() === 'false')
     ) {
-      filter.archived = filterParams.archived;
+      filter.archived = JSON.parse(filterParams.archived);
     }
 
     if (
       'draft' in filterParams &&
+      !('active' in filterParams) &&
       typeof filterParams.draft === 'string' &&
       (filterParams.draft.toLowerCase() === 'true' ||
         filterParams.draft.toLowerCase() === 'false')
     ) {
-      filter.draft = filterParams.draft;
+      filter.draft = JSON.parse(filterParams.draft);
+    }
+
+    if (
+      'active' in filterParams &&
+      !('draft' in filterParams) &&
+      typeof filterParams.active === 'string' &&
+      filterParams.active.toLowerCase() === 'true'
+    ) {
+      if (JSON.parse(filterParams.active) === true) {
+        filter.draft = false;
+        filter.$expr = {
+          $and: [
+            {
+              $lt: ['$startDate', new Date()],
+            },
+            {
+              $gt: ['$endDate', new Date()],
+            },
+          ],
+        };
+      }
     }
 
     return this.find(filter);
