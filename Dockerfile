@@ -35,7 +35,7 @@ WORKDIR /home/www/node
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --no-fund
 
 COPY --chown=node:node . ./
 
