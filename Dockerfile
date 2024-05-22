@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-# use integrated nginx or only provide socket
+# use integrated nginx or only provide socket of the server
 ARG INTEGRATE_NGINX="false"
 
 RUN apk update
