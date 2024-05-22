@@ -368,7 +368,7 @@ class VotingsDAO extends DAO<Voting> {
       ...(await this.VotingModel.aggregate<HourVotings>([
         {
           $match: {
-            survey: 'd4a72159-d672-4ebd-af3c-255561cb13d8',
+            survey: surveyId,
             // can be used later to only get votings for specific question(-s)
             'votes.question': {
               $in: survey.questions.map(question => question._id),
