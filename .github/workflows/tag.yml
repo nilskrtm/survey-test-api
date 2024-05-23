@@ -23,6 +23,6 @@ jobs:
         run: docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }}
           -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
-        run: docker build -t $REPO:latest -t $REPO:${{ steps.get_tag_name.outputs.VERSION }} .
+        run: docker build -t $REPO:${{ steps.get_tag_name.outputs.VERSION }} .
       - name: Publish Docker Image
-        run: docker push $REPO
+        run: docker push $REPO:${{ steps.get_tag_name.outputs.VERSION }}
