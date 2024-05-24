@@ -1,6 +1,6 @@
 {
   "watch": ["*"],
   "ext": "ts,js,json",
-  "ignore": ["dist/"],
+  "ignore": ["build/"],
   "exec": "ts-node ./app.ts"
 }

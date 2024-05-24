@@ -1,44 +1,48 @@
 FROM node:18-alpine
 
-# use integrated nginx or only provide socket of the server
-ARG INTEGRATE_NGINX="false"
+# install nginx and supervisor
+RUN apk update \
+    && apk add nginx \
+    && apk add supervisor
 
-RUN apk update
+# remove default nginx config
+RUN rm -f /etc/nginx/http.d/default.conf
 
-RUN if [ "$INTEGRATE_NGINX" = "true" ] ; then apk add nginx ; fi
+# add custom nginx config
+ADD deployment/docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
-RUN apk add supervisor
+# add supervisor config
+COPY deployment/docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
-# create dummy nginx directory
-RUN if [ "$INTEGRATE_NGINX" = "false" ] ; then mkdir -p /etc/nginx/http.d ; fi
+# add supervisor node job
+COPY deployment/docker/supervisor/supervisor.node.conf /etc/supervisor/conf.d/supervisor.node.conf
 
-# remove nginx default config (only if nginx is really installed)
-RUN if [ "$INTEGRATE_NGINX" = "true" ] ; then rm -f /etc/nginx/http.d/default.conf ; fi
+# add supervisor nginx job
+COPY deployment/docker/supervisor/supervisor.nginx.conf /etc/supervisor/conf.d/supervisor.nginx.conf
 
-# add nginx config (also add to dummy directory if nginx not installed)
-ADD ./deployment/docker/nginx/http.d/default.conf /etc/nginx/http.d/default.conf
-
-COPY ./deployment/docker/supervisord.conf /etc/supervisor/supervisord.conf
-
-COPY deployment/docker/supervisor.node.conf /etc/supervisor/conf.d/supervisor.node.conf
-
-COPY deployment/docker/supervisor.nginx.conf /etc/supervisor/conf.d/supervisor.nginx.conf
-
-# remove nginx supervisor config (only if nginx is not installed)
-RUN if [ "$INTEGRATE_NGINX" = "false" ] ; then rm /etc/supervisor/conf.d/supervisor.nginx.conf; fi
-
+# create node_modules directory and add rights
 RUN mkdir -p /home/www/node/node_modules && chown -R node:node /home/www/node
 
+# create supervisor log directory and add rights
 RUN mkdir -p /var/log/supervisor && chown -R node:node /var/log/supervisor
 
+# set work directory
 WORKDIR /home/www/node
 
+# copy dependency files
 COPY package*.json ./
 
+# install dependencies
 RUN npm ci --no-fund
 
+# copy source code
 COPY --chown=node:node . ./
 
+# build app
 RUN npm run build
 
+# expose nginx port
+EXPOSE 80
+
+# set supervisor entrypoint
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

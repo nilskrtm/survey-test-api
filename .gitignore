@@ -12,10 +12,12 @@ coverage
 benchmarks/graphs
 
 # typescript
-dist
+build
 
 # .env
 .env
+.env.*
+!.env.template
 
 # docker
 data

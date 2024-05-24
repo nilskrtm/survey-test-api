@@ -6,9 +6,8 @@ db.users.insertOne({
   email: 'admin@test.local',
   firstname: 'Admin',
   lastname: 'Admin',
-  // 'password'
   password:
-    '$argon2id$v=19$m=65536,t=3,p=4$/dneKfLX455msXi/F3SOkg$1FB26hCXERM9HmyuwrIdRJQIMKE+QqskVWZXoYWSnHQ',
-  accessKey: '123456789',
+    '$argon2id$v=19$m=65536,t=3,p=4$/dneKfLX455msXi/F3SOkg$1FB26hCXERM9HmyuwrIdRJQIMKE+QqskVWZXoYWSnHQ', // 'password'
+  accessKey: '0123456789',
   permissionLevel: 1,
 });
