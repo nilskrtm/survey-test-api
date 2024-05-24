@@ -65,4 +65,4 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.DEPLOY_WEBHOOK_URL }}
-          body: '{"service": "${{ secrets.DEPLOY_SERVICE_NAME  }}", "repository": "$REPO", "tag": "latest"}'
+          body: '{"service": "${{ secrets.DEPLOY_SERVICE_NAME  }}", "repository": "$REPO", "tag": "release-${{ github.event.release.tag_name }}"}'
