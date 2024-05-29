@@ -35,7 +35,7 @@ class PasswordRequestDAO extends DAO<PasswordRequest> {
       {
         _id: String,
         user: { type: String, ref: 'user' },
-        createdAt: { type: Date, expires: '1m', default: Date.now },
+        createdAt: { type: Date, expires: '1h', default: Date.now },
       },
       { id: false, collection: 'password_requests', versionKey: false },
     );
