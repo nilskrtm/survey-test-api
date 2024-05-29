@@ -4,6 +4,7 @@ import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { Jwt } from '../../common/types/jwt.type';
 import { User } from '../../users/daos/users.dao';
+import PasswordRequestService from '../services/password.request.service';
 
 const accessTokenSecret: string =
   process.env.ACCESS_TOKEN_SECRET || 'accessToken';
@@ -81,6 +82,29 @@ class AuthMiddleware {
         return res.status(401).send();
       }
     };
+  }
+
+  async verifyPasswordRequestValid(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { passwordRequestId } = req.body;
+    const passwordRequest = await PasswordRequestService.getById(
+      passwordRequestId,
+    );
+
+    if (passwordRequest) {
+      const user = await UsersService.getById(passwordRequest.user._id);
+
+      if (user) {
+        return next();
+      }
+    }
+
+    return res.status(400).send({
+      errors: ['Der Link zum Zurücksetzen des Passwortes ist ungültig.'],
+    });
   }
 }
 

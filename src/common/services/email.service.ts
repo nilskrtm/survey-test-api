@@ -32,7 +32,10 @@ class EmailService {
   async sendMail(requestId: string | number | string[], options: Email) {
     return await (this.transporter as Transporter)
       .sendMail({
-        from: `"NO-REPLY" ${process.env.SMTP_SENDER || options.from}`,
+        from: {
+          name: 'NO-REPLY',
+          address: process.env.SMTP_SENDER || options.from || '',
+        },
         to: options.to,
         cc: options.cc,
         bcc: options.bcc,

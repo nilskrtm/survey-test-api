@@ -143,6 +143,12 @@ class UsersDAO extends DAO<User> {
     return await this.UserModel.findOne({ email: email }).exec();
   }
 
+  async getUserByIdWithPassword(userId: string) {
+    return await this.UserModel.findOne({ _id: userId })
+      .select('_id username email firstname lastname permissionLevel +password')
+      .exec();
+  }
+
   async getUserByUsernameWithAccessKey(username: string) {
     return await this.UserModel.findOne({ username: username })
       .select(
