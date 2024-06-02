@@ -23,7 +23,7 @@ There are some properties that have to be set to build and run the Rest API, lik
 
 ### List of Properties
 
-<b>TODO</b> (or see .env.template [.env.template](https://github.com/nilskrtm/survey-test-api/blob/master/.env.template))
+<b>TODO</b> (or see .env.example [.env.example](https://github.com/nilskrtm/survey-test-api/blob/master/.env.example))
 
 ## Running the API
 
