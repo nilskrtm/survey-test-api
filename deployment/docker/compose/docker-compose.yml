@@ -22,5 +22,4 @@ services:
       - "5000:80"
     volumes:
       # IMPORTANT: database host needs to be 'mongo' to connect to dockerized MongoDB
-      - ../../../.env.docker:/home/www/node/build/.env
-
+      - ../../../.env:/home/www/node/build/.env:ro
