@@ -16,7 +16,6 @@ class DashboardController {
     const pictureCount = await AnswerPicturesDAO.getAnswerPictureCountOfUser(
       userId,
     );
-    const userCount = await UsersDao.getModel().find().count();
 
     const response: {
       metrics: {
@@ -34,7 +33,7 @@ class DashboardController {
     };
 
     if (user && user.permissionLevel === PermissionLevel.ADMIN) {
-      response.metrics.userCount = userCount;
+      response.metrics.userCount = await UsersDao.getModel().find().count();
     }
 
     res.status(200).send(response);
