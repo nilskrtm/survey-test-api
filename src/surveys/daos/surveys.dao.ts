@@ -103,7 +103,7 @@ class SurveysDAO extends DAO<Survey> {
       .pre('deleteOne', async function (this, next) {
         // cascade-handler
         if (!DAO.isCascadeRemoval(this)) {
-          next();
+          return next();
         }
 
         const survey: Survey = await this.model.findOne(this.getQuery()).exec();

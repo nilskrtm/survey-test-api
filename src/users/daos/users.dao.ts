@@ -76,18 +76,18 @@ class UsersDAO extends DAO<User> {
       .pre('findOneAndRemove', async function (this, next) {
         // cascade-handler
         if (!DAO.isCascadeRemoval(this)) {
-          next();
+          return next();
         }
 
         const user: User = await this.model.findOne(this.getQuery()).exec();
         const surveys: Survey[] = await SurveysDAO.getModel()
           .find({ owner: user._id })
           .exec();
-        const promises: Promise<any>[] = surveys.map(survey =>
+        const surveyPromises: Promise<any>[] = surveys.map(survey =>
           SurveysDAO.removeSurveyById(survey._id, true),
         );
 
-        await Promise.all(promises);
+        await Promise.all(surveyPromises);
 
         next();
       })

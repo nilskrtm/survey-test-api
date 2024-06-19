@@ -20,10 +20,6 @@ export type PopulatedPasswordRequest = Omit<PasswordRequest, 'user'> & {
   user: User;
 };
 
-const defaultPasswordRequestValues: () => Partial<PasswordRequest> = () => {
-  return {};
-};
-
 class PasswordRequestDAO extends DAO<PasswordRequest> {
   PasswordRequestSchema: Schema<PasswordRequest>;
   PasswordRequestModel: Model<PasswordRequest>;
@@ -55,11 +51,9 @@ class PasswordRequestDAO extends DAO<PasswordRequest> {
 
   async addPasswordRequest(passwordRequestFields: CreatePasswordRequestDTO) {
     const passwordRequestId = uuid();
-    const defaultValues = defaultPasswordRequestValues();
 
     const passwordRequest = new this.PasswordRequestModel({
       _id: passwordRequestId,
-      ...defaultValues,
       ...passwordRequestFields,
     });
 

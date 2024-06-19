@@ -53,7 +53,7 @@ class QuestionsDAO extends DAO<Question> {
     ).pre('deleteOne', async function (this, next) {
       // cascade-handler
       if (!DAO.isCascadeRemoval(this)) {
-        next();
+        return next();
       }
 
       const question: Question = await this.model
