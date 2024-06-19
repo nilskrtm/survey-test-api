@@ -15,6 +15,7 @@ import { RequestOptions } from '../../common/interfaces/request.options.interfac
 import AnswerPictureQueryHelpers, {
   IAnswerPictureQueryHelpers,
 } from '../query/answer.pictures.query.helpers';
+import AnswerPictureVirtuals from '../virtuals/answer.picture.virtuals';
 
 const log: debug.IDebugger = debug('app:answer-pictures-dao');
 
@@ -25,6 +26,12 @@ export type AnswerPicture = {
   owner: string;
   created: Date;
   edited: Date;
+  // virtuals
+  _url: string;
+};
+
+export type AnswerPictureVirtualFields = {
+  _url: unknown;
 };
 
 type AnswerPictureModelType = Model<AnswerPicture, IAnswerPictureQueryHelpers>;
@@ -35,7 +42,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     AnswerPictureModelType,
     IAnswerPictureQueryHelpers,
     {},
-    IAnswerPictureQueryHelpers
+    AnswerPictureVirtualFields
   >;
   AnswerPictureModel: AnswerPictureModelType;
 
@@ -47,7 +54,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
       AnswerPictureModelType,
       IAnswerPictureQueryHelpers,
       {},
-      IAnswerPictureQueryHelpers
+      AnswerPictureVirtualFields
     >(
       {
         _id: String,
@@ -57,7 +64,14 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
         created: { type: Date, default: Date.now },
         edited: { type: Date, default: Date.now },
       },
-      { id: false, collection: 'answer_pictures', versionKey: false },
+      {
+        id: false,
+        collection: 'answer_pictures',
+        versionKey: false,
+        virtuals: AnswerPictureVirtuals,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+      },
     );
 
     this.AnswerPictureSchema.query = AnswerPictureQueryHelpers;

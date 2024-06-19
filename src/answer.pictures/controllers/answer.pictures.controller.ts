@@ -211,14 +211,8 @@ class AnswerPicturesController {
       ])
       .exec();
 
-    if (result.length === 0 || result[0].count === 0) {
-      return res.status(200).send({
-        used: false,
-      });
-    }
-
     res.status(200).send({
-      used: true,
+      used: !(result.length === 0 || result[0].count === 0),
     });
   }
 }
