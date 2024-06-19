@@ -32,13 +32,6 @@ export type User = {
   permissionLevel: number;
 };
 
-const defaultUserValues: () => Partial<User> = () => {
-  return {
-    accessKey: generateAccessKey(10),
-    permissionLevel: PermissionLevel.USER,
-  };
-};
-
 type UserModelType = Model<User, IUserQueryHelpers>;
 
 class UsersDAO extends DAO<User> {
@@ -68,8 +61,8 @@ class UsersDAO extends DAO<User> {
         firstname: String,
         lastname: String,
         password: { type: String, select: false },
-        accessKey: { type: String, select: false },
-        permissionLevel: Number,
+        accessKey: { type: String, select: false, default: generateAccessKey },
+        permissionLevel: { type: Number, default: PermissionLevel.USER },
       },
       { id: false, collection: 'users', versionKey: false },
     )
@@ -126,7 +119,6 @@ class UsersDAO extends DAO<User> {
     const userId = uuid();
     const user = new this.UserModel({
       _id: userId,
-      ...defaultUserValues(),
       ...userFields,
     });
 

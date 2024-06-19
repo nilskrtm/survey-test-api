@@ -60,8 +60,6 @@ export type HourSpanVotingsResponse = {
   hours: Array<string>;
 };
 
-const defaultVotingValues: Partial<Voting> = {};
-
 class VotingsDAO extends DAO<Voting> {
   VoteSchema: Schema<Vote>;
   VotingSchema: Schema<Voting>;
@@ -103,7 +101,6 @@ class VotingsDAO extends DAO<Voting> {
     const votingId = uuid();
     const voting = new this.VotingModel({
       _id: votingId,
-      ...defaultVotingValues,
       ...votingFields,
     });
 

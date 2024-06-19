@@ -43,21 +43,6 @@ export type PopulatedSurvey = Omit<Survey, 'questions'> & {
   questions: Array<PopulatedQuestion>;
 };
 
-const defaultSurveyValues: () => Partial<Survey> = () => {
-  return {
-    name: 'Neue Umfrage',
-    description: 'Noch keine Beschreibung',
-    greeting: 'Noch keine Begrüßung',
-    startDate: new Date(),
-    endDate: new Date(),
-    created: new Date(),
-    edited: new Date(),
-    draft: true,
-    archived: false,
-    questions: [],
-  };
-};
-
 type SurveyModelType = Model<Survey, ISurveyQueryHelpers>;
 
 class SurveysDAO extends DAO<Survey> {
@@ -82,17 +67,17 @@ class SurveysDAO extends DAO<Survey> {
     >(
       {
         _id: String,
-        name: String,
-        description: String,
-        greeting: String,
-        startDate: Date,
-        endDate: Date,
+        name: { type: String, default: 'Neue Umfrage' },
+        description: { type: String, default: 'Noch keine Beschreibung' },
+        greeting: { type: String, default: 'Noch keine Begrüßung' },
+        startDate: { type: Date, default: Date.now },
+        endDate: { type: Date, default: Date.now },
         owner: { type: String, ref: 'User' },
-        created: Date,
-        edited: Date,
-        draft: Boolean,
-        archived: Boolean,
-        questions: [{ type: String, ref: 'Question' }],
+        created: { type: Date, default: Date.now },
+        edited: { type: Date, default: Date.now },
+        draft: { type: Boolean, default: true },
+        archived: { type: Boolean, default: false },
+        questions: [{ type: String, ref: 'Question', default: [] }],
       },
       {
         id: false,
@@ -156,7 +141,7 @@ class SurveysDAO extends DAO<Survey> {
 
   async addSurvey(surveyFields: CreateSurveyDTO) {
     const surveyId = uuid();
-    const defaultValues = defaultSurveyValues();
+    let valuesWithName: Partial<Pick<Survey, 'name'>> = {};
 
     if (
       !('name' in surveyFields) &&
@@ -164,17 +149,19 @@ class SurveysDAO extends DAO<Survey> {
       'owner' in surveyFields &&
       surveyFields.owner
     ) {
-      defaultValues.name =
-        'Umfrage ' +
-        Number(
-          (await this.SurveyModel.find({ owner: surveyFields.owner }).exec())
-            .length + 1,
-        );
+      valuesWithName = {
+        name:
+          'Umfrage ' +
+          Number(
+            (await this.SurveyModel.find({ owner: surveyFields.owner }).exec())
+              .length + 1,
+          ),
+      };
     }
 
     const survey = new this.SurveyModel({
       _id: surveyId,
-      ...defaultValues,
+      ...valuesWithName,
       ...surveyFields,
     });
 

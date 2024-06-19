@@ -28,12 +28,6 @@ export type PopulatedQuestion = Omit<Question, 'answerOptions'> & {
   answerOptions: Array<PopulatedAnswerOption>;
 };
 
-const defaultQuestionValues: Partial<Question> = {
-  question: 'Frage noch nicht festgelegt',
-  timeout: 30,
-  answerOptions: [],
-};
-
 class QuestionsDAO extends DAO<Question> {
   QuestionSchema: Schema<Question>;
   QuestionModel: Model<Question>;
@@ -44,10 +38,13 @@ class QuestionsDAO extends DAO<Question> {
     this.QuestionSchema = new Schema<Question>(
       {
         _id: String,
-        question: String,
-        timeout: Number,
+        question: { type: String, default: 'Frage noch nicht festgelegt' },
+        timeout: { type: Number, default: 30 },
         order: Number,
-        answerOptions: [{ type: String, ref: 'AnswerOption' }],
+        answerOptions: {
+          type: [{ type: String, ref: 'AnswerOption' }],
+          default: [],
+        },
       },
       { id: false, collection: 'questions', versionKey: false },
     ).pre('deleteOne', async function (this, next) {
@@ -85,7 +82,6 @@ class QuestionsDAO extends DAO<Question> {
     const questionId = uuid();
     const question = new this.QuestionModel({
       _id: questionId,
-      ...defaultQuestionValues,
       ...questionFields,
     });
 

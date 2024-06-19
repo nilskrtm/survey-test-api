@@ -22,11 +22,6 @@ export type PopulatedAnswerOption = Omit<AnswerOption, 'picture'> & {
   picture: AnswerPicture;
 };
 
-const defaultAnswerOptionValues: Partial<AnswerOption> = {
-  color: 'rgb(0,0,0)',
-  picture: '',
-};
-
 class AnswerOptionsDAO extends DAO<AnswerOption> {
   AnswerOptionSchema: Schema<AnswerOption>;
   AnswerOptionModel: Model<AnswerOption>;
@@ -38,8 +33,8 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
       {
         _id: String,
         order: Number,
-        color: String,
-        picture: { type: String, ref: 'AnswerPicture' },
+        color: { type: String, default: 'rgb(0,0,0)' },
+        picture: { type: String, ref: 'AnswerPicture', default: '' },
       },
       { id: false, collection: 'answer_options', versionKey: false },
     );
@@ -60,7 +55,6 @@ class AnswerOptionsDAO extends DAO<AnswerOption> {
     const answerOptionId = uuid();
     const answerOption = new this.AnswerOptionModel({
       _id: answerOptionId,
-      ...defaultAnswerOptionValues,
       ...answerOptionFields,
     });
 

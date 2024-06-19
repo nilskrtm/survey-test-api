@@ -27,15 +27,6 @@ export type AnswerPicture = {
   edited: Date;
 };
 
-const defaultAnswerPictureValues: () => Partial<AnswerPicture> = () => {
-  return {
-    name: 'Name noch nicht festgelegt',
-    fileName: '',
-    created: new Date(),
-    edited: new Date(),
-  };
-};
-
 type AnswerPictureModelType = Model<AnswerPicture, IAnswerPictureQueryHelpers>;
 
 class AnswerPicturesDAO extends DAO<AnswerPicture> {
@@ -60,11 +51,11 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
     >(
       {
         _id: String,
-        name: String,
-        fileName: String,
+        name: { type: String, default: 'Name noch nicht festgelegt' },
+        fileName: { type: String, default: '' },
         owner: { type: String, ref: 'User' },
-        created: Date,
-        edited: Date,
+        created: { type: Date, default: Date.now },
+        edited: { type: Date, default: Date.now },
       },
       { id: false, collection: 'answer_pictures', versionKey: false },
     );
@@ -85,7 +76,7 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
 
   async addAnswerPicture(answerPictureFields: CreateAnswerPictureDTO) {
     const answerPictureId = uuid();
-    const defaultValues = defaultAnswerPictureValues();
+    let valuesWithName: Partial<Pick<AnswerPicture, 'name'>> = {};
 
     if (
       !('name' in answerPictureFields) &&
@@ -93,20 +84,22 @@ class AnswerPicturesDAO extends DAO<AnswerPicture> {
       'owner' in answerPictureFields &&
       answerPictureFields.owner
     ) {
-      defaultValues.name =
-        'Bild ' +
-        Number(
-          (
-            await this.AnswerPictureModel.find({
-              owner: answerPictureFields.owner,
-            }).exec()
-          ).length + 1,
-        );
+      valuesWithName = {
+        name:
+          'Bild ' +
+          Number(
+            (
+              await this.AnswerPictureModel.find({
+                owner: answerPictureFields.owner,
+              }).exec()
+            ).length + 1,
+          ),
+      };
     }
 
     const answerPicture = new this.AnswerPictureModel({
       _id: answerPictureId,
-      ...defaultValues,
+      ...valuesWithName,
       ...answerPictureFields,
     });
 
