@@ -4,11 +4,12 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "npm run clean && tsc && npm run copy-files && node build/app.js",
     "dev": "nodemon --unhandled-rejections=strict",
     "debug": "export DEBUG=* && npm run dev",
-    "copy-files": "copyfiles -u 1 \"src/emails/templates/html/*.html\" \"build/src/\"",
-    "build": "npm run clean && tsc && npm run copy-files",
+    "build": "npm run clean && tsc && npm run copy:emails && npm run copy:env",
+    "start": "npm run build && node build/app.js",
+    "copy:emails": "copyfiles -u 4 src/emails/templates/html/*.html build/src/emails/templates/html/",
+    "copy:env": "copyfiles .env build/",
     "clean": "rimraf ./build",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
