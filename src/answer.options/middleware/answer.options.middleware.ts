@@ -31,25 +31,17 @@ class AnswerOptionsMiddleware {
           toFill[newSorting[answerOptionsId]] = answerOptionsId;
         });
 
-        let valid = true;
-
         for (let orderAsString of Object.keys(toFill)) {
-          let order: number = parseInt(orderAsString);
+          let order = parseInt(orderAsString);
 
           if (toFill[order] === null) {
-            valid = false;
-
-            break;
+            return res.status(400).send();
           }
-        }
-
-        if (valid) {
-          return next();
         }
       }
     }
 
-    res.status(400).send();
+    next();
   }
 
   async answerPictureToSetExists(
