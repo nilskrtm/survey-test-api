@@ -4,7 +4,7 @@ import AnswerPicturesService from '../../answer.pictures/services/answer.picture
 import SurveysDAO from '../../surveys/daos/surveys.dao';
 import { Meta } from 'express-validator';
 
-//const log: debug.IDebugger = debug('app:answer-pictures-controllers');
+// const log: debug.IDebugger = debug('app:answer-pictures-controllers');
 
 class AnswerPicturesMiddleware {
   async validateAnswerPictureNotUsed(
@@ -15,13 +15,6 @@ class AnswerPicturesMiddleware {
     const answerPicture: AnswerPicture = res.locals.answerPicture;
     const result = await SurveysDAO.getModel()
       .aggregate([
-        /*
-        {
-          $match: {
-            draft: false,
-          },
-        },
-         */
         {
           $lookup: {
             from: 'questions',
@@ -33,7 +26,6 @@ class AnswerPicturesMiddleware {
         {
           $unwind: {
             path: '$questionObjects',
-            preserveNullAndEmptyArrays: true,
           },
         },
         {
@@ -47,13 +39,11 @@ class AnswerPicturesMiddleware {
         {
           $unwind: {
             path: '$answerOptions.picture',
-            preserveNullAndEmptyArrays: true,
           },
         },
         {
           $match: {
             'answerOptions.picture': answerPicture._id,
-            // draft: false,
           },
         },
         {
