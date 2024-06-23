@@ -2,6 +2,8 @@
   "name": "survey-test-api",
   "version": "1.0.0",
   "description": "",
+  "author": "nils.krtm",
+  "private": true,
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon --unhandled-rejections=strict",
@@ -14,7 +16,6 @@
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "nils.krtm",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.598.0",
     "argon2": "^0.40.3",
