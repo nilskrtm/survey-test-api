@@ -21,7 +21,9 @@ services:
     ports:
       - "5000:80"
     environment:
+      # enable colors for logging (debug package)
       DEBUG_COLORS: true
+      # forward logging to stdout (debug package)
       DEBUG_FD: 1
     volumes:
       # IMPORTANT: database host needs to be 'mongo' to connect to dockerized MongoDB
