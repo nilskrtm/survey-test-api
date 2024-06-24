@@ -1,11 +1,12 @@
 import crypto from 'crypto';
 
-export const generateAccessKey: (length?: number) => string = length => {
-  length = length || 10;
+const ACCESS_KEY_LENGTH = 10;
+
+export const generateAccessKey: () => string = () => {
   const chars =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
-  const randomArray = new Uint8Array(length);
+  const randomArray = new Uint8Array(ACCESS_KEY_LENGTH);
 
   crypto.getRandomValues(randomArray);
   randomArray.forEach(number => {

@@ -17,7 +17,7 @@ class AccessKeyController {
   }
 
   async generateAccessKey(req: Request, res: Response) {
-    const newAccessKey = generateAccessKey(10);
+    const newAccessKey = generateAccessKey();
 
     log(
       await UsersService.patchById(res.locals.jwt.userId, {
