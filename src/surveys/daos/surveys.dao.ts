@@ -115,12 +115,12 @@ class SurveysDAO extends DAO<Survey> {
         const payload: SurveyCreatedWSPayload = { _id: survey._id };
 
         WebSocketService.notifySubscriptions(
-          survey.owner as string,
+          survey.owner,
           SubscriptionType.SURVEY_CREATED,
           payload,
         );
         WebSocketService.notifySubscriptions(
-          survey.owner as string,
+          survey.owner,
           SubscriptionType.DASHBOARD_METRICS,
         );
       });
