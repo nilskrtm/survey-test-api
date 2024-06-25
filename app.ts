@@ -30,14 +30,20 @@ import { DashboardRoutes } from './src/dashboard/dashboard.routes.config';
 import ArtificialDelayMiddleware from './src/common/middleware/artificial.delay.middleware';
 import BodyValidationMiddleware from './src/common/middleware/body.validation.middleware';
 import WebSocketService from './src/common/services/ws.service';
+import ExpressMetaStream from './src/common/classes/express.meta.stream.class';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port: number = parseInt(process.env.PORT || '5000');
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
+const expressMetaLog: debug.IDebugger = debug('app:express');
 const loggerOptions: expressWinston.LoggerOptions = {
-  transports: [new winston.transports.Console()],
+  transports: [
+    new winston.transports.Stream({
+      stream: new ExpressMetaStream(expressMetaLog),
+    }),
+  ],
   format: winston.format.combine(
     winston.format.json(),
     winston.format.timestamp({
