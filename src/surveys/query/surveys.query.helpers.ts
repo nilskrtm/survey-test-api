@@ -35,6 +35,8 @@ const SurveyQueryHelpers: ISurveyQueryHelpers = {
         filterParams.archived.toLowerCase() === 'false')
     ) {
       filter.archived = JSON.parse(filterParams.archived);
+    } else {
+      filter.archived = false;
     }
 
     if (
