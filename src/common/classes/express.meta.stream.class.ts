@@ -2,7 +2,7 @@ import { Writable } from 'stream';
 import debug from 'debug';
 
 class ExpressMetaStream extends Writable {
-  logger: debug.IDebugger;
+  private readonly logger: debug.IDebugger;
 
   constructor(logger: debug.IDebugger) {
     super();
