@@ -90,9 +90,8 @@ class AuthMiddleware {
     next: NextFunction,
   ) {
     const { passwordRequestId } = req.body;
-    const passwordRequest = await PasswordRequestService.getById(
-      passwordRequestId,
-    );
+    const passwordRequest =
+      await PasswordRequestService.getById(passwordRequestId);
 
     if (passwordRequest) {
       const user = await UsersService.getById(passwordRequest.user._id);

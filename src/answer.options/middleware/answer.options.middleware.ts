@@ -52,9 +52,8 @@ class AnswerOptionsMiddleware {
     const answerPictureId = req.body.picture;
 
     if (answerPictureId) {
-      const answerPicture = await AnswerPicturesService.getById(
-        answerPictureId,
-      );
+      const answerPicture =
+        await AnswerPicturesService.getById(answerPictureId);
 
       if (answerPicture && answerPicture.name && answerPicture.fileName) {
         next();

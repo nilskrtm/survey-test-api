@@ -13,9 +13,8 @@ class DashboardController {
     const user = await UsersDao.getUserById(userId);
     const surveyCount = await SurveysDAO.getSurveyCountOfOwner(userId);
     const votingCount = await VotingsDao.getVotingCountOfUser(userId);
-    const pictureCount = await AnswerPicturesDAO.getAnswerPictureCountOfUser(
-      userId,
-    );
+    const pictureCount =
+      await AnswerPicturesDAO.getAnswerPictureCountOfUser(userId);
 
     const response: {
       metrics: {

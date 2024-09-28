@@ -121,9 +121,8 @@ class AuthController {
 
   async validateRequestResetUserPassword(req: Request, res: Response) {
     const { passwordRequestId } = req.body;
-    const passwordRequest = await PasswordRequestService.getById(
-      passwordRequestId,
-    );
+    const passwordRequest =
+      await PasswordRequestService.getById(passwordRequestId);
 
     console.log(passwordRequestId);
     console.log(passwordRequest);
@@ -145,9 +144,8 @@ class AuthController {
     const { passwordRequestId, password } = req.body;
 
     if (passwordRequestId && password) {
-      const passwordRequest = await PasswordRequestService.getById(
-        passwordRequestId,
-      );
+      const passwordRequest =
+        await PasswordRequestService.getById(passwordRequestId);
 
       if (passwordRequest) {
         const user = await UsersService.getUserByIdWithPassword(
