@@ -39,6 +39,6 @@ Or use docker compose and compose files in directory _deployment/docker_ to run 
     - save JWTs in database and add possibility to invalidate them
     - in the current implementation refresh tokens are not really 'refresh tokens'
 - add an email-service
-    - useful for user-registration and password-reset (password-reset form and e-mail field in user-database is already implemented, but not really used yet)
+    - ~~useful for user-registration and password-reset (password-reset form and e-mail field in user-database is already implemented, but not really used yet)~~ - done
     - maybe add a reminder for ending-surveys or broadcasting a summary of collected statistics about the users surveys at the end of each day
 - ...
